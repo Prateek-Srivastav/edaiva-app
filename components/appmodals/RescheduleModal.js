@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
+  StatusBar,
   // Dimensions,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -91,7 +92,7 @@ function RescheduleModal(props) {
     },
     onEnd(event) {
       if (event.translationY > 50)
-        top.value = withSpring(dimensions.height + 50, SPRING_CONFIG);
+        top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
       else {
         top.value = withSpring(0, SPRING_CONFIG);
       }
@@ -142,7 +143,7 @@ function RescheduleModal(props) {
       text1: "Applied successfully!",
     });
 
-    top.value = withSpring(dimensions.height, SPRING_CONFIG);
+    top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
     setIsPressed(true);
   };
 
@@ -382,7 +383,7 @@ const styles = StyleSheet.create({
   },
   modalContentContainer: {
     backgroundColor: Colors.bg,
-    top: Dimensions.get("window").height / 10,
+    top: StatusBar.currentHeight + 70,
     flex: 1,
     width: "100%",
     borderTopLeftRadius: 20,

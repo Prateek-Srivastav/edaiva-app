@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
+import { Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";

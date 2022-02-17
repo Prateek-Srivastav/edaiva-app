@@ -16,12 +16,11 @@ import {
   SubmitButton,
 } from "../components/forms";
 import authApi from "../api/auth";
-import Input from "../components/Input";
 import Colors from "../constants/Colors";
 
 const validationSchema = Yup.object().shape({
-  firstname: Yup.string().required().min(3).label("First Name"),
-  lastname: Yup.string().required().min(3).label("Last Name"),
+  firstname: Yup.string().required().min(2).label("First Name"),
+  lastname: Yup.string().required().min(2).label("Last Name"),
   email: Yup.string().required().email().label("Email"),
   password: Yup.string()
     .required()

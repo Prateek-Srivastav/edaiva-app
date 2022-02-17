@@ -78,10 +78,6 @@ const WishlistNavigator = () => (
       name="Wishlist"
       component={WishlistScreen}
       options={{
-        // headerShadowVisible: false,
-        // headerShown: false,
-        // headerStyle: { backgroundColor: "#FDFDFD" },
-        // headerRight: () => rightLoginHeader(),
         headerTitleStyle: {
           fontFamily: "OpenSans-SemiBold",
           color: Colors.primary,
@@ -93,7 +89,8 @@ const WishlistNavigator = () => (
       name="JobDetail"
       component={JobDetailScreen}
       options={{
-        headerRight: () => rightLoginHeader(),
+        headerShown: false,
+        // headerRight: () => rightLoginHeader(),
         headerTitle: () => null,
       }}
     />

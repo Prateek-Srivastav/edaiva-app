@@ -20,20 +20,16 @@ import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
 import jobsApi from "../api/jobs";
 import { formattedDate } from "../utilities/date";
-
 import dummyJobDetails from "../dummyData.js/dummyJobDetails";
 import cache from "../utilities/cache";
 import ApplicationModal from "../components/appmodals/ApplicationModal";
-import { frontEndClient, jobClient } from "../api/client";
-import {
-  getFocusedRouteNameFromRoute,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
-import user from "../api/user";
+import { frontEndClient } from "../api/client";
 import NetworkError from "../components/NetworkError";
-import LeftHeader from "../components/LeftHeader";
 import CustomHeader from "../components/CustomHeader";
+import applicationApi from "../api/application";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import useApi from "../hooks/useApi";
+import CustomAlert from "../components/CustomAlert";
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,6 +52,9 @@ function JobDetailScreen({ route, navigation }) {
   const [isPressed, setIsPressed] = useState(false);
   const [position] = useState(new Animated.ValueXY());
   const [isApplied, setIsApplied] = useState(route.params.isApplied);
+  const [applicationId, setApplicationId] = useState(
+    route.params.applicationId
+  );
 
   const jobId = route.params.jobId;
 
@@ -63,6 +62,94 @@ function JobDetailScreen({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+
+  const [visible, setVisible] = useState(false);
+
+  const {
+    loading: revokeLoading,
+    error: revokeError,
+    networkError: revokeNetworkError,
+    request: revokeApplication,
+  } = useApi(applicationApi.deleteApplication);
+
+  const revokeHandler = async () => {
+    await revokeApplication(applicationId);
+    if (revokeError)
+      return Toast.show({
+        type: "appError",
+        text1: "Something went wrong",
+      });
+    else if (revokeLoading)
+      return Toast.show({
+        type: "appWarning",
+        text1: "Revoking...",
+      });
+    else if (revokeNetworkError)
+      return Toast.show({
+        type: "appError",
+        text1: "Connection Lost...",
+      });
+
+    setVisible(false);
+    Toast.show({
+      type: "appInfo",
+      text1: "Application revoked!",
+    });
+    setIsApplied(false);
+  };
+
+  const RevokeApplication = () => {
+    return (
+      <CustomAlert visible={visible}>
+        <View style={{ alignItems: "center" }}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: Colors.black,
+              fontFamily: "OpenSans-Regular",
+            }}
+          >
+            Sure! You want to
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: Colors.black,
+              fontFamily: "OpenSans-SemiBold",
+            }}
+          >
+            Revoke Application
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: -40,
+          }}
+        >
+          <CustomButton
+            onPress={revokeHandler}
+            title="Revoke"
+            titleStyle={{ color: Colors.primary }}
+            style={{ backgroundColor: "#FFFFFF", elevation: 3 }}
+          />
+          <CustomButton
+            onPress={() => setVisible(false)}
+            title="Cancel"
+            titleStyle={{ color: Colors.primary }}
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderColor: "#C1EFFF",
+              borderWidth: 1,
+              marginLeft: 10,
+            }}
+          />
+        </View>
+      </CustomAlert>
+    );
+  };
 
   const loadJobDetails = async (jobId) => {
     setLoading(true);
@@ -129,9 +216,10 @@ function JobDetailScreen({ route, navigation }) {
     setIsPressed(false);
   };
 
-  const getIsApplied = (val) => {
+  const getIsApplied = (val, applicationId) => {
     setIsPressed(false);
     setIsApplied(val);
+    setApplicationId(applicationId);
   };
 
   const animStyles = {
@@ -203,36 +291,41 @@ function JobDetailScreen({ route, navigation }) {
                 color: Colors.black,
               }}
             />
-            <AppText>Preferred Qualification</AppText>
-            <RenderHtml
-              contentWidth={width}
-              source={{
-                html: jobDetails.preferred_qualification,
-              }}
-              systemFonts={systemFonts}
-              baseStyle={{
-                fontFamily: "OpenSans-Regular",
-                fontSize: 14.5,
-                color: Colors.black,
-              }}
-            />
-            <AppText>Job Supplements</AppText>
-            <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
-            <AppText>Job Schedule</AppText>
-            <NormalText>{jobDetails.job_schedule[0].name}</NormalText>
-            {!jobDetails.salary_undisclosed && jobDetails.salary && (
-              <>
-                <AppText>Salary</AppText>
-                <NormalText>
-                  ₹{jobDetails.salary.salary_from} - ₹
-                  {jobDetails.salary.salary_to} {jobDetails.salary.salary_type}
-                </NormalText>
-              </>
-            )}
-            <AppText>Remote</AppText>
-            <NormalText>{jobDetails.job_remote.name}</NormalText>
-            <AppText>Open Positions</AppText>
-            <NormalText>{jobDetails.no_of_vacancy}</NormalText>
+            <View style={{ top: -50 }}>
+              <AppText>Preferred Qualification</AppText>
+              <RenderHtml
+                contentWidth={width}
+                source={{
+                  html: jobDetails.preferred_qualification,
+                }}
+                systemFonts={systemFonts}
+                baseStyle={{
+                  fontFamily: "OpenSans-Regular",
+                  fontSize: 14.5,
+                  color: Colors.black,
+                }}
+              />
+            </View>
+            <View style={{ top: -100 }}>
+              <AppText>Job Supplements</AppText>
+              <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
+              <AppText>Job Schedule</AppText>
+              <NormalText>{jobDetails.job_schedule[0].name}</NormalText>
+              {!jobDetails.salary_undisclosed && jobDetails.salary && (
+                <>
+                  <AppText>Salary</AppText>
+                  <NormalText>
+                    ₹{jobDetails.salary.salary_from} - ₹
+                    {jobDetails.salary.salary_to}{" "}
+                    {jobDetails.salary.salary_type}
+                  </NormalText>
+                </>
+              )}
+              <AppText>Remote</AppText>
+              <NormalText>{jobDetails.job_remote.name}</NormalText>
+              <AppText>Open Positions</AppText>
+              <NormalText>{jobDetails.no_of_vacancy}</NormalText>
+            </View>
           </>
         )}
       </View>
@@ -503,6 +596,7 @@ function JobDetailScreen({ route, navigation }) {
             }}
             title="Revoke Application"
             titleStyle={{ color: Colors.primary }}
+            onPress={() => setVisible(true)}
           />
         )}
         <CustomButton
@@ -519,6 +613,7 @@ function JobDetailScreen({ route, navigation }) {
         sendData={getData}
         sendIsApplied={getIsApplied}
       />
+      <RevokeApplication />
     </View>
   );
 }

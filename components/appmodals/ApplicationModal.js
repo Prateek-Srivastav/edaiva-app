@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
+  StatusBar,
   // Dimensions,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -52,7 +53,9 @@ function ApplicationModal(props) {
   const [availabilityDate, setAvailabilityDate] = useState();
   const [fromTime, setFromTime] = useState();
   const [toTime, setToTime] = useState();
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
   const top = useSharedValue(Dimensions.get("screen").height);
 
   const style = useAnimatedStyle(() => {
@@ -65,8 +68,8 @@ function ApplicationModal(props) {
     props.sendData(val);
   }
 
-  const sendIsApplied = (val) => {
-    props.sendIsApplied(val);
+  const sendIsApplied = (val, applicationId) => {
+    props.sendIsApplied(val, applicationId);
   };
 
   const gestureHandler = useAnimatedGestureHandler({
@@ -78,7 +81,7 @@ function ApplicationModal(props) {
     },
     onEnd(event) {
       if (event.translationY > 50)
-        top.value = withSpring(dimensions.height + 50, SPRING_CONFIG);
+        top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
       else {
         top.value = withSpring(0, SPRING_CONFIG);
       }
@@ -90,13 +93,13 @@ function ApplicationModal(props) {
     top.value = withSpring(0, SPRING_CONFIG);
   }
 
-  const {
-    data,
-    loading,
-    error,
-    networkError,
-    request: apply,
-  } = useApi(applicationApi.postApplication);
+  // const {
+  //   data,
+  //   loading,
+  //   error,
+  //   networkError,
+  //   request: apply,
+  // } = useApi(applicationApi.postApplication);
 
   const handleApply = async () => {
     const user = await cache.get("user");
@@ -117,7 +120,20 @@ function ApplicationModal(props) {
         text1: "Joining date is required!",
       });
 
-    await apply(application);
+    const response = await applicationApi.postApplication(application);
+
+    setLoading(true);
+
+    if (!response.ok) {
+      setLoading(false);
+
+      if (response.problem === "NETWORK_ERROR") return setNetworkError(true);
+      else return setError(true);
+    }
+    setNetworkError(false);
+    setError(false);
+    setLoading(false);
+
     if (error)
       return Toast.show({
         type: "appError",
@@ -134,8 +150,8 @@ function ApplicationModal(props) {
       text1: "Applied successfully!",
     });
 
-    top.value = withSpring(dimensions.height, SPRING_CONFIG);
-    sendIsApplied(true);
+    top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
+    sendIsApplied(true, response.data._id.$oid);
     setIsPressed(true);
   };
 
@@ -285,7 +301,7 @@ const styles = StyleSheet.create({
   },
   modalContentContainer: {
     backgroundColor: Colors.bg,
-    top: Dimensions.get("window").height / 10,
+    top: StatusBar.currentHeight + 70,
     flex: 1,
     width: "100%",
     borderTopLeftRadius: 20,

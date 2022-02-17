@@ -92,7 +92,7 @@ function HomeScreen({ navigation }) {
       <CustomAlert modalWidth="90%" visible={showOptions}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setVisible(false)}
+          onPress={() => setShowOptions(false)}
         >
           <Feather name="x" size={20} color={Colors.black} />
         </TouchableOpacity>
@@ -177,104 +177,106 @@ function HomeScreen({ navigation }) {
                 )
                   <InterviewReminder interviewDetails={interviewDetails} />;
               })}
-            <View style={styles.filterContainer}>
-              <Text style={styles.greyText}>Filter</Text>
-              <View style={styles.line} />
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                horizontal
-                data={[filters]}
-                keyExtractor={(index) => index + Math.random()}
-                renderItem={(itemData) => {
-                  return (
-                    <>
-                      {itemData.item.country && (
-                        <View style={styles.filterTextContainer}>
-                          <Text
-                            style={{
-                              ...styles.greyText,
-                              color: Colors.primary,
-                            }}
-                          >
-                            {itemData.item.country}
-                          </Text>
-                        </View>
-                      )}
+            {filters && Object.keys(filters).length !== 0 && (
+              <View style={styles.filterContainer}>
+                <Text style={styles.greyText}>Filter</Text>
+                <View style={styles.line} />
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={[filters]}
+                  keyExtractor={(index) => index + Math.random()}
+                  renderItem={(itemData) => {
+                    return (
+                      <>
+                        {itemData.item.country && (
+                          <View style={styles.filterTextContainer}>
+                            <Text
+                              style={{
+                                ...styles.greyText,
+                                color: Colors.primary,
+                              }}
+                            >
+                              {itemData.item.country}
+                            </Text>
+                          </View>
+                        )}
 
-                      {itemData.item.city && (
-                        <View style={styles.filterTextContainer}>
-                          <Text
-                            style={{
-                              ...styles.greyText,
-                              color: Colors.primary,
-                            }}
-                          >
-                            {itemData.item.city}
-                          </Text>
-                        </View>
-                      )}
-                      {itemData.item.state && (
-                        <View style={styles.filterTextContainer}>
-                          <Text
-                            style={{
-                              ...styles.greyText,
-                              color: Colors.primary,
-                            }}
-                          >
-                            {itemData.item.state}
-                          </Text>
-                        </View>
-                      )}
-                      {itemData.item.experience && (
-                        <View style={styles.filterTextContainer}>
-                          <Text
-                            style={{
-                              ...styles.greyText,
-                              color: Colors.primary,
-                            }}
-                          >
-                            {itemData.item.experience}
-                          </Text>
-                        </View>
-                      )}
-                      {itemData.item.job_type && (
-                        <View style={styles.filterTextContainer}>
-                          <Text
-                            style={{
-                              ...styles.greyText,
-                              color: Colors.primary,
-                            }}
-                          >
-                            {itemData.item.job_type ===
-                            "6130bc87b8eb9a6797043297"
-                              ? "Internship"
-                              : itemData.item.job_type ===
-                                "6130bc8cb8eb9a6797043298"
-                              ? "Full Time"
-                              : ""}
-                          </Text>
-                        </View>
-                      )}
-                      {itemData.item.skills?.length !== 0 &&
-                        itemData.item.skills?.map((item) => {
-                          return (
-                            <View style={styles.filterTextContainer}>
-                              <Text
-                                style={{
-                                  ...styles.greyText,
-                                  color: Colors.primary,
-                                }}
-                              >
-                                {item}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                    </>
-                  );
-                }}
-              />
-            </View>
+                        {itemData.item.city && (
+                          <View style={styles.filterTextContainer}>
+                            <Text
+                              style={{
+                                ...styles.greyText,
+                                color: Colors.primary,
+                              }}
+                            >
+                              {itemData.item.city}
+                            </Text>
+                          </View>
+                        )}
+                        {itemData.item.state && (
+                          <View style={styles.filterTextContainer}>
+                            <Text
+                              style={{
+                                ...styles.greyText,
+                                color: Colors.primary,
+                              }}
+                            >
+                              {itemData.item.state}
+                            </Text>
+                          </View>
+                        )}
+                        {itemData.item.experience && (
+                          <View style={styles.filterTextContainer}>
+                            <Text
+                              style={{
+                                ...styles.greyText,
+                                color: Colors.primary,
+                              }}
+                            >
+                              {itemData.item.experience}
+                            </Text>
+                          </View>
+                        )}
+                        {itemData.item.job_type && (
+                          <View style={styles.filterTextContainer}>
+                            <Text
+                              style={{
+                                ...styles.greyText,
+                                color: Colors.primary,
+                              }}
+                            >
+                              {itemData.item.job_type ===
+                              "6130bc87b8eb9a6797043297"
+                                ? "Internship"
+                                : itemData.item.job_type ===
+                                  "6130bc8cb8eb9a6797043298"
+                                ? "Full Time"
+                                : ""}
+                            </Text>
+                          </View>
+                        )}
+                        {itemData.item.skills?.length !== 0 &&
+                          itemData.item.skills?.map((item) => {
+                            return (
+                              <View style={styles.filterTextContainer}>
+                                <Text
+                                  style={{
+                                    ...styles.greyText,
+                                    color: Colors.primary,
+                                  }}
+                                >
+                                  {item}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                      </>
+                    );
+                  }}
+                />
+              </View>
+            )}
 
             <View
               style={{
@@ -352,6 +354,7 @@ function HomeScreen({ navigation }) {
                         navigation.navigate("JobDetail", {
                           jobId: itemData.item._id,
                           isApplied: itemData.item.applied.length !== 0,
+                          applicationId: itemData.item.applied[0]?._id,
                           location,
                         })
                       }
