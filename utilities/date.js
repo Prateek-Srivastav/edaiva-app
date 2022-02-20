@@ -36,5 +36,7 @@ export const formattedNumericDate = (timestamp) => {
   if (month < 10) month = "0" + month;
 
   const date = day + "/" + month + "/" + formattedNumeriDate.getFullYear();
-  return date;
+  const usFormat = formattedNumeriDate.getFullYear() + "-" + month + "-" + day;
+
+  return { date, usFormat };
 };

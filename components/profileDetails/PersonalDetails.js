@@ -5,6 +5,7 @@ import { Feather, AntDesign } from "@expo/vector-icons";
 import AppText from "../AppText";
 import Colors from "../../constants/Colors";
 import { Pencil } from "../../assets/svg/icons";
+import { formattedNumericDate } from "../../utilities/date";
 
 const SmallText = (props) => (
   <Text style={styles.smallText}>{props.children}</Text>
@@ -48,11 +49,15 @@ function PersonalDetails({ data, onPress, viewing }) {
     pincode,
   } = data;
 
-  const address = `${address1 !== "" ? address1 + ", " : ""}${
-    address2 !== "" ? address2 + ", " : ""
-  }${city !== "" ? city + ", " : ""}${state !== "" ? state + ", " : ""}${
-    country !== "" ? country + ", " : ""
-  }${pincode !== "" ? pincode : ""}`;
+  const { usFormat: usFormatDob } = formattedNumericDate(dob?.$date);
+
+  const address = `${address1 && address1 !== "" ? address1 + ", " : ""}${
+    address2 !== "" && address2 ? address2 + ", " : ""
+  }${city !== "" && city ? city + ", " : ""}${
+    state !== "" && state ? state + ", " : ""
+  }${country && country !== "" ? country + ", " : ""}${
+    pincode && pincode !== "" ? pincode : ""
+  }`;
 
   return (
     <View style={{ marginHorizontal: 15 }}>
@@ -80,7 +85,7 @@ function PersonalDetails({ data, onPress, viewing }) {
           style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}
         >
           <AppText>DATE OF BIRTH:{"  "}</AppText>
-          <AppText style={{ color: Colors.black }}>{dob.$date} </AppText>
+          <AppText style={{ color: Colors.black }}>{usFormatDob} </AppText>
         </View>
       ) : null}
       <View

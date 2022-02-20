@@ -34,7 +34,7 @@ function PublicationDetails({ data, publication, index, viewing }) {
   return deleted ? null : (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <NormalText>{publication.title}</NormalText>
+        <NormalText> {publication.title}</NormalText>
         {!viewing && (
           <View
             style={{
@@ -60,13 +60,13 @@ function PublicationDetails({ data, publication, index, viewing }) {
           </View>
         )}
       </View>
+      <SmallText>Publisher: {publication.publisher}</SmallText>
       <SmallText>Date: {formattedDate(publication.date)}</SmallText>
       <SmallText>Description: {publication.description}</SmallText>
-      {publication.link && (
+      {publication.link ? (
         <View
           style={{
             flexDirection: "row",
-            // justifyContent: "center",
             alignItems: "center",
             marginTop: 7,
           }}
@@ -75,7 +75,7 @@ function PublicationDetails({ data, publication, index, viewing }) {
             {publication.link}
           </SmallText>
         </View>
-      )}
+      ) : null}
     </View>
   );
 }

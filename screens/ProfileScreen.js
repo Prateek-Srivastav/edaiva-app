@@ -288,7 +288,7 @@ function ProfileScreen({ navigation }) {
               <Card
                 style={{
                   alignItems: "center",
-                  // width: "45%",
+                  width: "45%",
                   alignItems: "center",
                 }}
                 touchable
@@ -305,7 +305,7 @@ function ProfileScreen({ navigation }) {
               <Card
                 style={{
                   alignItems: "center",
-                  // width: "45%",
+                  width: "45%",
                 }}
                 touchable
                 onPress={() => navigation.navigate("ViewProfile")}

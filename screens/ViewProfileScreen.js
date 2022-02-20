@@ -49,6 +49,7 @@ const LargeText = (props) => (
 function ViewProfileScreen({ navigation }) {
   const [user, setUser] = useState({});
   const [about, setAbout] = useState();
+  const [profilePicture, setProfilePicture] = useState();
 
   const {
     data,
@@ -77,7 +78,7 @@ function ViewProfileScreen({ navigation }) {
 
   if (error) return <Error onPress={loadProfile} />;
 
-  const DetailHeading = ({ label, onPress }) => (
+  const DetailHeading = ({ label }) => (
     <View
       style={{
         flexDirection: "row",
@@ -108,137 +109,157 @@ function ViewProfileScreen({ navigation }) {
     );
   };
 
-  return loading || !data ? (
-    <Loading />
-  ) : (
-    <View style={styles.container}>
+  return (
+    <>
       <CustomHeader
         screenName="View Profile"
         backScreen="Profile"
         navigation={navigation}
       />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center",
-          elevation: 3,
-          borderRadius: 9,
-          paddingVertical: 20,
-          backgroundColor: "white",
-          marginBottom: 5,
-        }}
-      >
-        <Image
-          source={require("../assets/dummyDP.png")}
-          style={{ height: 70, width: 70, marginRight: 5, marginLeft: 8 }}
-        />
-        <View style={{ width: "70%", marginRight: 5 }}>
-          <LargeText>
-            {user.firstname} {user.lastname}
-          </LargeText>
-          {data.designation && (
-            <Card style={{ justifyContent: "flex-start", paddingVertical: 5 }}>
-              <NormalText>{data.designation}</NormalText>
-            </Card>
-          )}
-        </View>
-      </View>
-      <ScrollView>
-        <PersonalDetails data={data} viewing />
+      {loading || !data ? (
+        <Loading />
+      ) : (
+        <View style={styles.container}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              elevation: 3,
+              borderRadius: 9,
+              paddingVertical: 20,
+              backgroundColor: "white",
+              marginBottom: 5,
+            }}
+          >
+            <Image
+              source={
+                data.profilepicture
+                  ? {
+                      uri: profilePicture
+                        ? profilePicture
+                        : data.profilepicture,
+                    }
+                  : require("../assets/dummyDP.png")
+              }
+              style={{
+                height: 70,
+                width: 70,
+                marginRight: 5,
+                marginLeft: 8,
+                borderRadius: 4,
+              }}
+            />
+            <View style={{ width: "70%", marginRight: 5 }}>
+              <LargeText>
+                {user.firstname} {user.lastname}
+              </LargeText>
+              {data.designation !== "" && (
+                <Card
+                  style={{ justifyContent: "flex-start", paddingVertical: 5 }}
+                >
+                  <NormalText>{data.designation}</NormalText>
+                </Card>
+              )}
+            </View>
+          </View>
+          <ScrollView>
+            <PersonalDetails data={data} viewing />
 
-        <View style={{ ...styles.line, marginTop: 15 }} />
-        <View style={{ marginHorizontal: 15 }}>
-          <DetailHeading label="About" />
+            <View style={{ ...styles.line, marginTop: 15 }} />
+            <View style={{ marginHorizontal: 15 }}>
+              <DetailHeading label="About" />
 
-          <ViewAbout data={data.description} />
+              <ViewAbout data={data.description} />
+            </View>
+            <View style={styles.line} />
+            <AddDetails label="Experience">
+              {data.experience?.map((exp) => (
+                <ExperienceDetails
+                  experience={exp}
+                  data={data}
+                  index={data.experience.indexOf(exp)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Academics">
+              {data.qualification?.map((qual) => (
+                <AcademicDetails
+                  academic={qual}
+                  data={data}
+                  index={data.qualification.indexOf(qual)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Skills">
+              {data.skills?.map((skill) => (
+                <SkillDetails
+                  skill={skill}
+                  data={data}
+                  index={data.skills.indexOf(skill)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Projects">
+              {data.projects?.map((project) => (
+                <ProjectDetails
+                  project={project}
+                  data={data}
+                  index={data.projects.indexOf(project)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Certifications">
+              {data.certifications?.map((certification) => (
+                <CertificationDetails
+                  certification={certification}
+                  data={data}
+                  index={data.certifications.indexOf(certification)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Publications">
+              {data.publications?.map((publication) => (
+                <PublicationDetails
+                  publication={publication}
+                  data={data}
+                  index={data.publications.indexOf(publication)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Patents">
+              {data.patents?.map((patent) => (
+                <PatentDetails
+                  patent={patent}
+                  data={data}
+                  index={data.patents.indexOf(patent)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails label="Achievements">
+              {data.achievements?.map((achievement) => (
+                <AchievementDetails
+                  achievement={achievement}
+                  data={data}
+                  index={data.achievements.indexOf(achievement)}
+                  viewing
+                />
+              ))}
+            </AddDetails>
+            <AddDetails isNotLine label="Social Links">
+              <SocialLinkDetails sociallinks={data.sociallinks} />
+            </AddDetails>
+          </ScrollView>
         </View>
-        <View style={styles.line} />
-        <AddDetails label="Experience">
-          {data.experience.map((exp) => (
-            <ExperienceDetails
-              experience={exp}
-              data={data}
-              index={data.experience.indexOf(exp)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Academics">
-          {data.qualification.map((qual) => (
-            <AcademicDetails
-              academic={qual}
-              data={data}
-              index={data.qualification.indexOf(qual)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Skills">
-          {data.skills.map((skill) => (
-            <SkillDetails
-              skill={skill}
-              data={data}
-              index={data.skills.indexOf(skill)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Projects">
-          {data.projects.map((project) => (
-            <ProjectDetails
-              project={project}
-              data={data}
-              index={data.projects.indexOf(project)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Certifications">
-          {data.certifications.map((certification) => (
-            <CertificationDetails
-              certification={certification}
-              data={data}
-              index={data.certifications.indexOf(certification)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Publications">
-          {data.publications.map((publication) => (
-            <PublicationDetails
-              publication={publication}
-              data={data}
-              index={data.publications.indexOf(publication)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Patents">
-          {data.patents.map((patent) => (
-            <PatentDetails
-              patent={patent}
-              data={data}
-              index={data.patents.indexOf(patent)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails label="Achievements">
-          {data.achievements.map((achievement) => (
-            <AchievementDetails
-              achievement={achievement}
-              data={data}
-              index={data.achievements.indexOf(achievement)}
-              viewing
-            />
-          ))}
-        </AddDetails>
-        <AddDetails isNotLine label="Social Links">
-          <SocialLinkDetails sociallinks={data.sociallinks} />
-        </AddDetails>
-      </ScrollView>
-    </View>
+      )}
+    </>
   );
 }
 

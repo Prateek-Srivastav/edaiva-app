@@ -134,7 +134,18 @@ function FilterModal(props) {
 
   const handleApply = async () => {
     top.value = withSpring(dimensions.height, SPRING_CONFIG);
+    if (
+      city === undefined &&
+      country === undefined &&
+      state === undefined &&
+      !selectedJobType &&
+      skillsItemArray.length === 0 &&
+      !experience
+    )
+      return sendFilters({});
+
     sendFilters(filters);
+    console.log(filters);
   };
 
   const FilterItem = (props) => {
@@ -412,14 +423,14 @@ function FilterModal(props) {
                 marginRight: 10,
               }}
               onPress={() => {
-                top.value = withSpring(dimensions.height, SPRING_CONFIG);
+                // top.value = withSpring(dimensions.height, SPRING_CONFIG);
                 setCity();
                 setCountry();
                 setState();
                 setSelectedJobType();
                 setExperience();
                 setSkillsItemArray([]);
-                sendFilters({});
+                // sendFilters({});
               }}
             />
 

@@ -74,11 +74,17 @@ const ApplicationItemCard = (props) => {
   };
 
   const revokeHandler = async () => {
+    setVisible(false);
     await revokeApplication(props.applicationId);
     if (error)
       return Toast.show({
         type: "appError",
         text1: "Something went wrong",
+      });
+    else if (networkError)
+      return Toast.show({
+        type: "appError",
+        text1: "Connection Lost!",
       });
     else if (loading)
       return Toast.show({
@@ -89,7 +95,6 @@ const ApplicationItemCard = (props) => {
       type: "appInfo",
       text1: "Application revoked!",
     });
-    setVisible(false);
     sendRevoked(true);
   };
 

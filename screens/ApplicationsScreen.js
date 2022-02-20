@@ -48,9 +48,9 @@ function ApplicationsScreen({ navigation }) {
   if (loading) return <Loading />;
 
   if (networkError && !loading)
-    return <NetworkError onPress={loadApplications} />;
+    return <NetworkError onPress={() => loadApplications()} />;
 
-  if (error) return <Error onPress={loadApplications} />;
+  if (error) return <Error onPress={() => loadApplications()} />;
 
   return (
     <View style={styles.container}>
@@ -84,7 +84,6 @@ function ApplicationsScreen({ navigation }) {
               companyName={company[0].name}
               location={location}
               appliedOn={formattedDate(itemData.item.date_applied.$date)}
-              // isApplied={itemData.job.company.item.applied}
               applicationStatus={itemData.item.status}
               isRevoked={getIsRevoked}
             />

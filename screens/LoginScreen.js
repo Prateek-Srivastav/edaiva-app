@@ -27,8 +27,8 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .required()
     .matches(
-      /^[A-Z](?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/,
-      "Password must contain an uppercase letter, an lowercase letter, a number, and a special character."
+      /^(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/,
+      "Password must contain an uppercase letter, a lowercase letter, a number, and a special character."
     )
     .label("Password"),
 });

@@ -13,6 +13,7 @@ import candidateApi from "../../api/candidate";
 import useApi from "../../hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
 import cache from "../../utilities/cache";
+import { formattedDate, formattedNumericDate } from "../../utilities/date";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -37,8 +38,12 @@ function PersonalDetailsScreen({ data: profileData }) {
     email,
   } = profileData;
 
+  const { usFormat: usFormatDob } = formattedNumericDate(
+    profileData.dob?.$date
+  );
+
   const [dob, setDob] = useState(
-    profileData.dob?.$date !== "" ? profileData.dob?.$date : null
+    profileData.dob?.$date !== "" ? usFormatDob : null
   );
   const [state, setState] = useState(profileData.state);
   const [country, setCountry] = useState(profileData.country);

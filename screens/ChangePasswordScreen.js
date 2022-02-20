@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { Key } from "../assets/svg/icons";
 
@@ -9,7 +9,6 @@ import * as Yup from "yup";
 import PasswordUpdatedAlert from "./PasswordUpdatedAlert";
 import CustomHeader from "../components/CustomHeader";
 import userApi from "../api/user";
-import useApi from "../hooks/useApi";
 import Toast from "react-native-toast-message";
 
 const validationSchema = Yup.object().shape({
@@ -17,8 +16,8 @@ const validationSchema = Yup.object().shape({
   newPassword: Yup.string()
     .required()
     .matches(
-      /^[A-Z](?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/,
-      "Password must contain an uppercase letter, an lowercase letter, a number, and a special character."
+      /^(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/,
+      "Password must contain an uppercase letter, a lowercase letter, a number, and a special character."
     )
     .label("New Password"),
   confirmPassword: Yup.string()

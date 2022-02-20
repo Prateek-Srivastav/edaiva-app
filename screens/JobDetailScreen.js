@@ -73,6 +73,7 @@ function JobDetailScreen({ route, navigation }) {
   } = useApi(applicationApi.deleteApplication);
 
   const revokeHandler = async () => {
+    setVisible(false);
     await revokeApplication(applicationId);
     if (revokeError)
       return Toast.show({
@@ -90,7 +91,6 @@ function JobDetailScreen({ route, navigation }) {
         text1: "Connection Lost...",
       });
 
-    setVisible(false);
     Toast.show({
       type: "appInfo",
       text1: "Application revoked!",

@@ -130,7 +130,7 @@ function HomeScreen({ navigation }) {
             alignItems: "center",
             justifyContent: "center",
             marginHorizontal: 15,
-            marginVertical: 20,
+            marginTop: 20,
           }}
         >
           <TouchableOpacity
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
     paddingStart: 8,
     marginHorizontal: 15,
     paddingVertical: 5,
+    marginTop: 20,
   },
   filterIconContainer: {
     padding: 7,
