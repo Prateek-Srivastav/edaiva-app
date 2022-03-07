@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
-import * as OpenAnything from "react-native-openanything";
+import * as WebBrowser from "expo-web-browser";
 
 import AppText from "./AppText";
 import Colors from "../constants/Colors";
@@ -14,6 +14,7 @@ import {
   Privacy,
   Document,
   SignOut,
+  Campus,
 } from "../assets/svg/icons";
 import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
@@ -136,32 +137,43 @@ function CustomDrawer(props) {
       <AppText>{email}</AppText>
       <HorizontalLine marginTop={10} />
       <View style={styles.navigatorsContainer}>
-        <NavigatorButton
-          title="Profile"
-          icon={<Profile />}
-          onPress={() => props.navigation.navigate("ProfileStack")}
-        />
-        <NavigatorButton
-          title="Preference"
-          icon={<Preference />}
-          // onPress={() => props.navigation.navigate("Preference")}
-        />
-        <NavigatorButton
-          title="Wishlist"
-          icon={<Wishlist />}
-          onPress={() => props.navigation.navigate("WishlistStack")}
-        />
+        <View>
+          <NavigatorButton
+            title="Profile"
+            icon={<Profile />}
+            onPress={() => props.navigation.navigate("ProfileStack")}
+          />
+          <NavigatorButton
+            title="Campus"
+            icon={<Campus />}
+            onPress={() => props.navigation.navigate("CampusStack")}
+          />
+        </View>
+        <View>
+          <NavigatorButton
+            title="Preference"
+            icon={<Preference />}
+            // onPress={() => props.navigation.navigate("Preference")}
+          />
+          <NavigatorButton
+            title="Wishlist"
+            icon={<Wishlist />}
+            onPress={() => props.navigation.navigate("WishlistStack")}
+          />
+        </View>
       </View>
       <HorizontalLine />
       <AppText style={{ marginTop: 25 }}>HELP & INFO</AppText>
       <OtherInfosComponent
-        onPress={() => OpenAnything.Open("https://jobs.edaiva.com/contact")}
+        onPress={() =>
+          WebBrowser.openBrowserAsync("https://jobs.edaiva.com/contact")
+        }
         detail="Help Center"
         icon={<Help />}
       />
       <OtherInfosComponent
         onPress={() =>
-          OpenAnything.Open(
+          WebBrowser.openBrowserAsync(
             "https://jobs.edaiva.com/legal/terms-of-service/f3efcde4-5606-44ef-8e74-c9145dfe9b8d"
           )
         }
@@ -170,7 +182,7 @@ function CustomDrawer(props) {
       />
       <OtherInfosComponent
         onPress={() =>
-          OpenAnything.Open(
+          WebBrowser.openBrowserAsync(
             "https://jobs.edaiva.com/legal/privacy-policy/da0304c3-2554-48fd-b6a8-e41b5ec8ad5e"
           )
         }
@@ -213,10 +225,11 @@ const styles = StyleSheet.create({
   navigatorContainer: {
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
   },
   navigatorsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     marginVertical: 25,
   },
   navigatorText: {

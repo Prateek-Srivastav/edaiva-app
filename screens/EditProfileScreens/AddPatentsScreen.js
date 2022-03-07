@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as Yup from "yup";
 
 import {
   AppForm,
@@ -14,6 +15,13 @@ import locationApi from "../../api/location";
 import DatePicker from "../../components/DatePicker";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import useApi from "../../hooks/useApi";
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required().label("Title"),
+  link: Yup.string().url().label("Link"),
+  patent_no: Yup.string().required().label("Patent number"),
+  description: Yup.string().required().label("Description"),
+});
 
 const issueStatus = [
   { _id: 1, name: "Issued" },
@@ -103,6 +111,7 @@ function AddPatentsScreen({ data, index }) {
           patent_no: patent_no ? patent_no : "",
         }}
         onSubmit={index >= 0 ? handleEditSubmit : handleAddSubmit}
+        validationSchema={validationSchema}
       >
         <AppFormCardInput
           name="title"
@@ -141,7 +150,7 @@ function AddPatentsScreen({ data, index }) {
           onDateChange={(date, timestamp) => {
             setDate(timestamp);
           }}
-          value={date ? formattedNumericDate(date) : null}
+          value={date ? formattedNumericDate(date).usFormat : null}
         />
         <AppFormCardInput
           name="link"

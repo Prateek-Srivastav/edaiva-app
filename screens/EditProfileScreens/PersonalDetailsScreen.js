@@ -40,7 +40,7 @@ function PersonalDetailsScreen({ data: profileData }) {
 
   const { usFormat: usFormatDob } = formattedNumericDate(
     profileData.dob?.$date
-  );
+  ).usFormat;
 
   const [dob, setDob] = useState(
     profileData.dob?.$date !== "" ? usFormatDob : null

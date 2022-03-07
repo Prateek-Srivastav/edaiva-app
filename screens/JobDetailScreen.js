@@ -30,6 +30,7 @@ import applicationApi from "../api/application";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import useApi from "../hooks/useApi";
 import CustomAlert from "../components/CustomAlert";
+import campusJobsApi from "../api/campusApis/jobs";
 
 const { width, height } = Dimensions.get("window");
 
@@ -153,7 +154,11 @@ function JobDetailScreen({ route, navigation }) {
 
   const loadJobDetails = async (jobId) => {
     setLoading(true);
-    const response = await jobsApi.getJobDetails(jobId);
+    let response;
+
+    if (route.params.isCampus)
+      response = await campusJobsApi.getCampusJobDetails(jobId);
+    else response = await jobsApi.getJobDetails(jobId);
 
     if (!response.ok) {
       setLoading(false);
@@ -163,7 +168,8 @@ function JobDetailScreen({ route, navigation }) {
     }
     setNetworkError(false);
     setError(false);
-    setJobDetails(response.data);
+    if (route.params.isCampus) setJobDetails(response.data.job_detail);
+    else setJobDetails(response.data);
     setLoading(false);
   };
 
@@ -291,7 +297,7 @@ function JobDetailScreen({ route, navigation }) {
                 color: Colors.black,
               }}
             />
-            <View style={{ top: -50 }}>
+            <View>
               <AppText>Preferred Qualification</AppText>
               <RenderHtml
                 contentWidth={width}
@@ -306,19 +312,30 @@ function JobDetailScreen({ route, navigation }) {
                 }}
               />
             </View>
-            <View style={{ top: -100 }}>
+            <View>
               <AppText>Job Supplements</AppText>
               <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
               <AppText>Job Schedule</AppText>
-              <NormalText>{jobDetails.job_schedule[0].name}</NormalText>
+              <NormalText>
+                {jobDetails.job_schedule[0]
+                  ? jobDetails.job_schedule[0].name
+                  : jobDetails.job_schedule.name}
+              </NormalText>
               {!jobDetails.salary_undisclosed && jobDetails.salary && (
                 <>
                   <AppText>Salary</AppText>
-                  <NormalText>
-                    ₹{jobDetails.salary.salary_from} - ₹
-                    {jobDetails.salary.salary_to}{" "}
-                    {jobDetails.salary.salary_type}
-                  </NormalText>
+                  {jobDetails.salary.salary_from ? (
+                    <NormalText>
+                      ₹{jobDetails.salary.salary_from} - ₹
+                      {jobDetails.salary.salary_to}{" "}
+                      {jobDetails.salary.salary_type}
+                    </NormalText>
+                  ) : (
+                    <NormalText>
+                      ₹{jobDetails.salary.salary}{" "}
+                      {jobDetails.salary.salary_type}
+                    </NormalText>
+                  )}
                 </>
               )}
               <AppText>Remote</AppText>
@@ -470,28 +487,32 @@ function JobDetailScreen({ route, navigation }) {
                 // backgroundColor: "blue",
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 20,
-                }}
-              >
-                <View>
-                  <AppText style={{ marginBottom: 6 }}>Degree</AppText>
-                  {jobDetails.qualification.map((qual) => (
-                    <AppText style={styles.requirementText} key={qual._id}>
-                      {qual.name}
+              {jobDetails.qualification && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginBottom: 20,
+                  }}
+                >
+                  <View>
+                    <AppText style={{ marginBottom: 6 }}>Degree</AppText>
+                    {jobDetails.qualification.map((qual) => (
+                      <AppText style={styles.requirementText} key={qual._id}>
+                        {qual.name}
+                      </AppText>
+                    ))}
+                  </View>
+                  <View>
+                    <AppText style={{ marginBottom: 6 }}>
+                      Work Experience
                     </AppText>
-                  ))}
+                    <AppText style={styles.requirementText}>
+                      {jobDetails.job_exp_from}-{jobDetails.job_exp_to} Years
+                    </AppText>
+                  </View>
                 </View>
-                <View>
-                  <AppText style={{ marginBottom: 6 }}>Work Experience</AppText>
-                  <AppText style={styles.requirementText}>
-                    {jobDetails.job_exp_from}-{jobDetails.job_exp_to} Years
-                  </AppText>
-                </View>
-              </View>
+              )}
               <View>
                 <AppText style={{ marginBottom: 6 }}>Required skills</AppText>
                 <View

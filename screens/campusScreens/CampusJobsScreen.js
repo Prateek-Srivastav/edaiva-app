@@ -13,31 +13,32 @@ import {
 } from "react-native";
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 
-import AppModal from "../components/AppModal";
-import Colors from "../constants/Colors";
-import dummyData from "../dummyData.js/dataOriginal";
-import FilterModalContent from "../components/FilterModalContent";
-import jobsApi from "../api/jobs";
-import JobCard from "../components/JobCard";
-import AppText from "../components/AppText";
-import CustomButton from "../components/CustomButton";
-import CustomAlert from "../components/CustomAlert";
-import useApi from "../hooks/useApi";
-import { formattedDate } from "../utilities/date";
-import NetworkError from "../components/NetworkError";
-import Error from "../components/Error";
-import Loading from "../components/Loading";
+import AppModal from "../../components/AppModal";
+import Colors from "../../constants/Colors";
+import dummyData from "../../dummyData.js/dataOriginal";
+import FilterModalContent from "../../components/FilterModalContent";
+import jobsApi from "../../api/jobs";
+import JobCard from "../../components/JobCard";
+import AppText from "../../components/AppText";
+import CustomButton from "../../components/CustomButton";
+import CustomAlert from "../../components/CustomAlert";
+import useApi from "../../hooks/useApi";
+import { formattedDate } from "../../utilities/date";
+import NetworkError from "../../components/NetworkError";
+import Error from "../../components/Error";
+import Loading from "../../components/Loading";
 import { useIsFocused } from "@react-navigation/native";
-import interviewApi from "../api/interview";
-import candidateApi from "../api/candidate";
-import FilterModal from "../components/appmodals/FilterModal";
-import Card from "../components/Card";
-import formattedTime from "../utilities/time";
-import InterviewReminder from "../components/interview/InterviewReminder";
+import interviewApi from "../../api/interview";
+import candidateApi from "../../api/candidate";
+import FilterModal from "../../components/appmodals/FilterModal";
+import Card from "../../components/Card";
+import formattedTime from "../../utilities/time";
+import InterviewReminder from "../../components/interview/InterviewReminder";
+import campusJobsApi from "../../api/campusApis/jobs";
 
 const { width, height } = Dimensions.get("window");
 
-function HomeScreen({ navigation }) {
+function CampusJobsScreen({ navigation }) {
   const [isPressed, setIsPressed] = useState(false);
   const [interviews, setInterviews] = useState([]);
   const [filters, setFilters] = useState({});
@@ -53,7 +54,7 @@ function HomeScreen({ navigation }) {
     networkError,
     loading,
     request: loadJobs,
-  } = useApi(jobsApi.getJobs);
+  } = useApi(campusJobsApi.getCampusJobs);
 
   const {
     data: interviewData,
@@ -68,14 +69,14 @@ function HomeScreen({ navigation }) {
   let jobs;
 
   if (data) {
-    jobs = data.docs;
+    jobs = data;
   }
 
   useEffect(() => {
-    loadJobs({ sort: sortBy });
+    loadJobs();
     loadInterviews();
     loadProfile();
-  }, [isFocused, sortBy]);
+  }, [isFocused]);
 
   const getFilters = (appliedFilters) => {
     if (appliedFilters) setFilters(appliedFilters);
@@ -141,7 +142,7 @@ function HomeScreen({ navigation }) {
               source={
                 profileData && profileData.profilepicture
                   ? { uri: profileData.profilepicture }
-                  : require("../assets/dummyDP.png")
+                  : require("../../assets/dummyDP.png")
               }
               style={{ height: 35, width: 35 }}
             />
@@ -149,19 +150,18 @@ function HomeScreen({ navigation }) {
           <View style={styles.inputContainer}>
             <Feather name="search" size={24} color={Colors.primary} />
             <TextInput
-              style={{ flex: 1, marginLeft: 5 }}
+              style={{ marginLeft: 5, flex: 1 }}
               onChangeText={(text) => setKeyword(text)}
               onSubmitEditing={searchHandler}
             />
           </View>
-          <TouchableOpacity
-            style={styles.filterIconContainer}
-            onPress={() => {
-              setIsPressed(true);
-            }}
-          >
-            <Feather name="filter" size={23} color={Colors.primary} />
-          </TouchableOpacity>
+        </View>
+        <View style={{ width: "100%", paddingHorizontal: 15 }}>
+          <Image
+            source={require("../../assets/Campus.png")}
+            resizeMode="contain"
+            style={{ width: "100%", marginBottom: -35, marginTop: -25 }}
+          />
         </View>
         {loading || interviewLoading ? (
           <Loading />
@@ -177,106 +177,6 @@ function HomeScreen({ navigation }) {
                 )
                   <InterviewReminder interviewDetails={interviewDetails} />;
               })}
-            {filters && Object.keys(filters).length !== 0 && (
-              <View style={styles.filterContainer}>
-                <Text style={styles.greyText}>Filter</Text>
-                <View style={styles.line} />
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={[filters]}
-                  keyExtractor={(index) => index + Math.random()}
-                  renderItem={(itemData) => {
-                    return (
-                      <>
-                        {itemData.item.country && (
-                          <View style={styles.filterTextContainer}>
-                            <Text
-                              style={{
-                                ...styles.greyText,
-                                color: Colors.primary,
-                              }}
-                            >
-                              {itemData.item.country}
-                            </Text>
-                          </View>
-                        )}
-
-                        {itemData.item.city && (
-                          <View style={styles.filterTextContainer}>
-                            <Text
-                              style={{
-                                ...styles.greyText,
-                                color: Colors.primary,
-                              }}
-                            >
-                              {itemData.item.city}
-                            </Text>
-                          </View>
-                        )}
-                        {itemData.item.state && (
-                          <View style={styles.filterTextContainer}>
-                            <Text
-                              style={{
-                                ...styles.greyText,
-                                color: Colors.primary,
-                              }}
-                            >
-                              {itemData.item.state}
-                            </Text>
-                          </View>
-                        )}
-                        {itemData.item.experience && (
-                          <View style={styles.filterTextContainer}>
-                            <Text
-                              style={{
-                                ...styles.greyText,
-                                color: Colors.primary,
-                              }}
-                            >
-                              {itemData.item.experience}
-                            </Text>
-                          </View>
-                        )}
-                        {itemData.item.job_type && (
-                          <View style={styles.filterTextContainer}>
-                            <Text
-                              style={{
-                                ...styles.greyText,
-                                color: Colors.primary,
-                              }}
-                            >
-                              {itemData.item.job_type ===
-                              "6130bc87b8eb9a6797043297"
-                                ? "Internship"
-                                : itemData.item.job_type ===
-                                  "6130bc8cb8eb9a6797043298"
-                                ? "Full Time"
-                                : ""}
-                            </Text>
-                          </View>
-                        )}
-                        {itemData.item.skills?.length !== 0 &&
-                          itemData.item.skills?.map((item) => {
-                            return (
-                              <View style={styles.filterTextContainer}>
-                                <Text
-                                  style={{
-                                    ...styles.greyText,
-                                    color: Colors.primary,
-                                  }}
-                                >
-                                  {item}
-                                </Text>
-                              </View>
-                            );
-                          })}
-                      </>
-                    );
-                  }}
-                />
-              </View>
-            )}
 
             <View
               style={{
@@ -346,25 +246,28 @@ function HomeScreen({ navigation }) {
                   // const { city, state, country } =
                   //   itemData.item.job_location[0];
 
-                  const location = `${itemData.item.job_location[0]?.city}, ${itemData.item.job_location[0]?.state}, ${itemData.item.job_location[0]?.country}`;
+                  const location = `${itemData.item.campus_job_id.job_location[0]?.city}, ${itemData.item.campus_job_id.job_location[0]?.state}, ${itemData.item.campus_job_id.job_location[0]?.country}`;
 
                   return (
                     <JobCard
                       onPress={() =>
                         navigation.navigate("JobDetail", {
                           jobId: itemData.item._id,
-                          isApplied: itemData.item.applied.length !== 0,
-                          applicationId: itemData.item.applied[0]?._id,
+                          isApplied:
+                            itemData.item.application_status.length !== 0,
+                          applicationId:
+                            itemData.item.application_status[0]?._id,
                           location,
+                          isCampus: true,
                         })
                       }
-                      heading={itemData.item.job_title}
-                      companyName={itemData.item.company.name}
-                      jobType={itemData.item.job_type.name}
+                      heading={itemData.item.campus_job_id.job_title}
+                      companyName={itemData.item.campus_job_id.company_id.name}
+                      jobType={itemData.item.campus_job_id.job_type[0].name}
                       location={location}
-                      description={itemData.item.job_description}
-                      postedDate={formattedDate(itemData.item.created_on)}
-                      isApplied={itemData.item.applied}
+                      description={itemData.item.campus_job_id.job_description}
+                      postedDate={formattedDate(itemData.item.createdAt)}
+                      isApplied={itemData.item.application_status}
                     />
                   );
                 }}
@@ -453,8 +356,9 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "#FFFFFF",
     elevation: 3,
-    marginHorizontal: 10,
+    marginLeft: 10,
     borderRadius: 3,
+    // width: "100%",
   },
   line: {
     height: 27,
@@ -474,4 +378,4 @@ const styles = StyleSheet.create({
   panelHeader: { alignItems: "center" },
 });
 
-export default HomeScreen;
+export default CampusJobsScreen;

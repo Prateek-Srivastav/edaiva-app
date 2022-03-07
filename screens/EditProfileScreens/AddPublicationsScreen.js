@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as Yup from "yup";
 
 import {
   AppForm,
@@ -12,6 +13,13 @@ import candidateApi from "../../api/candidate";
 import DatePicker from "../../components/DatePicker";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import useApi from "../../hooks/useApi";
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required().label("Title"),
+  link: Yup.string().url().label("Link"),
+  description: Yup.string().required().label("Description"),
+  publisher: Yup.string().required().label("Publisher"),
+});
 
 function AddPublicationsScreen({ data, index }) {
   const navigation = useNavigation();
@@ -27,7 +35,6 @@ function AddPublicationsScreen({ data, index }) {
   }
 
   const [date, setDate] = useState(prevDate ? formattedDate(prevDate) : null);
-  const [dateError, setDateError] = useState(false);
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
@@ -71,6 +78,7 @@ function AddPublicationsScreen({ data, index }) {
           publisher: publisher ? publisher : "",
         }}
         onSubmit={index >= 0 ? handleEditSubmit : handleAddSubmit}
+        validationSchema={validationSchema}
       >
         <AppFormCardInput
           name="title"
@@ -91,7 +99,7 @@ function AddPublicationsScreen({ data, index }) {
           onDateChange={(date, timestamp) => {
             setDate(timestamp);
           }}
-          value={prevDate ? formattedNumericDate(prevDate) : null}
+          value={prevDate ? formattedNumericDate(prevDate).usFormat : null}
         />
         <AppFormCardInput
           name="link"

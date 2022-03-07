@@ -38,34 +38,6 @@ const leftHeader = () => {
   );
 };
 
-const rightLoginHeader = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity style={{ marginRight: 5 }}>
-      <AntDesign name="sharealt" size={23} color={Colors.primary} />
-    </TouchableOpacity>
-  );
-};
-
-// const rightRegisterHeader = () => {
-//   const navigation = useNavigation();
-
-//   return (
-//     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-//       <Text
-//         style={{
-//           fontFamily: "OpenSans-Medium",
-//           fontSize: 16,
-//           color: Colors.primary,
-//         }}
-//       >
-//         Login
-//       </Text>
-//     </TouchableOpacity>
-//   );
-// };
-
 const WishlistNavigator = () => (
   <Stack.Navigator
     screenOptions={{

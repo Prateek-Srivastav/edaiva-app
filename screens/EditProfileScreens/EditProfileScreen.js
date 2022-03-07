@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 
@@ -100,7 +100,6 @@ function EditProfileScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
-      base64: true,
     });
 
     if (!result.cancelled) {

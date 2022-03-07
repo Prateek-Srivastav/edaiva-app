@@ -166,7 +166,7 @@ function AddAcademicsScreen({ data, index }) {
               setStartDate(timestamp);
               setStartDateError(false);
             }}
-            value={startDate ? formattedNumericDate(startDate) : null}
+            value={startDate ? formattedNumericDate(startDate).usFormat : null}
           />
 
           <DatePicker
@@ -178,7 +178,7 @@ function AddAcademicsScreen({ data, index }) {
               setEndDate(timestamp);
             }}
             disabled={pursuing}
-            value={endDate ? formattedNumericDate(endDate) : null}
+            value={endDate ? formattedNumericDate(endDate).usFormat : null}
           />
         </View>
         <ErrorMessage error="Start date is required" visible={startDateError} />

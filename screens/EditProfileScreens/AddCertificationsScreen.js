@@ -19,7 +19,7 @@ import { formattedDate, formattedNumericDate } from "../../utilities/date";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().label("Title"),
-  link: Yup.string().label("Link"),
+  link: Yup.string().url().label("Link"),
   certificate_id: Yup.string().required().label("Certificate ID"),
   issued_by: Yup.string().required().label("Organization name"),
 });
@@ -122,7 +122,9 @@ function AddCertificationsScreen({ data, index }) {
               setIssuedDate(timestamp);
               setIssuedDateError(false);
             }}
-            value={issuedDate ? formattedNumericDate(issuedDate) : null}
+            value={
+              issuedDate ? formattedNumericDate(issuedDate).usFormat : null
+            }
           />
 
           <DatePicker
@@ -134,7 +136,7 @@ function AddCertificationsScreen({ data, index }) {
               setEndDate(timestamp);
             }}
             disabled={lifetimeValidity}
-            value={endDate ? formattedNumericDate(endDate) : null}
+            value={endDate ? formattedNumericDate(endDate).usFormat : null}
           />
         </View>
         <ErrorMessage

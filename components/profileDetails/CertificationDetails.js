@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as WebBrowser from "expo-web-browser";
 
 import { Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
@@ -77,7 +78,8 @@ function CertificationDetails({ data, certification, index, viewing }) {
       </View>
 
       {certification.link !== "" && (
-        <View
+        <TouchableOpacity
+          onPress={() => WebBrowser.openBrowserAsync(certification.link)}
           style={{
             flexDirection: "row",
             // justifyContent: "center",
@@ -88,7 +90,7 @@ function CertificationDetails({ data, certification, index, viewing }) {
           <SmallText style={{ color: Colors.primary }}>
             {certification.link}
           </SmallText>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );

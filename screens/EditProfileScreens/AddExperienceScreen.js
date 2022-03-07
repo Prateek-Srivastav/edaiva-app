@@ -151,7 +151,7 @@ function AddExperienceScreen({ data, index }) {
             onDateChange={(date, timestamp) => {
               setStartDate(timestamp);
             }}
-            value={startDate ? formattedNumericDate(startDate) : null}
+            value={startDate ? formattedNumericDate(startDate).usFormat : null}
           />
 
           <DatePicker
@@ -163,7 +163,7 @@ function AddExperienceScreen({ data, index }) {
               setEndDate(timestamp);
             }}
             disabled={present}
-            value={endDate ? formattedNumericDate(endDate) : null}
+            value={endDate ? formattedNumericDate(endDate).usFormat : null}
           />
         </View>
         <ErrorMessage error="Start date is required" visible={startDateError} />

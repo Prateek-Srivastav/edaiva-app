@@ -16,7 +16,7 @@ const googleLogin = (accessToken) =>
   client.get("user/callback/google-app", { access_token: accessToken });
 
 const linkedinLogin = (access_token) =>
-  client.get("user/callback/linkedin-app", { access_token });
+  client.get("user/login/linkedin", { access_token });
 
 export default {
   login,

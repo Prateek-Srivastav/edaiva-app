@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   ScrollView,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-// import * as Google from "expo-auth-session/providers/google";
+import * as Google from "expo-auth-session/providers/google";
 
 import authApi from "../api/auth";
 import AuthContext from "../auth/context";
@@ -16,46 +16,58 @@ import cache from "../utilities/cache";
 import Carousel from "../components/carousels/Carousel";
 import Colors from "../constants/Colors";
 import { carouselData } from "../dummyData.js/carouselData";
-import useApi from "../hooks/useApi";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 function WelcomeScreen({ navigation }) {
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   // webClientId:
-  //   //   "59459676087-8ob58ai85migig68pkfiqhg7m8r9s8tq.apps.googleusercontent.com",
-  //   expoClientId:
-  //     "652348070444-91kal7v5edkh5h1bq75t84qpetp1ko3u.apps.googleusercontent.com",
-  // });
-  // const authContext = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // const {
-  //   data,
-  //   error,
-  //   networkError,
-  //   loading,
-  //   request: googleLogin,
-  // } = useApi(authApi.googleLogin);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "652348070444-ugnvs7e9duc2b2sipm774gragfh4q4ag.apps.googleusercontent.com",
+    expoClientId:
+      "652348070444-91kal7v5edkh5h1bq75t84qpetp1ko3u.apps.googleusercontent.com",
+  });
 
-  // const handleGoogleAuth = async (authentication) => {
-  //   await googleLogin(authentication.accessToken);
-  //   const { access, refresh, email_verified, user } = data;
+  const authContext = useContext(AuthContext);
 
-  //   console.log(data);
+  const handleGoogleAuth = async (authentication) => {
+    setLoading(true);
+    const result = await authApi.googleLogin(authentication.accessToken);
+    if (!result.ok) {
+      setLoading(false);
 
-  //   if (!email_verified)
-  //     return navigation.navigate("CodeVerification", user.email);
+      setErrorMessage(result.data.detail);
+      Toast.show({
+        type: "appError",
+        text1: result.data.detail
+          ? result.data.detail
+          : "Something went wrong!",
+      });
 
-  //   authContext.setTokens({ access, refresh });
-  //   authStorage.storeToken(access, refresh);
-  //   cache.store("user", user);
-  // };
+      return setLoginFailed(true);
+    }
+    setLoading(false);
+    setLoginFailed(false);
 
-  // React.useEffect(() => {
-  //   if (response?.type === "success") {
-  //     const { authentication } = response;
-  //     handleGoogleAuth(authentication);
-  //   }
-  //   console.log(response);
-  // }, [response]);
+    const { access, refresh, email_verified, user } = result.data;
+
+    if (!email_verified)
+      return navigation.navigate("CodeVerification", { email: user.email });
+
+    authContext.setTokens({ access, refresh });
+    authStorage.storeToken(access, refresh);
+    cache.store("user", user);
+  };
+
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      handleGoogleAuth(authentication);
+    }
+    console.log(response);
+  }, [response]);
 
   return (
     <ScrollView
@@ -125,8 +137,8 @@ function WelcomeScreen({ navigation }) {
         <TouchableOpacity
           activeOpacity={0.5}
           style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
-          // disabled={!request}
-          // onPress={() => promptAsync()}
+          disabled={!request}
+          onPress={() => promptAsync()}
         >
           <Image
             source={require("../assets/google.png")}

@@ -81,7 +81,7 @@ function AddAchievementsScreen({ data, index }) {
           onDateChange={(date, timestamp) => {
             setDate(timestamp);
           }}
-          value={prevDate ? formattedNumericDate(prevDate) : null}
+          value={prevDate ? formattedNumericDate(prevDate).usFormat : null}
         />
         <ErrorMessage
           error="Date of achievement is required"

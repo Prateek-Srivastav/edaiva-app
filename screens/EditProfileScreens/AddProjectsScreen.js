@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
   title: Yup.string().required().label("Title"),
   role: Yup.string().label("Role"),
   description: Yup.string().required().label("Description"),
-  link: Yup.string().label("Link"),
+  link: Yup.string().url().label("Link"),
 });
 
 const teamSizes = [

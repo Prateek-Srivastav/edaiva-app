@@ -41,6 +41,10 @@ const ApplicationStatus = ({ applicationStatus }) => {
     bgColor = "rgba(241, 18, 18, 0.15)";
     primaryColor = "#F11212";
     text = "Rejected";
+  } else if (applicationStatus === "shortlisted") {
+    bgColor = "#CBF1FF4D";
+    primaryColor = Colors.primary;
+    text = "Shortlisted";
   }
 
   return (

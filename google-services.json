@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "645593097654",
+    "project_id": "edaivatest",
+    "storage_bucket": "edaivatest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645593097654:android:67db141fedcd1c06454d17",
+        "android_client_info": {
+          "package_name": "com.prateeksri.edaivajobsApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645593097654-202vv14mijj38g6tq0kv5sbmagfujj0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnoNQfZGpunR3faK27feYvG0Vm2hOcBgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645593097654-202vv14mijj38g6tq0kv5sbmagfujj0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

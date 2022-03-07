@@ -1,15 +1,13 @@
 import "react-native-gesture-handler";
-
+import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
-import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 import AuthNavigator from "./navigation/AuthNavigator";
-
 import HomeScreen from "./screens/HomeScreen";
 import JobsNavigator from "./navigation/JobsNavigator";
 import ProfileScreen from "./screens/ProfileScreen";
@@ -23,6 +21,8 @@ import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
 import refreshAccessToken from "./utilities/refreshAccessToken";
 import logger from "./utilities/logger";
+import CampusJobsScreen from "./screens/campusScreens/CampusJobsScreen";
+import { navigationRef } from "./navigation/rootNavigation";
 
 logger.start();
 
@@ -65,10 +65,11 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ tokens, setTokens }}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         {tokens ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
     </AuthContext.Provider>
+    // <CampusJobsScreen />
   );
 }

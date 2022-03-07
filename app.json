@@ -10,6 +10,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -22,6 +23,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.prateeksri.edaivajobsApp"
     },
     "web": {
@@ -39,6 +41,15 @@
           "config": {}
         }
       ]
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/edaiva_logo_edit-03.png",
+          "color": "#ffffff"
+        }
+      ]
+    ]
   }
 }

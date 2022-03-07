@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Feather, EvilIcons } from "@expo/vector-icons";
-import * as OpenAnything from "react-native-openanything";
+import * as WebBrowser from "expo-web-browser";
 
 import AppText from "../components/AppText";
 import Card from "../components/Card";
@@ -28,7 +28,7 @@ import CustomHeader from "../components/CustomHeader";
 
 const { width, height } = Dimensions.get("screen");
 
-function ApplicationStatusScreen({ route, navigation }) {
+function ApplicationStatusScreen({ route }) {
   const [showDetail, setShowDetail] = useState(1);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -233,7 +233,9 @@ function ApplicationStatusScreen({ route, navigation }) {
                   )}
                 </View>
                 <TouchableOpacity
-                  onPress={() => OpenAnything.Open(interview.interview_link)}
+                  onPress={() =>
+                    WebBrowser.openBrowserAsync(interview.interview_link)
+                  }
                   style={{
                     backgroundColor: Colors.primary,
                     width: "20%",
