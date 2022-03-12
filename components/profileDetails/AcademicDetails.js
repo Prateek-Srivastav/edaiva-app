@@ -17,7 +17,7 @@ const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
 );
 
-function AcademicDetails({ data, academic, index, viewing }) {
+function AcademicDetails({ data, academic, index, viewing, isCampus }) {
   const navigation = useNavigation();
   const [deleted, setDeleted] = useState(false);
 
@@ -53,6 +53,7 @@ function AcademicDetails({ data, academic, index, viewing }) {
                   component: "acad",
                   data: data,
                   index: index,
+                  isCampus,
                 })
               }
             >

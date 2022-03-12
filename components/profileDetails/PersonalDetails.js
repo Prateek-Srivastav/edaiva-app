@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Feather, AntDesign } from "@expo/vector-icons";
 
@@ -36,20 +36,21 @@ const DetailHeading = ({ label, onPress, viewing }) => (
   </View>
 );
 
-function PersonalDetails({ data, onPress, viewing }) {
-  const {
-    email,
-    mobile,
-    dob,
-    address1,
-    address2,
-    city,
-    state,
-    country,
-    pincode,
-  } = data;
+function PersonalDetails({ data, onPress, viewing, isCampus }) {
+  if (isCampus) {
+    var { email } = data;
+    var { address1, address2, city, country, state, mobile, pincode } =
+      data.profile;
+  } else {
+    var { address1, address2, city, country, state, mobile, pincode, email } =
+      data;
+  }
 
-  const { usFormat: usFormatDob } = formattedNumericDate(dob?.$date);
+  const { usFormat: usFormatDob } = formattedNumericDate(
+    isCampus ? data.profile.dob : data.dob?.$date
+  );
+
+  const [dob, setDob] = useState(usFormatDob);
 
   const address = `${address1 && address1 !== "" ? address1 + ", " : ""}${
     address2 !== "" && address2 ? address2 + ", " : ""
@@ -62,37 +63,51 @@ function PersonalDetails({ data, onPress, viewing }) {
   return (
     <View style={{ marginHorizontal: 15 }}>
       <DetailHeading
-        label="Personal Details"
+        label="PERSONAL DETAILS"
         onPress={onPress}
         viewing={viewing}
       />
-      {email && email !== "" ? (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <AppText>EMAIL:{"  "}</AppText>
-          <AppText style={{ color: Colors.black }}>{email} </AppText>
+      <View style={{ marginLeft: 7 }}>
+        {email && email !== "" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 6,
+            }}
+          >
+            <AppText>EMAIL:{"  "}</AppText>
+            <AppText style={{ color: Colors.black }}>{email} </AppText>
+          </View>
+        ) : null}
+        {mobile && mobile !== "" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 6,
+            }}
+          >
+            <AppText>PHONE:{"  "}</AppText>
+            <AppText style={{ color: Colors.black }}>{mobile} </AppText>
+          </View>
+        ) : null}
+        {dob && dob.$date !== "" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 6,
+            }}
+          >
+            <AppText>DATE OF BIRTH:{"  "}</AppText>
+            <AppText style={{ color: Colors.black }}>{usFormatDob} </AppText>
+          </View>
+        ) : null}
+        <View style={{ flexDirection: "row" }}>
+          <AppText>ADDRESS:{"  "}</AppText>
+          <AppText style={{ color: Colors.black, flex: 1 }}>{address}</AppText>
         </View>
-      ) : null}
-      {mobile && mobile !== "" ? (
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}
-        >
-          <AppText>PHONE:{"  "}</AppText>
-          <AppText style={{ color: Colors.black }}>{mobile} </AppText>
-        </View>
-      ) : null}
-      {dob && dob.$date !== "" ? (
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}
-        >
-          <AppText>DATE OF BIRTH:{"  "}</AppText>
-          <AppText style={{ color: Colors.black }}>{usFormatDob} </AppText>
-        </View>
-      ) : null}
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}
-      >
-        <AppText>ADDRESS:{"  "}</AppText>
-        <AppText style={{ color: Colors.black }}>{address}</AppText>
       </View>
     </View>
   );

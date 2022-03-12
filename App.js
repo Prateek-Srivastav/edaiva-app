@@ -8,21 +8,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 import AuthNavigator from "./navigation/AuthNavigator";
-import HomeScreen from "./screens/HomeScreen";
-import JobsNavigator from "./navigation/JobsNavigator";
-import ProfileScreen from "./screens/ProfileScreen";
-import ProfileNavigator from "./navigation/ProfileNavigator";
-import TabNavigator from "./navigation/TabNavigator";
 import AppNavigator from "./navigation/AppNavigator";
-import ApplicationStatusScreen from "./screens/ApplicationStatusScreen";
-import toastConfig from "./utilities/toastConfig";
-import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
 import refreshAccessToken from "./utilities/refreshAccessToken";
 import logger from "./utilities/logger";
-import CampusJobsScreen from "./screens/campusScreens/CampusJobsScreen";
 import { navigationRef } from "./navigation/rootNavigation";
+import toastConfig from "./utilities/toastConfig";
 
 logger.start();
 
@@ -44,7 +36,6 @@ export default function App() {
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
-
     if (!storedTokens.refreshToken) return;
     setTokens(storedTokens);
   };
@@ -70,6 +61,5 @@ export default function App() {
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
     </AuthContext.Provider>
-    // <CampusJobsScreen />
   );
 }

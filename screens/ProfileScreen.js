@@ -15,6 +15,7 @@ import { useIsFocused } from "@react-navigation/native";
 import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
+import campusCandidateApi from "../api/campusApis/candidate";
 import Card from "../components/Card";
 import Colors from "../constants/Colors";
 import CustomAlert from "../components/CustomAlert";
@@ -42,6 +43,14 @@ function ProfileScreen({ navigation }) {
 
   const isFocused = useIsFocused();
 
+  const {
+    data: campusProfileData,
+    // error,
+    // networkError,
+    // loading,
+    request: loadCampusProfile,
+  } = useApi(campusCandidateApi.getProfile);
+
   const NormalText = (props) => (
     <Text style={styles.normalText}>{props.children}</Text>
   );
@@ -67,6 +76,8 @@ function ProfileScreen({ navigation }) {
 
   useEffect(async () => {
     await loadProfile();
+    loadCampusProfile();
+
     const userDetail = await cache.get("user");
     setApplications(await cache.get("applications"));
     setUser(userDetail);
@@ -292,7 +303,14 @@ function ProfileScreen({ navigation }) {
                   alignItems: "center",
                 }}
                 touchable
-                onPress={() => navigation.navigate("EditProfile")}
+                onPress={() =>
+                  navigation.navigate(
+                    campusProfileData?.detail ===
+                      "Your are not a part of any institution !"
+                      ? "EditProfile"
+                      : "CampusEditProfile"
+                  )
+                }
               >
                 <FontAwesome
                   name="edit"

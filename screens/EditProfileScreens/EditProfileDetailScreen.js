@@ -22,9 +22,13 @@ function EditProfileDetailScreen({ route, navigation }) {
   let renderScreen;
   let screenName;
 
+  console.log(route.params.isCampus, "isCampusssssssss");
+
   if (component === "personal") {
     screenName = "Personal Details";
-    renderScreen = <PersonalDetailsScreen data={data} />;
+    renderScreen = (
+      <PersonalDetailsScreen data={data} isCampus={route.params.isCampus} />
+    );
   } else if (component === "exp") {
     screenName = "Experience";
     renderScreen = <AddExperienceScreen data={data} index={index} />;
@@ -57,7 +61,7 @@ function EditProfileDetailScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <CustomHeader
-        backScreen="EditProfile"
+        backScreen={route.params.isCampus ? "CampusEditProfile" : "EditProfile"}
         navigation={navigation}
         screenName={(index >= 0 ? "Edit " : "Add ") + screenName}
       />

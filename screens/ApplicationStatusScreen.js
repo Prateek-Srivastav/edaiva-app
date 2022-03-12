@@ -52,11 +52,9 @@ function ApplicationStatusScreen({ route }) {
     request: loadInterviews,
   } = useApi(interviewApi.getApplicationInterviews);
 
-  const {
-    data: applicationData,
-
-    request: loadApplicationDetails,
-  } = useApi(applicationApi.getApplications);
+  const { data: applicationData, request: loadApplicationDetails } = useApi(
+    applicationApi.getApplications
+  );
 
   useEffect(() => {
     loadJobDetails(jobId);
@@ -172,7 +170,7 @@ function ApplicationStatusScreen({ route }) {
                     </AppText>
                   </View>
                   {interview.reschedule_requests.length !== 0 &&
-                  !interview.reschedule_requests[0].accepted ? (
+                  !interview.reschedule_requests[0]?.accepted ? (
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
@@ -183,7 +181,7 @@ function ApplicationStatusScreen({ route }) {
                         Your request to reschedule interview has been submitted.
                       </AppText>
                     </View>
-                  ) : interview.reschedule_requests[0].accepted ? (
+                  ) : interview.reschedule_requests[0]?.accepted ? (
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >

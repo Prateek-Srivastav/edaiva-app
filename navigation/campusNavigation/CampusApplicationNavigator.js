@@ -1,11 +1,10 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import ApplicationsScreen from "../../screens/ApplicationsScreen";
-import ApplicationStatusScreen from "../../screens/ApplicationStatusScreen";
 import Colors from "../../constants/Colors";
 import ApplicationStatusIndicator from "../../components/application/ApplicationStatusIndicator";
 import CampusApplicationsScreen from "../../screens/campusScreens/CampusApplicationsScreen";
+import CampusApplicationStatusScreen from "../../screens/campusScreens/CampusApplicationStatusScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,8 +23,8 @@ function CampusApplicationNavigator() {
     >
       <Stack.Screen name="Applications" component={CampusApplicationsScreen} />
       <Stack.Screen
-        name="ApplicationStatus"
-        component={ApplicationStatusScreen}
+        name="CampusApplicationStatus"
+        component={CampusApplicationStatusScreen}
         options={({ route }) => ({
           title: "",
           headerRight: () => {

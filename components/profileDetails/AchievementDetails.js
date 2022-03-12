@@ -17,7 +17,7 @@ const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
 );
 
-function AchievementDetails({ data, achievement, index, viewing }) {
+function AchievementDetails({ data, achievement, index, viewing, isCampus }) {
   const navigation = useNavigation();
   const [deleted, setDeleted] = useState(false);
 
@@ -49,6 +49,7 @@ function AchievementDetails({ data, achievement, index, viewing }) {
                   component: "achievements",
                   data: data,
                   index: index,
+                  isCampus,
                 })
               }
             >

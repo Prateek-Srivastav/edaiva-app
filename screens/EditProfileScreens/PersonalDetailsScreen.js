@@ -23,30 +23,39 @@ const validationSchema = Yup.object().shape({
   pincode: Yup.string().required().label("Pincode"),
 });
 
-function PersonalDetailsScreen({ data: profileData }) {
+function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const navigation = useNavigation();
 
-  const {
-    address1,
-    address2,
-    city,
-    designation,
-    mobile,
-    firstname,
-    lastname,
-    pincode,
-    email,
-  } = profileData;
+  if (isCampus) {
+    var { firstname, lastname } = profileData;
+
+    var { address1, address2, city, designation, mobile, pincode, email } =
+      profileData.profile;
+  } else {
+    var {
+      address1,
+      address2,
+      city,
+      designation,
+      mobile,
+      firstname,
+      lastname,
+      pincode,
+      email,
+    } = profileData;
+  }
 
   const { usFormat: usFormatDob } = formattedNumericDate(
-    profileData.dob?.$date
-  ).usFormat;
-
-  const [dob, setDob] = useState(
-    profileData.dob?.$date !== "" ? usFormatDob : null
+    isCampus ? profileData.profile.dob : profileData.dob?.$date
   );
-  const [state, setState] = useState(profileData.state);
-  const [country, setCountry] = useState(profileData.country);
+
+  const [dob, setDob] = useState(usFormatDob);
+  const [state, setState] = useState(
+    isCampus ? profileData.profile.state : profileData.state
+  );
+  const [country, setCountry] = useState(
+    isCampus ? profileData.profile.country : profileData.country
+  );
   const [phone, setPhone] = useState(mobile);
   const [phoneCode, setPhoneCode] = useState();
   const [phoneError, setPhoneError] = useState();
@@ -118,7 +127,10 @@ function PersonalDetailsScreen({ data: profileData }) {
       id: user.id,
     });
 
-    if (!profileData.user) {
+    if (
+      (isCampus && !profileData.profile.user) ||
+      (!isCampus && !profileData.user)
+    ) {
       console.log("abcd");
       createProfile(val);
     } else {
@@ -126,7 +138,7 @@ function PersonalDetailsScreen({ data: profileData }) {
       updateProfile(val);
     }
 
-    navigation.navigate("EditProfile");
+    navigation.goBack();
   };
 
   return (

@@ -24,7 +24,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.prateeksri.edaivajobsApp"
+      "package": "com.prateeksri.edaivajobsApp",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

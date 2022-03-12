@@ -3,9 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { TransitionPresets } from "@react-navigation/stack";
 
 import Colors from "../../constants/Colors";
-import NotificationsScreen from "../../screens/NotificationsScreen";
-import ApplicationStatusScreen from "../../screens/ApplicationStatusScreen";
 import ApplicationStatusIndicator from "../../components/application/ApplicationStatusIndicator";
+import CampusNotificationsScreen from "../../screens/campusScreens/CampusNotificationsScreen";
+import CampusApplicationStatusScreen from "../../screens/campusScreens/CampusApplicationStatusScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,14 +18,14 @@ const CampusNotificationsNavigator = () => {
     >
       <Stack.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={CampusNotificationsScreen}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="ApplicationStatus"
-        component={ApplicationStatusScreen}
+        name="CampusApplicationStatus"
+        component={CampusApplicationStatusScreen}
         options={({ route }) => ({
           title: "",
           headerTintColor: Colors.primary,

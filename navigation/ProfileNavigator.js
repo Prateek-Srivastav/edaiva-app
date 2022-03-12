@@ -13,6 +13,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreens/EditProfileScreen";
 import ViewProfileScreen from "../screens/ViewProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import CampusEditProfileScreen from "../screens/campusScreens/CampusEditProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,24 @@ const ProfileNavigator = () => (
     <Stack.Screen
       name="EditProfile"
       component={EditProfileScreen}
+      options={{
+        // headerRight: () => rightshareHeader(),
+        headerTitle: () => (
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              color: Colors.primary,
+              fontSize: 20,
+            }}
+          >
+            Edit Profile
+          </Text>
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="CampusEditProfile"
+      component={CampusEditProfileScreen}
       options={{
         // headerRight: () => rightshareHeader(),
         headerTitle: () => (

@@ -33,6 +33,10 @@ function ApplicationStatusIndicator({ applicationStatus }) {
     bgColor = "#FDFF9870";
     primaryColor = "#AEB11C";
     text = "In Review";
+  } else if (applicationStatus === "shortlisted") {
+    bgColor = "#CBF1FF4D";
+    primaryColor = Colors.primary;
+    text = "Shortlisted";
   }
 
   return (

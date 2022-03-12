@@ -11,6 +11,10 @@ import CampusNavigator from "./campusNavigation/CampusNavigator";
 import navigation from "./rootNavigation";
 import useApi from "../hooks/useApi";
 import expoNotificationsApi from "../api/expoNotifications";
+import logger from "../utilities/logger";
+import authStorage from "../auth/storage";
+import campusCandidateApi from "../api/campusApis/candidate";
+import Loading from "../components/Loading";
 
 const Drawer = createDrawerNavigator();
 
@@ -27,32 +31,47 @@ function AppNavigator() {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [tokens, setTokens] = useState();
+
+  const { data: campusProfileData, request: loadProfile } = useApi(
+    campusCandidateApi.getProfile
+  );
+
+  const restoreToken = async () => {
+    const storedTokens = await authStorage.getToken();
+    if (!storedTokens.refreshToken) return;
+    setTokens(storedTokens);
+  };
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
     );
+    loadProfile();
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    restoreToken();
+    if (tokens) {
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+        });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        navigation.navigate("ProfileStack");
-        console.log(response);
-      });
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          navigation.navigate("ProfileStack");
+          console.log(response);
+        });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
   }, []);
 
-  Notifications.addPushTokenListener;
+  // Notifications.addPushTokenListener;
 
   const {
     data,
@@ -79,16 +98,17 @@ function AppNavigator() {
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(token, "aaaaaaaa");
+      logger.log(token);
       sendPushToken({ expo_token: token });
 
-      if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
-          name: "default",
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#FF231F7C",
-        });
-      }
+      // if (Platform.OS === "android") {
+      //   Notifications.setNotificationChannelAsync("default", {
+      //     name: "default",
+      //     importance: Notifications.AndroidImportance.MAX,
+      //     vibrationPattern: [0, 250, 250, 250],
+      //     lightColor: "#FF231F7C",
+      //   });
+      // }
 
       return token;
     } catch (error) {
@@ -96,6 +116,22 @@ function AppNavigator() {
     }
   };
 
+  if (!campusProfileData) return <Loading />;
+  else if (
+    campusProfileData?.detail !== "Your are not a part of any institution !"
+  ) {
+    return (
+      <Drawer.Navigator
+        screenOptions={{ headerShown: false }}
+        drawerContent={(props) => <CustomDrawer {...props} />}
+      >
+        <Drawer.Screen name="CampusStack" component={CampusNavigator} />
+        <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
+        <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
+        <Drawer.Screen name="Home" component={TabNavigator} />
+      </Drawer.Navigator>
+    );
+  }
   return (
     <Drawer.Navigator
       screenOptions={{ headerShown: false }}

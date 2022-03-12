@@ -17,7 +17,7 @@ const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
 );
 
-function PatentDetails({ data, patent, index, viewing }) {
+function PatentDetails({ data, patent, index, viewing, isCampus }) {
   const navigation = useNavigation();
   const [deleted, setDeleted] = useState(false);
 
@@ -51,6 +51,7 @@ function PatentDetails({ data, patent, index, viewing }) {
                   component: "patents",
                   data: data,
                   index: index,
+                  isCampus,
                 })
               }
             >

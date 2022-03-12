@@ -11,7 +11,7 @@ import NetworkError from "../../components/NetworkError";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import cache from "../../utilities/cache";
-import campusApplication from "../../api/campusApis/application";
+import campusApi from "../../api/campusApis/application";
 
 function CampusApplicationsScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -22,7 +22,7 @@ function CampusApplicationsScreen({ navigation }) {
     networkError,
     loading,
     request: loadApplications,
-  } = useApi(campusApplication.getCampusApplications);
+  } = useApi(campusApi.getCampusApplications);
 
   let applications;
 
@@ -73,7 +73,7 @@ function CampusApplicationsScreen({ navigation }) {
           return (
             <ApplicationItemCard
               onPress={() =>
-                navigation.navigate("ApplicationStatus", {
+                navigation.navigate("CampusApplicationStatus", {
                   jobId: _id,
                   location,
                   applicationStatus: itemData.item.status,

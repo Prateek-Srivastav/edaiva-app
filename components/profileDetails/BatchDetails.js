@@ -7,61 +7,69 @@ import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
-import candidateApi from "../../api/candidate";
+import campusCandidateApi from "../../api/campusApis/candidate";
 
 const SmallText = (props) => (
   <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
 );
 
 const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
+  <Text style={{ ...styles.normalText, ...props.style }}>{props.children}</Text>
 );
 
-function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
-  const navigation = useNavigation();
-  const [deleted, setDeleted] = useState(false);
-
+function BatchDetails({ data, batchDetails, viewing }) {
   const {
     error,
     loading,
     request: updateProfile,
-  } = useApi(candidateApi.updateProfile);
-  //
+  } = useApi(campusCandidateApi.updateProfile);
 
-  const deleteHandler = () => {
-    const experience = data.experience;
-    experience.splice(index, 1);
-
-    updateProfile({ experience });
-    setDeleted(true);
-  };
-
-  return deleted ? null : (
+  return (
     <View style={styles.container}>
+      <NormalText style={{ color: Colors.primary, marginBottom: 10 }}>
+        BATCH
+      </NormalText>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <NormalText>{experience.role}</NormalText>
+        <NormalText>
+          {"  "}
+          {batchDetails.name} ({batchDetails.start_year} -{" "}
+          {batchDetails.end_year})
+        </NormalText>
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            // justifyContent: "center",
+            alignItems: "center",
+            marginTop: 7,
+          }}
+        >
+          <NormalText>
+            {"  "}Registration No.:{"  "}
+          </NormalText>
+          <SmallText>{data[0].registration_no}</SmallText>
+        </View>
         {!viewing && (
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               width: "15%",
+              marginStart: 20,
+              marginTop: 10,
             }}
           >
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("EditProfileDetail", {
-                  component: "exp",
-                  data: data,
-                  index: index,
-                  isCampus,
-                })
-              }
+            // onPress={() =>
+            //   navigation.navigate("EditProfileDetail", {
+            //     component: "exp",
+            //     data: data,
+            //     index: index,
+            //   })
+            // }
             >
               <Pencil />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={deleteHandler}>
-              <Trash />
             </TouchableOpacity>
           </View>
         )}
@@ -74,8 +82,10 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
           marginTop: 7,
         }}
       >
-        <BuildingIcon />
-        <SmallText>{experience.company}</SmallText>
+        <NormalText>
+          {"  "}Established on:{"  "}
+        </NormalText>
+        <SmallText>{formattedDate(batchDetails.createdAt)}</SmallText>
       </View>
       <View
         style={{
@@ -83,39 +93,33 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
           // justifyContent: "center",
           alignItems: "center",
           marginTop: 7,
-          marginBottom: 12,
         }}
       >
-        <MaterialIcons name="access-time" size={17} color="#817E7E" />
-        <SmallText>
-          {formattedDate(experience.start_date)} -{" "}
-          {experience.present ? "Present" : formattedDate(experience.end_date)}
-        </SmallText>
+        <NormalText>
+          {"  "}Description:{"  "}
+        </NormalText>
+        <SmallText>{batchDetails.description}</SmallText>
       </View>
-
-      <SmallText style={{ marginStart: 0 }}>
-        {experience.responsibilities}
-      </SmallText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
+    marginHorizontal: 15,
   },
 
   smallText: {
     fontFamily: "OpenSans-Regular",
     fontSize: 15,
     color: Colors.grey,
-    marginStart: 7,
+    // marginStart: 7,
   },
   normalText: {
     fontFamily: "OpenSans-Medium",
-    fontSize: 16,
+    fontSize: 15.5,
     color: Colors.grey,
   },
 });
 
-export default ExperienceDetails;
+export default BatchDetails;

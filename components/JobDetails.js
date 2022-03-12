@@ -30,7 +30,7 @@ const NormalText = ({ children }) => (
   </Text>
 );
 
-function JobDetails({ data: jobDetails }) {
+function JobDetails({ data: jobDetails, isCampus }) {
   const [showDetail, setShowDetail] = useState(1);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -125,19 +125,45 @@ function JobDetails({ data: jobDetails }) {
             <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
             <AppText>Job Schedule</AppText>
             <NormalText>{jobDetails.job_schedule[0].name}</NormalText>
-            {!jobDetails.salary_undisclosed && jobDetails.salary && (
+            {isCampus
+              ? !jobDetails.salary_undisclosed &&
+                jobDetails.salary && (
+                  <>
+                    <AppText>Salary</AppText>
+                    <NormalText>
+                      ₹{jobDetails.salary.salary_from}{" "}
+                      {jobDetails.salary.salary_type}
+                    </NormalText>
+                  </>
+                )
+              : !jobDetails.salary_undisclosed &&
+                jobDetails.salary && (
+                  <>
+                    <AppText>Salary</AppText>
+                    <NormalText>
+                      ₹{jobDetails.salary.salary_from} - ₹
+                      {jobDetails.salary.salary_to}{" "}
+                      {jobDetails.salary.salary_type}
+                    </NormalText>
+                  </>
+                )}
+            {isCampus ? (
               <>
-                <AppText>Salary</AppText>
-                <NormalText>
-                  ₹{jobDetails.salary.salary_from} - ₹
-                  {jobDetails.salary.salary_to} {jobDetails.salary.salary_type}
-                </NormalText>
+                <AppText>Remote</AppText>
+                <NormalText>{jobDetails.job_remote[0]?.name}</NormalText>
+              </>
+            ) : (
+              <>
+                <AppText>Remote</AppText>
+                <NormalText>{jobDetails.job_remote.name}</NormalText>
               </>
             )}
-            <AppText>Remote</AppText>
-            <NormalText>{jobDetails.job_remote.name}</NormalText>
-            <AppText>Open Positions</AppText>
-            <NormalText>{jobDetails.no_of_vacancy}</NormalText>
+            {!isCampus && jobDetails.no_of_vacancy !== "" && (
+              <>
+                <AppText>Open Positions</AppText>
+                <NormalText>{jobDetails.no_of_vacancy}</NormalText>
+              </>
+            )}
           </>
         )}
       </View>
@@ -191,28 +217,35 @@ function JobDetails({ data: jobDetails }) {
                 // backgroundColor: "blue",
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 20,
-                }}
-              >
-                <View>
-                  <AppText style={{ marginBottom: 6 }}>Degree</AppText>
-                  {jobDetails.qualification.map((qual) => (
-                    <AppText style={styles.requirementText} key={qual._id}>
-                      {qual.name}
-                    </AppText>
-                  ))}
+              {!isCampus && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginBottom: 20,
+                  }}
+                >
+                  <>
+                    <View>
+                      <AppText style={{ marginBottom: 6 }}>Degree</AppText>
+                      {jobDetails.qualification?.map((qual) => (
+                        <AppText style={styles.requirementText} key={qual._id}>
+                          {qual.name}
+                        </AppText>
+                      ))}
+                    </View>
+
+                    <View>
+                      <AppText style={{ marginBottom: 6 }}>
+                        Work Experience
+                      </AppText>
+                      <AppText style={styles.requirementText}>
+                        {jobDetails.job_exp_from}-{jobDetails.job_exp_to} Years
+                      </AppText>
+                    </View>
+                  </>
                 </View>
-                <View>
-                  <AppText style={{ marginBottom: 6 }}>Work Experience</AppText>
-                  <AppText style={styles.requirementText}>
-                    {jobDetails.job_exp_from}-{jobDetails.job_exp_to} Years
-                  </AppText>
-                </View>
-              </View>
+              )}
               <View>
                 <AppText style={{ marginBottom: 6 }}>Required skills</AppText>
                 <View

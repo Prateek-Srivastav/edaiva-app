@@ -81,7 +81,7 @@ function CampusNavigator({ route }) {
   const getTabBarVisibility = (route) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
 
-    if (routeName === "JobDetail" || routeName === "ApplicationStatus")
+    if (routeName === "JobDetail" || routeName === "CampusApplicationStatus")
       return "none";
 
     return "flex";
