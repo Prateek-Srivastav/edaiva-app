@@ -15,6 +15,7 @@ import logger from "../utilities/logger";
 import authStorage from "../auth/storage";
 import campusCandidateApi from "../api/campusApis/candidate";
 import Loading from "../components/Loading";
+import CampusSelectionScreen from "../screens/campusScreens/CampusSelectionScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -33,7 +34,7 @@ function AppNavigator() {
   const responseListener = useRef();
   const [tokens, setTokens] = useState();
 
-  const { data: campusProfileData, request: loadProfile } = useApi(
+  const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
   );
 
@@ -47,7 +48,7 @@ function AppNavigator() {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
     );
-    loadProfile();
+    loadCampusProfile();
 
     restoreToken();
     if (tokens) {
@@ -141,6 +142,7 @@ function AppNavigator() {
       <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
+      <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />
     </Drawer.Navigator>
   );
 }

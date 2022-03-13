@@ -85,7 +85,7 @@ function AddExperienceScreen({ data, index }) {
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       job_type: jobType,
@@ -100,7 +100,7 @@ function AddExperienceScreen({ data, index }) {
     // const experience = [...data.experience.splice(index, 1, val)];
     const experience = data.experience;
     experience.splice(index, 1, val);
-    updateProfile({ experience });
+    await updateProfile({ experience });
     navigation.goBack();
   };
 

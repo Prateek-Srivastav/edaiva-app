@@ -29,11 +29,11 @@ function SkillDetails({ data, skill, index, viewing, isCampus }) {
     request: updateProfile,
   } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const skills = data.skills;
     skills.splice(index, 1);
 
-    updateProfile({ skills });
+    await updateProfile({ skills });
     setDeleted(true);
   };
 

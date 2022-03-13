@@ -87,6 +87,10 @@ function ProfileScreen({ navigation }) {
     navigation.navigate("EditProfileDetail", {
       component: "personal",
       data: {},
+      isCampus:
+        campusProfileData?.detail === "Your are not a part of any institution !"
+          ? false
+          : true,
     });
 
     return null;
@@ -209,7 +213,12 @@ function ProfileScreen({ navigation }) {
     <>
       <CustomHeader
         navigation={navigation}
-        backScreen="Jobs"
+        backScreen={
+          campusProfileData?.detail ===
+          "Your are not a part of any institution !"
+            ? "Jobs"
+            : "CampusJobs"
+        }
         screenName="Profile"
         isMenu
         onRightIconPress={() => setShowMenu(!showMenu)}
@@ -326,7 +335,20 @@ function ProfileScreen({ navigation }) {
                   width: "45%",
                 }}
                 touchable
-                onPress={() => navigation.navigate("ViewProfile")}
+                onPress={() =>
+                  navigation.navigate("ViewProfile", {
+                    isCampus:
+                      campusProfileData?.detail ===
+                      "Your are not a part of any institution !"
+                        ? false
+                        : true,
+                    cgpa: campusProfileData[0]?.cgpa,
+                    batchDetails: campusProfileData[0]?.batch_details[0],
+                    instituteDetails:
+                      campusProfileData[0]?.institution_details[0],
+                    registrationNum: campusProfileData[0].registration_no,
+                  })
+                }
               >
                 <SimpleLineIcons
                   name="share-alt"

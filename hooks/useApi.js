@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Toast from "react-native-toast-message";
 
 function useApi(apiFunc) {
   const [data, setData] = useState();
@@ -15,7 +16,11 @@ function useApi(apiFunc) {
       console.log(response, "res !ok");
       if (response.problem === "NETWORK_ERROR") {
         setLoading(false);
-        return setNetworkError(true);
+        setNetworkError(true);
+        return Toast.show({
+          type: "appError",
+          text1: "No internet connection!",
+        });
       } else if (response.data.code === "token_not_valid") {
         setLoading(false);
         console.log("token not valid");

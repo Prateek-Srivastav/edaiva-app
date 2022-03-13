@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import AppText from "../AppText";
 import Colors from "../../constants/Colors";
 
-function ViewAbout({ description }) {
+function ViewAbout({ data: description }) {
   let color;
   if (!description || description === "") color = Colors.grey;
   else color = Colors.black;

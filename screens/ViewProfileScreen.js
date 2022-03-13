@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
+import AppText from "../components/AppText";
 import cache from "../utilities/cache";
 import candidateApi from "../api/candidate";
 import Card from "../components/Card";
@@ -31,6 +32,8 @@ import AchievementDetails from "../components/profileDetails/AchievementDetails"
 import PublicationDetails from "../components/profileDetails/PublicationDetails";
 import PatentDetails from "../components/profileDetails/PatentDetails";
 import SocialLinkDetails from "../components/profileDetails/SocialLinkDetails";
+import BatchDetails from "../components/profileDetails/BatchDetails";
+import InstituteDetails from "../components/profileDetails/InstituteDetails";
 
 const { width, height } = Dimensions.get("window");
 
@@ -46,7 +49,7 @@ const LargeText = (props) => (
   <Text style={styles.largeText}>{props.children}</Text>
 );
 
-function ViewProfileScreen({ navigation }) {
+function ViewProfileScreen({ navigation, route }) {
   const [user, setUser] = useState({});
   const [about, setAbout] = useState();
   const [profilePicture, setProfilePicture] = useState();
@@ -168,10 +171,34 @@ function ViewProfileScreen({ navigation }) {
 
             <View style={{ ...styles.line, marginTop: 15 }} />
             <View style={{ marginHorizontal: 15 }}>
-              <DetailHeading label="About" />
-
+              <DetailHeading label="ABOUT" />
               <ViewAbout data={data.description} />
             </View>
+            <View style={styles.line} />
+
+            <View style={{ marginHorizontal: 15 }}>
+              <DetailHeading label="CGPA" />
+              {route.params.isCampus && (
+                <View style={{ flexDirection: "row" }}>
+                  <AppText>
+                    {"  "}Current CGPA:{"  "}
+                  </AppText>
+                  <AppText style={{ color: Colors.black }}>
+                    {route.params.cgpa}
+                  </AppText>
+                </View>
+              )}
+            </View>
+            <View style={styles.line} />
+            <BatchDetails
+              batchDetails={route.params.batchDetails}
+              data={[{ registration_no: route.params.registrationNum }]}
+              viewing
+            />
+            <View style={styles.line} />
+            <InstituteDetails
+              instituteDetails={route.params.instituteDetails}
+            />
             <View style={styles.line} />
             <AddDetails label="Experience">
               {data.experience?.map((exp) => (

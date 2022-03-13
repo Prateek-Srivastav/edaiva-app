@@ -194,7 +194,7 @@ function JobDetailScreen({ route, navigation }) {
 
     if (!wl) wl = [];
 
-    cache.store("wishlist", [
+    await cache.store("wishlist", [
       ...wl,
       {
         title: jobDetails.job_title,
@@ -214,7 +214,7 @@ function JobDetailScreen({ route, navigation }) {
         return true;
       }
     });
-    cache.store("wishlist", [...wl]);
+    await cache.store("wishlist", [...wl]);
     setInWishlist(false);
   };
 
@@ -600,7 +600,7 @@ function JobDetailScreen({ route, navigation }) {
               color={Colors.primary}
             />
           </TouchableOpacity>
-        ) : (
+        ) : route.params.isCampus ? null : (
           <CustomButton
             icon={
               <Entypo name="squared-minus" size={24} color={Colors.primary} />

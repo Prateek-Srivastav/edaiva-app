@@ -63,7 +63,7 @@ function AddAcademicsScreen({ data, index }) {
     request: updateProfile,
   } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       degree,
@@ -83,11 +83,11 @@ function AddAcademicsScreen({ data, index }) {
       qualification = [val];
     }
 
-    updateProfile({ qualification });
+    await updateProfile({ qualification });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       degree,
@@ -102,7 +102,7 @@ function AddAcademicsScreen({ data, index }) {
     const qualification = data.qualification;
     qualification.splice(index, 1, val);
 
-    updateProfile({ qualification });
+    await updateProfile({ qualification });
     navigation.goBack();
   };
 

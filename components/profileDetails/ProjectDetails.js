@@ -23,11 +23,11 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const projects = data.projects;
     projects.splice(index, 1);
 
-    updateProfile({ projects });
+    await updateProfile({ projects });
     setDeleted(true);
   };
 

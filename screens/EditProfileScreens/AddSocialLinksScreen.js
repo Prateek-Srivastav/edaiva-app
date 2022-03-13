@@ -47,7 +47,7 @@ function AddSocialLinksScreen({ data }) {
     setValue(text);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     const val = {
       facebook: fb,
       github: gh,
@@ -56,7 +56,7 @@ function AddSocialLinksScreen({ data }) {
       twitter: twt,
     };
 
-    updateProfile({ sociallinks: val });
+    await updateProfile({ sociallinks: val });
 
     setValue("");
     setSelectedSocial(null);

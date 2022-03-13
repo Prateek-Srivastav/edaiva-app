@@ -22,10 +22,13 @@ import CampusNotificationsNavigator from "./CampusNotificationsNavigator";
 import applicationApi from "../../api/application";
 import useApi from "../../hooks/useApi";
 import { useIsFocused } from "@react-navigation/native";
+import campusCandidateApi from "../../api/campusApis/candidate";
+import { navigationRef } from "../rootNavigation";
+import CampusSelectionScreen from "../../screens/campusScreens/CampusSelectionScreen";
 
 const Tab = createBottomTabNavigator();
 
-function CampusNavigator({ route }) {
+function CampusNavigator({ route, navigation }) {
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
 
   const isFocused = useIsFocused();
@@ -38,20 +41,34 @@ function CampusNavigator({ route }) {
     request: loadApplications,
   } = useApi(applicationApi.getApplications);
 
+  // const { data: campusProfileData, request: loadCampusProfile } = useApi(
+  //   campusCandidateApi.getProfile
+  // );
+
   let applications;
 
   if (data) {
     applications = data;
   }
+
+  useEffect(() => {
+    loadApplications();
+    // loadCampusProfile();
+  }, [isFocused]);
+
+  // if (
+  //   campusProfileData?.detail !== "Your are not a part of any institution !"
+  // ) {
+  //   navigation.navigate("CampusSelection");
+  //   return null;
+  // }
+
   const notifications = applications?.filter(
     (application) =>
       application.status === "hired" ||
       application.status === "finalist" ||
       application.status === "interviewing"
   );
-  useEffect(() => {
-    loadApplications();
-  }, [isFocused]);
 
   const { width, height } = Dimensions.get("window");
   const [position] = useState(new Animated.ValueXY());

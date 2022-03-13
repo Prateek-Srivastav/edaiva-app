@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Toast } from "react-native-toast-message";
 
 import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
@@ -21,14 +22,20 @@ function AchievementDetails({ data, achievement, index, viewing, isCampus }) {
   const navigation = useNavigation();
   const [deleted, setDeleted] = useState(false);
 
-  const { request: updateProfile } = useApi(candidateApi.updateProfile);
+  const {
+    error,
+    loading,
+    networkError,
+    request: updateProfile,
+  } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const achievements = data.achievements;
     achievements.splice(index, 1);
 
-    updateProfile({ achievements });
-    setDeleted(true);
+    await updateProfile({ achievements });
+
+    if (!loading && !error && !networkError) setDeleted(true);
   };
 
   return deleted ? null : (

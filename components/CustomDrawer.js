@@ -21,6 +21,8 @@ import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import CustomAlert from "./CustomAlert";
 import CustomButton from "./CustomButton";
+import useApi from "../hooks/useApi";
+import campusCandidateApi from "../api/campusApis/candidate";
 
 const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
@@ -61,6 +63,10 @@ function CustomDrawer(props) {
   const [user, setUser] = useState({});
   const [visible, setVisible] = useState(false);
 
+  const { data: campusProfileData, request: loadProfile } = useApi(
+    campusCandidateApi.getProfile
+  );
+
   const getUser = async () => {
     const data = await cache.get("user");
     setUser(data);
@@ -68,6 +74,7 @@ function CustomDrawer(props) {
 
   useEffect(() => {
     getUser();
+    loadProfile();
   }, []);
 
   const { firstname, lastname, email } = user;
@@ -144,9 +151,24 @@ function CustomDrawer(props) {
             onPress={() => props.navigation.navigate("ProfileStack")}
           />
           <NavigatorButton
-            title="Campus"
+            title={
+              campusProfileData?.detail !==
+              "Your are not a part of any institution !"
+                ? "Jobs"
+                : "Campus"
+            }
             icon={<Campus />}
-            onPress={() => props.navigation.navigate("CampusStack")}
+            onPress={() =>
+              props.navigation.navigate(
+                campusProfileData?.detail !==
+                  "Your are not a part of any institution !"
+                  ? "Home"
+                  : campusProfileData?.detail ===
+                    "Your are not a part of any institution !"
+                  ? "CampusSelection"
+                  : "CampusStack"
+              )
+            }
           />
         </View>
         <View>

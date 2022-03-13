@@ -29,11 +29,11 @@ function CertificationDetails({
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const certifications = data.certifications;
     certifications.splice(index, 1);
 
-    updateProfile({ certifications });
+    await updateProfile({ certifications });
     setDeleted(true);
   };
 

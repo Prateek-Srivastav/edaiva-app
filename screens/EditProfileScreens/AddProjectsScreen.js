@@ -56,7 +56,7 @@ function AddProjectsScreen({ data, index }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       duration,
@@ -71,11 +71,11 @@ function AddProjectsScreen({ data, index }) {
       projects = [val];
     }
 
-    updateProfile({ projects });
+    await updateProfile({ projects });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       duration,
@@ -85,7 +85,7 @@ function AddProjectsScreen({ data, index }) {
     const projects = data.projects;
     projects.splice(index, 1, val);
 
-    updateProfile({ projects });
+    await updateProfile({ projects });
     navigation.goBack();
   };
 

@@ -15,6 +15,7 @@ import refreshAccessToken from "./utilities/refreshAccessToken";
 import logger from "./utilities/logger";
 import { navigationRef } from "./navigation/rootNavigation";
 import toastConfig from "./utilities/toastConfig";
+import CampusSelectionScreen from "./screens/campusScreens/CampusSelectionScreen";
 
 logger.start();
 
@@ -61,5 +62,6 @@ export default function App() {
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
     </AuthContext.Provider>
+    // <CampusSelectionScreen />
   );
 }

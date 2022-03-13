@@ -27,12 +27,12 @@ function AcademicDetails({ data, academic, index, viewing, isCampus }) {
     request: updateProfile,
   } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const academic = data.qualification;
     academic.splice(index, 1);
 
-    updateProfile({ qualification: academic });
-    setDeleted(true);
+    await updateProfile({ qualification: academic });
+    if (!loading && !error) setDeleted(true);
   };
 
   return deleted ? null : (

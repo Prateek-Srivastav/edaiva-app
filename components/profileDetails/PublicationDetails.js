@@ -23,11 +23,11 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const publications = data.publications;
     publications.splice(index, 1);
 
-    updateProfile({ publications });
+    await updateProfile({ publications });
     setDeleted(true);
   };
 

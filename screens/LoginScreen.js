@@ -60,7 +60,7 @@ function LoginScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
-    cache.store("user", user);
+    await cache.store("user", user);
   };
 
   // const {

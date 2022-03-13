@@ -26,12 +26,12 @@ const validationSchema = Yup.object().shape({
 function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const navigation = useNavigation();
 
-  if (isCampus) {
+  if (isCampus && profileData.profile) {
     var { firstname, lastname } = profileData;
 
-    var { address1, address2, city, designation, mobile, pincode, email } =
+    var { address1, address2, city, designation, mobile, pincode } =
       profileData.profile;
-  } else {
+  } else if (profileData) {
     var {
       address1,
       address2,
@@ -41,20 +41,26 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
       firstname,
       lastname,
       pincode,
-      email,
     } = profileData;
   }
 
+  const getUser = async () => {
+    const user = await cache.get("user");
+    return setUser(user);
+  };
+
   const { usFormat: usFormatDob } = formattedNumericDate(
-    isCampus ? profileData.profile.dob : profileData.dob?.$date
+    isCampus ? profileData.profile?.dob : profileData.dob?.$date
   );
 
-  const [dob, setDob] = useState(usFormatDob);
+  const [dob, setDob] = useState(
+    usFormatDob !== "NaN-NaN-NaN" ? usFormatDob : null
+  );
   const [state, setState] = useState(
-    isCampus ? profileData.profile.state : profileData.state
+    isCampus ? profileData.profile?.state : profileData.state
   );
   const [country, setCountry] = useState(
-    isCampus ? profileData.profile.country : profileData.country
+    isCampus ? profileData.profile?.country : profileData.country
   );
   const [phone, setPhone] = useState(mobile);
   const [phoneCode, setPhoneCode] = useState();
@@ -62,6 +68,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const [countryError, setCountryError] = useState();
   const [stateError, setStateError] = useState();
   const [dobError, setDobError] = useState();
+  const [user, setUser] = useState();
 
   const {
     data: countries,
@@ -93,8 +100,10 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     request: createProfile,
   } = useApi(candidateApi.createProfile);
 
-  useEffect(async () => {
+  useEffect(() => {
     loadCountries();
+    getUser();
+
     if (country) loadStates(country);
   }, []);
 
@@ -114,31 +123,29 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     else if (phone === "" || phone.length < 10) return setPhoneError(true);
 
     updateUser({
-      firstname: values.firstname,
-      lastname: values.lastname,
+      firstname: values.firstname !== "" ? values.firstname : user.firstname,
+      lastname: values.lastname !== "" ? values.lastname : user.lastname,
     });
 
-    const user = await cache.get("user");
-
-    cache.store("user", {
-      firstname: values.firstname,
-      lastname: values.lastname,
-      email,
+    await cache.store("user", {
+      firstname: values.firstname !== "" ? values.firstname : user.firstname,
+      lastname: values.lastname !== "" ? values.lastname : user.lastname,
+      email: user.email,
       id: user.id,
     });
 
     if (
-      (isCampus && !profileData.profile.user) ||
+      (isCampus && !profileData.profile?.user) ||
       (!isCampus && !profileData.user)
     ) {
       console.log("abcd");
-      createProfile(val);
+      await createProfile(val);
+      return navigation.navigate("ProfileStack");
     } else {
       console.log("efgh");
-      updateProfile(val);
+      await updateProfile(val);
+      return navigation.goBack();
     }
-
-    navigation.goBack();
   };
 
   return (
@@ -162,12 +169,12 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
         // validationSchema={validationSchema}
       >
         <AppFormCardInput
-          defaultValue={firstname !== "" ? firstname : ""}
+          defaultValue={firstname ? firstname : user?.firstname}
           name="firstname"
           label="FIRST NAME"
         />
         <AppFormCardInput
-          defaultValue={lastname !== "" ? lastname : ""}
+          defaultValue={lastname ? lastname : user?.lastname}
           name="lastname"
           label="LAST NAME"
         />
@@ -253,7 +260,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
           error="Enter a valid phone number."
           visible={phoneError}
         />
-        <SubmitButton title="Save" />
+        <SubmitButton disabled={loading} title="Save" />
       </AppForm>
     </ScrollView>
   );

@@ -64,7 +64,7 @@ function AddPatentsScreen({ data, index }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       issue_date: date,
@@ -79,11 +79,11 @@ function AddPatentsScreen({ data, index }) {
     } else if (!data.patents) {
       patents = [val];
     }
-    updateProfile({ patents });
+    await updateProfile({ patents });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       issue_date: date,
@@ -94,7 +94,7 @@ function AddPatentsScreen({ data, index }) {
     const patents = data.patents;
     patents.splice(index, 1, val);
 
-    updateProfile({ patents });
+    await updateProfile({ patents });
     navigation.goBack();
   };
 

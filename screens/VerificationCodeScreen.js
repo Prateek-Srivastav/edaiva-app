@@ -95,7 +95,6 @@ function VerificationCodeScreen({ navigation, route }) {
     });
     console.log(result.data);
   };
-  const authContext = useContext(AuthContext);
 
   const verificationHandler = async (values) => {
     const otp = `${values.dig1}${values.dig2}${values.dig3}${values.dig4}${values.dig5}${values.dig6}`;
@@ -124,10 +123,10 @@ function VerificationCodeScreen({ navigation, route }) {
     });
 
     if (navigation.getState().routes[0].name === "Welcome") {
-      navigation.navigate("Login", {
-        email: route.params.email,
-        password: route.params.password,
-      });
+      // navigation.navigate("Login", {
+      //   email: route.params.email,
+      //   password: route.params.password,
+      // });
       const loginResult = await authApi.login(
         route.params.email,
         route.params.password
@@ -147,9 +146,10 @@ function VerificationCodeScreen({ navigation, route }) {
       if (!email_verified)
         return navigation.navigate("CodeVerification", email);
 
-      authContext.setTokens({ access, refresh });
+      // authContext.setTokens({ access, refresh });
       authStorage.storeToken(access, refresh);
-      cache.store("user", user);
+      await cache.store("user", user);
+      return navigation.navigate("CampusSelection", { access, refresh });
     } else navigation.navigate("NewPassword");
   };
 

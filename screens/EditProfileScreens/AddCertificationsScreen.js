@@ -53,7 +53,7 @@ function AddCertificationsScreen({ data, index }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       lifetimeValidity,
@@ -69,11 +69,11 @@ function AddCertificationsScreen({ data, index }) {
       certifications = [val];
     }
 
-    updateProfile({ certifications });
+    await updateProfile({ certifications });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       lifetimeValidity,
@@ -84,7 +84,7 @@ function AddCertificationsScreen({ data, index }) {
     const certifications = data.certifications;
     certifications.splice(index, 1, val);
 
-    updateProfile({ certifications });
+    await updateProfile({ certifications });
     navigation.goBack();
   };
 

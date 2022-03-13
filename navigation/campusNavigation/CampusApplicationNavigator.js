@@ -5,6 +5,7 @@ import Colors from "../../constants/Colors";
 import ApplicationStatusIndicator from "../../components/application/ApplicationStatusIndicator";
 import CampusApplicationsScreen from "../../screens/campusScreens/CampusApplicationsScreen";
 import CampusApplicationStatusScreen from "../../screens/campusScreens/CampusApplicationStatusScreen";
+import CampusSelectionScreen from "../../screens/campusScreens/CampusSelectionScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +22,11 @@ function CampusApplicationNavigator() {
         headerTintColor: Colors.primary,
       }}
     >
-      <Stack.Screen name="Applications" component={CampusApplicationsScreen} />
+      <Stack.Screen
+        name="CampusApplications"
+        component={CampusApplicationsScreen}
+      />
+      <Stack.Screen name="CampusSelection" component={CampusSelectionScreen} />
       <Stack.Screen
         name="CampusApplicationStatus"
         component={CampusApplicationStatusScreen}

@@ -38,7 +38,7 @@ function AddPublicationsScreen({ data, index }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       date,
@@ -48,11 +48,11 @@ function AddPublicationsScreen({ data, index }) {
     if (data.publications) publications = [...data.publications, val];
     else if (!data.publications) publications = [val];
 
-    updateProfile({ publications });
+    await updateProfile({ publications });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       date,
@@ -61,7 +61,7 @@ function AddPublicationsScreen({ data, index }) {
     const publications = data.publications;
     publications.splice(index, 1, val);
 
-    updateProfile({ publications });
+    await updateProfile({ publications });
     navigation.goBack();
   };
 

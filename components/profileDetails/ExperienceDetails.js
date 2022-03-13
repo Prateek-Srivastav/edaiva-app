@@ -26,14 +26,13 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
     loading,
     request: updateProfile,
   } = useApi(candidateApi.updateProfile);
-  //
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const experience = data.experience;
     experience.splice(index, 1);
 
-    updateProfile({ experience });
-    setDeleted(true);
+    await updateProfile({ experience });
+    if (!loading && !error) setDeleted(true);
   };
 
   return deleted ? null : (

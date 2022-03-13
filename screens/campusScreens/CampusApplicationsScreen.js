@@ -30,6 +30,9 @@ function CampusApplicationsScreen({ navigation }) {
     applications = data;
   }
 
+  if (data?.detail === "Your are not a part of any institution !")
+    return navigation.navigate("CampusSelection");
+
   const numOfApplications = async () => {
     await cache.store("campusApplications", applications?.length);
   };
@@ -61,7 +64,7 @@ function CampusApplicationsScreen({ navigation }) {
           paddingBottom: 20,
         }}
         data={applications}
-        keyExtractor={(item, index) => item._id.$oid}
+        keyExtractor={(item) => item._id}
         renderItem={(itemData) => {
           const { city, state, country } =
             itemData.item.campus_job_details.details.job_location[0];

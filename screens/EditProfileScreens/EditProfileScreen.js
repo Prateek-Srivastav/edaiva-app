@@ -127,8 +127,8 @@ function EditProfileScreen() {
 
   if (error) return <Error onPress={loadProfile} />;
 
-  const handleAboutSubmit = (text) => {
-    updateProfile({ description: about });
+  const handleAboutSubmit = async (text) => {
+    await updateProfile({ description: about });
     setAboutFocused(false);
   };
 

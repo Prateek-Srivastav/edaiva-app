@@ -25,7 +25,7 @@ function AddAchievementsScreen({ data, index }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const handleAddSubmit = (values) => {
+  const handleAddSubmit = async (values) => {
     const val = {
       ...values,
       date,
@@ -39,11 +39,11 @@ function AddAchievementsScreen({ data, index }) {
       achievements = [val];
     }
 
-    updateProfile({ achievements });
+    await updateProfile({ achievements });
     navigation.goBack();
   };
 
-  const handleEditSubmit = (values) => {
+  const handleEditSubmit = async (values) => {
     const val = {
       ...values,
       date,
@@ -52,7 +52,7 @@ function AddAchievementsScreen({ data, index }) {
     const achievements = data.achievements;
     achievements.splice(index, 1, val);
 
-    updateProfile({ achievements });
+    await updateProfile({ achievements });
     navigation.goBack();
   };
 

@@ -23,11 +23,11 @@ function PatentDetails({ data, patent, index, viewing, isCampus }) {
 
   const { request: updateProfile } = useApi(candidateApi.updateProfile);
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
     const patents = data.patents;
     patents.splice(index, 1);
 
-    updateProfile({ patents });
+    await updateProfile({ patents });
     setDeleted(true);
   };
 

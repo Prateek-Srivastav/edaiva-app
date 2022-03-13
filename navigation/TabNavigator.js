@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Animated, Dimensions, Text, View } from "react-native";
+import { Animated, Dimensions, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import JobsNavigator from "./JobsNavigator";
-import NotificationsScreen from "../screens/NotificationsScreen";
-import ApplicationsScreen from "../screens/ApplicationsScreen";
 import Colors from "../constants/Colors";
 import ApplicationNavigator from "./ApplicationNavigator";
 import {
