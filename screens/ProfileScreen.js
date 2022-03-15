@@ -28,6 +28,7 @@ import useApi from "../hooks/useApi";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import CustomHeader from "../components/CustomHeader";
 import AppText from "../components/AppText";
+import PersonalDetailsScreen from "./EditProfileScreens/PersonalDetailsScreen";
 
 function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
@@ -84,16 +85,16 @@ function ProfileScreen({ navigation }) {
   }, [isFocused]);
 
   if (error && data.error === "Candidate Profile not found!!") {
-    navigation.navigate("EditProfileDetail", {
-      component: "personal",
-      data: {},
-      isCampus:
-        campusProfileData?.detail === "Your are not a part of any institution !"
-          ? false
-          : true,
-    });
+    //  navigation.navigate("EditProfileDetail", {
+    //   component: "personal",
+    //   data: {},
+    //   isCampus:
+    //     campusProfileData?.detail === "Your are not a part of any institution !"
+    //       ? false
+    //       : true,
+    // });
 
-    return null;
+    return <PersonalDetailsScreen data={{}} isCampus={true} />;
   }
 
   const pickDoc = async () => {
@@ -346,7 +347,7 @@ function ProfileScreen({ navigation }) {
                     batchDetails: campusProfileData[0]?.batch_details[0],
                     instituteDetails:
                       campusProfileData[0]?.institution_details[0],
-                    registrationNum: campusProfileData[0].registration_no,
+                    registrationNum: campusProfileData[0]?.registration_no,
                   })
                 }
               >

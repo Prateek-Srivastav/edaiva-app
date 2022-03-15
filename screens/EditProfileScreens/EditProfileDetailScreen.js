@@ -22,8 +22,6 @@ function EditProfileDetailScreen({ route, navigation }) {
   let renderScreen;
   let screenName;
 
-  console.log(route.params.isCampus, "isCampusssssssss");
-
   if (component === "personal") {
     screenName = "Personal Details";
     renderScreen = (

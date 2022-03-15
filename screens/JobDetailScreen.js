@@ -31,6 +31,8 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import useApi from "../hooks/useApi";
 import CustomAlert from "../components/CustomAlert";
 import campusJobsApi from "../api/campusApis/jobs";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
 
 const { width, height } = Dimensions.get("window");
 
@@ -348,28 +350,28 @@ function JobDetailScreen({ route, navigation }) {
       </View>
     );
   };
-  if (networkError && !loading) {
-    return <NetworkError onPress={() => loadJobDetails(jobId)} />;
-  }
+  // if (networkError && !loading) {
+  //   return <NetworkError onPress={() => loadJobDetails(jobId)} />;
+  // }
 
-  if (error) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <AppText>Couldn't load jobs</AppText>
-        <CustomButton
-          title="Retry"
-          onPress={loadJobDetails}
-          style={{ height: 60, flex: 0.1, width: 200 }}
-        />
-      </View>
-    );
-  }
-  if (loading)
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
+  // if (error) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <AppText>Couldn't load jobs</AppText>
+  //       <CustomButton
+  //         title="Retry"
+  //         onPress={loadJobDetails}
+  //         style={{ height: 60, flex: 0.1, width: 200 }}
+  //       />
+  //     </View>
+  //   );
+  // }
+  // if (loading)
+  //   return (
+  //     <View style={styles.loading}>
+  //       <ActivityIndicator size="large" color={Colors.primary} />
+  //     </View>
+  //   );
 
   function convertToSlug(text) {
     return text
@@ -391,251 +393,271 @@ function JobDetailScreen({ route, navigation }) {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        width: width,
-        height: height,
-        backgroundColor: Colors.bg,
-      }}
-    >
+    <>
       <CustomHeader
         navigation={navigation}
         isShare
         backScreen={navigation.getState().routeNames[0]}
         onRightIconPress={onShare}
       />
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{ alignItems: "center" }}
-      >
+      {loading ? (
+        <Loading />
+      ) : networkError && !loading ? (
+        <NetworkError onPress={() => loadApplications()} />
+      ) : error ? (
+        <Error onPress={() => loadApplications()} />
+      ) : (
         <View
           style={{
-            // flex: 1,
-            // borderWidth: 1,
-            width: "100%",
-            // justifyContent: "center",
-            alignItems: "center",
+            flex: 1,
+            width: width,
+            height: height,
+            backgroundColor: Colors.bg,
           }}
         >
-          <Card style={styles.card}>
-            <Text style={styles.heading}>{jobDetails.job_title}</Text>
-
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ alignItems: "center" }}
+          >
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginVertical: 7,
-              }}
-            >
-              <BuildingIcon color="#BDEEFF" />
-              <Text style={styles.text}>{jobDetails.company.name}</Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Location color="#BDEEFF" />
-              <Text style={styles.text}>{route.params.location}</Text>
-            </View>
-            <Card
-              style={{
-                marginTop: 20,
-                paddingHorizontal: 13,
-                paddingRight: 3,
-                // marginLeft: 0,
-                alignSelf: "center",
-              }}
-            >
-              <View style={styles.cardBlue}>
-                <AppText style={{ color: Colors.primary }}>
-                  {jobDetails.job_type.name}
-                </AppText>
-              </View>
-
-              {!route.params.isApplied && (
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginHorizontal: 3,
-                    marginRight: 7,
-                  }}
-                >
-                  <AppText
-                    style={{ fontSize: 12, fontFamily: "OpenSans-Medium" }}
-                  >
-                    Apply by
-                  </AppText>
-                  <AppText
-                    style={{
-                      fontSize: 12,
-                      fontFamily: "OpenSans-Medium",
-                      color: Colors.primary,
-                    }}
-                  >
-                    {formattedDate(jobDetails.job_deadline)}
-                  </AppText>
-                </View>
-              )}
-            </Card>
-            <Card
-              style={{
-                flexDirection: "column",
-                alignSelf: "center",
+                // flex: 1,
+                // borderWidth: 1,
                 width: "100%",
-                // alignItems: "space-evenly",
-                paddingHorizontal: 30,
-                paddingVertical: 17,
-                // backgroundColor: "blue",
+                // justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {jobDetails.qualification && (
+              <Card style={styles.card}>
+                <Text style={styles.heading}>{jobDetails.job_title}</Text>
+
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginBottom: 20,
+                    alignItems: "center",
+                    marginVertical: 7,
                   }}
                 >
-                  <View>
-                    <AppText style={{ marginBottom: 6 }}>Degree</AppText>
-                    {jobDetails.qualification.map((qual) => (
-                      <AppText style={styles.requirementText} key={qual._id}>
-                        {qual.name}
-                      </AppText>
-                    ))}
+                  <BuildingIcon color="#BDEEFF" />
+                  <Text style={styles.text}>{jobDetails.company.name}</Text>
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Location color="#BDEEFF" />
+                  <Text style={styles.text}>{route.params.location}</Text>
+                </View>
+                <Card
+                  style={{
+                    marginTop: 20,
+                    paddingHorizontal: 13,
+                    paddingRight: 3,
+                    // marginLeft: 0,
+                    alignSelf: "center",
+                  }}
+                >
+                  <View style={styles.cardBlue}>
+                    <AppText style={{ color: Colors.primary }}>
+                      {jobDetails.job_type.name}
+                    </AppText>
                   </View>
+
+                  {!route.params.isApplied && (
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginHorizontal: 3,
+                        marginRight: 7,
+                      }}
+                    >
+                      <AppText
+                        style={{ fontSize: 12, fontFamily: "OpenSans-Medium" }}
+                      >
+                        Apply by
+                      </AppText>
+                      <AppText
+                        style={{
+                          fontSize: 12,
+                          fontFamily: "OpenSans-Medium",
+                          color: Colors.primary,
+                        }}
+                      >
+                        {formattedDate(jobDetails.job_deadline)}
+                      </AppText>
+                    </View>
+                  )}
+                </Card>
+                <Card
+                  style={{
+                    flexDirection: "column",
+                    alignSelf: "center",
+                    width: "100%",
+                    // alignItems: "space-evenly",
+                    paddingHorizontal: 30,
+                    paddingVertical: 17,
+                    // backgroundColor: "blue",
+                  }}
+                >
+                  {jobDetails.qualification && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginBottom: 20,
+                      }}
+                    >
+                      <View>
+                        <AppText style={{ marginBottom: 6 }}>Degree</AppText>
+                        {jobDetails.qualification.map((qual) => (
+                          <AppText
+                            style={styles.requirementText}
+                            key={qual._id}
+                          >
+                            {qual.name}
+                          </AppText>
+                        ))}
+                      </View>
+                      <View>
+                        <AppText style={{ marginBottom: 6 }}>
+                          Work Experience
+                        </AppText>
+                        <AppText style={styles.requirementText}>
+                          {jobDetails.job_exp_from}-{jobDetails.job_exp_to}{" "}
+                          Years
+                        </AppText>
+                      </View>
+                    </View>
+                  )}
                   <View>
                     <AppText style={{ marginBottom: 6 }}>
-                      Work Experience
+                      Required skills
                     </AppText>
-                    <AppText style={styles.requirementText}>
-                      {jobDetails.job_exp_from}-{jobDetails.job_exp_to} Years
-                    </AppText>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {jobDetails.skills.map((skill, index) => (
+                        <AppText style={styles.requirementText} key={index}>
+                          {skill.name}
+                        </AppText>
+                      ))}
+                    </View>
                   </View>
-                </View>
-              )}
-              <View>
-                <AppText style={{ marginBottom: 6 }}>Required skills</AppText>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {jobDetails.skills.map((skill, index) => (
-                    <AppText style={styles.requirementText} key={index}>
-                      {skill.name}
-                    </AppText>
-                  ))}
-                </View>
-              </View>
-            </Card>
-          </Card>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity onPress={() => setShowDetail(1)}>
-            <AppText style={styles.detailsHeading}>DESCRIPTION</AppText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowDetail(2)}>
-            <AppText style={styles.detailsHeading}>RESPONSIBILITY</AppText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowDetail(3)}>
-            <AppText style={styles.detailsHeading}>MORE</AppText>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            // borderWidth: 1,
-            width: "85%",
-            // marginHorizontal: 20,
-            marginTop: 3,
-          }}
-        >
-          <Animated.View style={animStyles} />
-        </View>
-        <Description show={showDetail} />
-      </ScrollView>
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          backgroundColor: Colors.bg,
-          marginBottom: 15,
-          marginVertical: 10,
-          paddingHorizontal: 15,
-        }}
-      >
-        {!isApplied ? (
-          <TouchableOpacity
-            activeOpacity={0.7}
+                </Card>
+              </Card>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity onPress={() => setShowDetail(1)}>
+                <AppText style={styles.detailsHeading}>DESCRIPTION</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowDetail(2)}>
+                <AppText style={styles.detailsHeading}>RESPONSIBILITY</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowDetail(3)}>
+                <AppText style={styles.detailsHeading}>MORE</AppText>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                // borderWidth: 1,
+                width: "85%",
+                // marginHorizontal: 20,
+                marginTop: 3,
+              }}
+            >
+              <Animated.View style={animStyles} />
+            </View>
+            <Description show={showDetail} />
+          </ScrollView>
+          <View
             style={{
-              elevation: 3,
-              height: 40,
-              width: 40,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 3,
-              backgroundColor: "white",
-              padding: 4,
-              marginRight: 10,
-            }}
-            onPress={inWishlist ? removeFromWishlist : addToWishlist}
-          >
-            <MaterialCommunityIcons
-              name={
-                inWishlist || inWishlist === undefined
-                  ? "bookmark-minus"
-                  : "bookmark-minus-outline"
-              }
-              size={24}
-              color={Colors.primary}
-            />
-          </TouchableOpacity>
-        ) : route.params.isCampus ? null : (
-          <CustomButton
-            icon={
-              <Entypo name="squared-minus" size={24} color={Colors.primary} />
-            }
-            style={{
-              backgroundColor: "white",
-              // width: "70%",
-              marginRight: 10,
-              elevation: 4,
-              paddingHorizontal: 10,
-              flex: 1.5,
+              width: "100%",
+              flexDirection: "row",
               justifyContent: "space-evenly",
-              marginVertical: 0,
+              alignItems: "center",
+              backgroundColor: Colors.bg,
+              marginBottom: 15,
+              marginVertical: 10,
+              paddingHorizontal: 15,
             }}
-            title="Revoke Application"
-            titleStyle={{ color: Colors.primary }}
-            onPress={() => setVisible(true)}
-          />
-        )}
-        <CustomButton
-          disabled={isApplied}
-          onPress={() => setIsPressed(true)}
-          title={isApplied ? "Applied" : "Apply"}
-          style={{ marginVertical: 0 }}
-        />
-      </View>
+          >
+            {!isApplied ? (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{
+                  elevation: 3,
+                  height: 40,
+                  width: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 3,
+                  backgroundColor: "white",
+                  padding: 4,
+                  marginRight: 10,
+                }}
+                onPress={inWishlist ? removeFromWishlist : addToWishlist}
+              >
+                <MaterialCommunityIcons
+                  name={
+                    inWishlist || inWishlist === undefined
+                      ? "bookmark-minus"
+                      : "bookmark-minus-outline"
+                  }
+                  size={24}
+                  color={Colors.primary}
+                />
+              </TouchableOpacity>
+            ) : route.params.isCampus ? null : (
+              <CustomButton
+                icon={
+                  <Entypo
+                    name="squared-minus"
+                    size={24}
+                    color={Colors.primary}
+                  />
+                }
+                style={{
+                  backgroundColor: "white",
+                  // width: "70%",
+                  marginRight: 10,
+                  elevation: 4,
+                  paddingHorizontal: 10,
+                  flex: 1.5,
+                  justifyContent: "space-evenly",
+                  marginVertical: 0,
+                }}
+                title="Revoke Application"
+                titleStyle={{ color: Colors.primary }}
+                onPress={() => setVisible(true)}
+              />
+            )}
+            <CustomButton
+              disabled={isApplied}
+              onPress={() => setIsPressed(true)}
+              title={isApplied ? "Applied" : "Apply"}
+              style={{ marginVertical: 0 }}
+            />
+          </View>
 
-      <ApplicationModal
-        data={jobDetails}
-        isPressed={isPressed}
-        sendData={getData}
-        sendIsApplied={getIsApplied}
-      />
-      <RevokeApplication />
-    </View>
+          <ApplicationModal
+            data={jobDetails}
+            isPressed={isPressed}
+            sendData={getData}
+            sendIsApplied={getIsApplied}
+          />
+          <RevokeApplication />
+        </View>
+      )}
+    </>
   );
 }
 

@@ -28,6 +28,7 @@ import CustomHeader from "../../components/CustomHeader";
 import { placementClient } from "../../api/client";
 import campusApplicationApi from "../../api/campusApis/application";
 import Error from "../../components/Error";
+import NetworkError from "../../components/NetworkError";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -52,10 +53,6 @@ function CampusApplicationStatusScreen({ route }) {
   useEffect(() => {
     loadCampusApplicationDetails(applicationId);
   }, []);
-
-  if (loading) return <Loading />;
-
-  if (error) return <Error />;
 
   const getData = (val) => {
     setIsPressed(false);
@@ -304,38 +301,45 @@ function CampusApplicationStatusScreen({ route }) {
     );
   };
 
-  return !loading && data ? (
-    <View style={styles.container}>
-      {/* <CustomHeader  navigation={navigation} /> */}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: Colors.bg,
-          alignItems: "center",
-        }}
-      >
-        <Card style={styles.card}>
-          <Text style={styles.heading}>
-            {data.campus_job_details.details.job_title}
-          </Text>
-
+  return (
+    <>
+      {loading || !data ? (
+        <Loading />
+      ) : networkError && !loading ? (
+        <NetworkError onPress={() => loadApplications()} />
+      ) : error && !loading ? (
+        <Error onPress={() => loadApplications()} />
+      ) : (
+        <View style={styles.container}>
           <View
             style={{
-              flexDirection: "row",
+              flex: 1,
+              backgroundColor: Colors.bg,
               alignItems: "center",
-              marginVertical: 7,
             }}
           >
-            <BuildingIcon color="#BDEEFF" />
+            <Card style={styles.card}>
+              <Text style={styles.heading}>
+                {data.campus_job_details.details.job_title}
+              </Text>
 
-            <Text style={styles.text}>{data.company_details[0].name}</Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Location color="#BDEEFF" />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginVertical: 7,
+                }}
+              >
+                <BuildingIcon color="#BDEEFF" />
 
-            <Text style={styles.text}>{route.params.location}</Text>
-          </View>
-          {/* {applicationData[0].offerletter.length > 0 ? (
+                <Text style={styles.text}>{data.company_details[0].name}</Text>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Location color="#BDEEFF" />
+
+                <Text style={styles.text}>{route.params.location}</Text>
+              </View>
+              {/* {applicationData[0].offerletter.length > 0 ? (
             <Card
               style={{ alignItems: "center", width: "97%" }}
               touchable
@@ -350,44 +354,44 @@ function CampusApplicationStatusScreen({ route }) {
               <NormalText>View Offer Letter</NormalText>
             </Card>
           ) : ( */}
-          <StatusMessage />
-          {/* )} */}
+              <StatusMessage />
+              {/* )} */}
 
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              marginTop: 10,
-            }}
-          >
-            <TouchableOpacity onPress={() => setShowDetail(1)}>
-              <AppText style={styles.detailsHeading}>INTERVIEW</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowDetail(2)}>
-              <AppText style={styles.detailsHeading}>JOB DETAILS</AppText>
-            </TouchableOpacity>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <TouchableOpacity onPress={() => setShowDetail(1)}>
+                  <AppText style={styles.detailsHeading}>INTERVIEW</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setShowDetail(2)}>
+                  <AppText style={styles.detailsHeading}>JOB DETAILS</AppText>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  // borderWidth: 1,
+                  width: "100%",
+                  // marginHorizontal: 20,
+                  marginTop: 3,
+                  marginBottom: -10,
+                }}
+              >
+                <Animated.View style={animStyles} />
+              </View>
+            </Card>
+            <Description show={showDetail} />
           </View>
-          <View
-            style={{
-              // borderWidth: 1,
-              width: "100%",
-              // marginHorizontal: 20,
-              marginTop: 3,
-              marginBottom: -10,
-            }}
-          >
-            <Animated.View style={animStyles} />
-          </View>
-        </Card>
-        <Description show={showDetail} />
-      </View>
 
-      <RescheduleModal isPressed={isPressed} sendData={getData} />
-    </View>
-  ) : (
-    <Loading />
+          <RescheduleModal isPressed={isPressed} sendData={getData} />
+        </View>
+      )}
+    </>
   );
 }
 

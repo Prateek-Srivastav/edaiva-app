@@ -97,45 +97,49 @@ function NotificationsScreen({ navigation }) {
     navigation.setParams({ notificCount: notifications?.length });
   }, [isFocused]);
 
-  if (loading) return <Loading />;
-
-  if (networkError && !loading)
-    return <NetworkError onPress={loadApplications} />;
-
-  if (error) return <Error onPress={loadApplications} />;
-
   return (
-    <View style={styles.container}>
+    <>
       <CustomHeader backDisabled screenName="Notifications" />
-      <FlatList
-        contentContainerStyle={{ width: "100%" }}
-        data={applications}
-        keyExtractor={(index) => index + Math.random()}
-        renderItem={(itemData) => {
-          const { city, state, country } = itemData.item.job.job_location[0];
+      {loading ? (
+        <Loading />
+      ) : networkError && !loading ? (
+        <NetworkError onPress={() => loadApplications()} />
+      ) : error && !loading ? (
+        <Error onPress={() => loadApplications()} />
+      ) : (
+        <View style={styles.container}>
+          <FlatList
+            contentContainerStyle={{ width: "100%" }}
+            data={applications}
+            keyExtractor={(index) => index + Math.random()}
+            renderItem={(itemData) => {
+              const { city, state, country } =
+                itemData.item.job.job_location[0];
 
-          const location = `${city}, ${state}, ${country}`;
+              const location = `${city}, ${state}, ${country}`;
 
-          return (
-            <>
-              <NotificationItem
-                onPress={() =>
-                  navigation.navigate("ApplicationStatus", {
-                    jobId: itemData.item.job._id.$oid,
-                    location,
-                    applicationStatus: itemData.item.status,
-                    applicationId: itemData.item._id.$oid,
-                  })
-                }
-                job={itemData.item.job.job_title}
-                status={itemData.item.status}
-              />
-              <View style={styles.line} />
-            </>
-          );
-        }}
-      />
-    </View>
+              return (
+                <>
+                  <NotificationItem
+                    onPress={() =>
+                      navigation.navigate("ApplicationStatus", {
+                        jobId: itemData.item.job._id.$oid,
+                        location,
+                        applicationStatus: itemData.item.status,
+                        applicationId: itemData.item._id.$oid,
+                      })
+                    }
+                    job={itemData.item.job.job_title}
+                    status={itemData.item.status}
+                  />
+                  <View style={styles.line} />
+                </>
+              );
+            }}
+          />
+        </View>
+      )}
+    </>
   );
 }
 

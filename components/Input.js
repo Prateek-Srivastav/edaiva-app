@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    color: Colors.primary,
+    color: Colors.grey,
     fontFamily: "OpenSans-Regular",
     fontSize: 15,
   },

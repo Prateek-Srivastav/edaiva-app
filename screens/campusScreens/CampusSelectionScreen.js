@@ -52,8 +52,6 @@ function CampusSelectionScreen({ navigation, route }) {
     setError(false);
     setLoading(false);
 
-    // await joinBatch({ id: batchCode });
-
     if (response.data?._id && !loading) {
       Toast.show({
         type: "appSuccess",

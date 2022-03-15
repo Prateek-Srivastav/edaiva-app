@@ -81,8 +81,7 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
           flexDirection: "row",
           // justifyContent: "center",
           alignItems: "center",
-          marginTop: 7,
-          marginBottom: 12,
+          marginVertical: 7,
         }}
       >
         <MaterialIcons name="access-time" size={17} color="#817E7E" />
@@ -91,7 +90,6 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
           {experience.present ? "Present" : formattedDate(experience.end_date)}
         </SmallText>
       </View>
-
       <SmallText style={{ marginStart: 0 }}>
         {experience.responsibilities}
       </SmallText>
@@ -102,6 +100,7 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
 const styles = StyleSheet.create({
   container: {
     marginTop: 15,
+    marginStart: 7,
   },
 
   smallText: {

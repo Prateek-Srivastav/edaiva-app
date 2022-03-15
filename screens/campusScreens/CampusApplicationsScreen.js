@@ -12,6 +12,7 @@ import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import cache from "../../utilities/cache";
 import campusApi from "../../api/campusApis/application";
+import CustomHeader from "../../components/CustomHeader";
 
 function CampusApplicationsScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -49,53 +50,59 @@ function CampusApplicationsScreen({ navigation }) {
     numOfApplications();
   }, [isFocused]);
 
-  if (loading) return <Loading />;
-
-  if (networkError && !loading)
-    return <NetworkError onPress={() => loadApplications()} />;
-
-  if (error) return <Error onPress={() => loadApplications()} />;
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        contentContainerStyle={{
-          paddingHorizontal: 15,
-          paddingBottom: 20,
-        }}
-        data={applications}
-        keyExtractor={(item) => item._id}
-        renderItem={(itemData) => {
-          const { city, state, country } =
-            itemData.item.campus_job_details.details.job_location[0];
+    <>
+      <CustomHeader screenName="Applications" backDisabled />
+      {loading ? (
+        <Loading />
+      ) : networkError && !loading ? (
+        <NetworkError onPress={() => loadApplications()} />
+      ) : error ? (
+        <Error onPress={() => loadApplications()} />
+      ) : (
+        <View style={styles.container}>
+          <FlatList
+            contentContainerStyle={{
+              paddingHorizontal: 15,
+              paddingBottom: 20,
+            }}
+            data={applications}
+            keyExtractor={(item) => item._id}
+            renderItem={(itemData) => {
+              const { city, state, country } =
+                itemData.item.campus_job_details.details.job_location[0];
 
-          const location = `${city}, ${state}, ${country}`;
+              const location = `${city}, ${state}, ${country}`;
 
-          const { job_title, _id } = itemData.item.campus_job_details.details;
+              const { job_title, _id } =
+                itemData.item.campus_job_details.details;
 
-          return (
-            <ApplicationItemCard
-              onPress={() =>
-                navigation.navigate("CampusApplicationStatus", {
-                  jobId: _id,
-                  location,
-                  applicationStatus: itemData.item.status,
-                  applicationId: itemData.item._id,
-                  isCampus: true,
-                })
-              }
-              applicationId={itemData.item._id}
-              heading={job_title}
-              companyName={itemData.item.company_details[0].name}
-              location={location}
-              appliedOn={formattedDate(itemData.item.createdAt)}
-              applicationStatus={itemData.item.status}
-              isRevoked={getIsRevoked}
-            />
-          );
-        }}
-      />
-    </View>
+              return (
+                <ApplicationItemCard
+                  onPress={() =>
+                    navigation.navigate("CampusApplicationStatus", {
+                      jobId: _id,
+                      location,
+                      applicationStatus: itemData.item.status,
+                      applicationId: itemData.item._id,
+                      isCampus: true,
+                    })
+                  }
+                  applicationId={itemData.item._id}
+                  heading={job_title}
+                  companyName={itemData.item.company_details[0].name}
+                  location={location}
+                  appliedOn={formattedDate(itemData.item.createdAt)}
+                  applicationStatus={itemData.item.status}
+                  isRevoked={getIsRevoked}
+                  isCampus={true}
+                />
+              );
+            }}
+          />
+        </View>
+      )}
+    </>
   );
 }
 

@@ -118,10 +118,6 @@ function CampusJobsScreen({ navigation }) {
     );
   };
 
-  if (networkError && !loading) return <NetworkError onPress={loadJobs} />;
-
-  if (error) return <Error onPress={loadJobs} />;
-
   return (
     <View style={{ flex: 1, width }}>
       <View style={styles.container}>
@@ -165,6 +161,10 @@ function CampusJobsScreen({ navigation }) {
         </View>
         {loading || interviewLoading ? (
           <Loading />
+        ) : networkError && !loading ? (
+          <NetworkError onPress={() => loadJobs()} />
+        ) : error && !loading ? (
+          <Error onPress={() => loadJobs()} />
         ) : (
           <>
             {interviewData &&

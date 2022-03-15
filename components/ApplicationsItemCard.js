@@ -176,7 +176,11 @@ const ApplicationItemCard = (props) => {
         overflow: "hidden",
       }}
     >
-      <Swipeable renderRightActions={() => renderRightActions(props)}>
+      <Swipeable
+        renderRightActions={() =>
+          props.isCampus ? null : renderRightActions(props)
+        }
+      >
         <TouchableOpacity
           {...props}
           activeOpacity={0.9}

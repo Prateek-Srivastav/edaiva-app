@@ -29,10 +29,6 @@ const ProfileNavigator = () => (
       name="ViewProfile"
       component={ViewProfileScreen}
       options={{
-        //   headerShadowVisible: false,
-        // headerShown: false,
-        // headerStyle: { backgroundColor: "#FDFDFD" },
-        // headerRight: () => rightshareHeader(),
         headerTitle: () => (
           <Text
             style={{
@@ -50,7 +46,6 @@ const ProfileNavigator = () => (
       name="EditProfile"
       component={EditProfileScreen}
       options={{
-        // headerRight: () => rightshareHeader(),
         headerTitle: () => (
           <Text
             style={{
@@ -68,7 +63,6 @@ const ProfileNavigator = () => (
       name="CampusEditProfile"
       component={CampusEditProfileScreen}
       options={{
-        // headerRight: () => rightshareHeader(),
         headerTitle: () => (
           <Text
             style={{
@@ -86,7 +80,6 @@ const ProfileNavigator = () => (
       name="EditProfileDetail"
       component={EditProfileDetailScreen}
       options={{
-        // headerRight: () => rightshareHeader(),
         headerTitle: () => (
           <Text
             style={{

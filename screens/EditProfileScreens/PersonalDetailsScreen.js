@@ -25,6 +25,7 @@ const validationSchema = Yup.object().shape({
 
 function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const navigation = useNavigation();
+  console.log(navigation.getState());
 
   if (isCampus && profileData.profile) {
     var { firstname, lastname } = profileData;
@@ -122,7 +123,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     else if (!dob) return setDobError(true);
     else if (phone === "" || phone.length < 10) return setPhoneError(true);
 
-    updateUser({
+    await updateUser({
       firstname: values.firstname !== "" ? values.firstname : user.firstname,
       lastname: values.lastname !== "" ? values.lastname : user.lastname,
     });
@@ -140,7 +141,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     ) {
       console.log("abcd");
       await createProfile(val);
-      return navigation.navigate("ProfileStack");
+      return navigation.navigate("Profile");
     } else {
       console.log("efgh");
       await updateProfile(val);

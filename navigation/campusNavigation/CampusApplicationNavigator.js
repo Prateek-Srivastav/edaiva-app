@@ -25,6 +25,7 @@ function CampusApplicationNavigator() {
       <Stack.Screen
         name="CampusApplications"
         component={CampusApplicationsScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="CampusSelection" component={CampusSelectionScreen} />
       <Stack.Screen
@@ -32,6 +33,12 @@ function CampusApplicationNavigator() {
         component={CampusApplicationStatusScreen}
         options={({ route }) => ({
           title: "",
+          headerTintColor: Colors.primary,
+          headerShadowVisible: false,
+          contentStyle: {
+            borderTopColor: "#c7f0ff",
+            borderTopWidth: 1.6,
+          },
           headerRight: () => {
             return (
               <ApplicationStatusIndicator

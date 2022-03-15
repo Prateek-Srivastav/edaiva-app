@@ -3,21 +3,21 @@ import { create } from "apisauce";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 
-const apiClient = create({
-  baseURL: "http://167.172.236.197:8011/api/gateway",
-});
+// const apiClient = create({
+//   baseURL: "http://167.172.236.197:8011/api/gateway",
+// });
 
-export const jobClient = create({
-  baseURL: "http://167.172.236.197:4202/api",
-});
+// export const jobClient = create({
+//   baseURL: "http://167.172.236.197:4202/api",
+// });
 
 export const pushTokenClient = create({
   baseURL: "http://167.172.236.197:8008",
 });
 
-export const authClient = create({
-  baseURL: "http://167.172.236.197:8011/api/gateway/core-service",
-});
+// export const authClient = create({
+//   baseURL: "http://167.172.236.197:8011/api/gateway/core-service",
+// });
 
 export const placementClient = create({
   baseURL: "http://167.172.236.197:8011/api/gateway/placement-service",
@@ -26,17 +26,17 @@ export const placementClient = create({
 export const frontEndClient = "http://143.110.241.27:6204";
 // export const frontEndClient = "https://devjobs.edaiva.com";
 
-// export const jobClient = create({
-//   baseURL: "https://devjobs.edaiva.com/node/api",
-// });
+export const jobClient = create({
+  baseURL: "https://devjobs.edaiva.com/node/api",
+});
 
-// export const authClient = create({
-//   baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
-// });
+export const authClient = create({
+  baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
+});
 
-// const apiClient = create({
-//   baseURL: "https://godevgw.edaiva.com/api/gateway",
-// });
+const apiClient = create({
+  baseURL: "https://godevgw.edaiva.com/api/gateway",
+});
 
 apiClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getToken();

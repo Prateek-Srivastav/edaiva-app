@@ -174,31 +174,34 @@ function ViewProfileScreen({ navigation, route }) {
               <DetailHeading label="ABOUT" />
               <ViewAbout data={data.description} />
             </View>
-            <View style={styles.line} />
+            {route.params.isCampus && (
+              <>
+                <View style={styles.line} />
 
-            <View style={{ marginHorizontal: 15 }}>
-              <DetailHeading label="CGPA" />
-              {route.params.isCampus && (
-                <View style={{ flexDirection: "row" }}>
-                  <AppText>
-                    {"  "}Current CGPA:{"  "}
-                  </AppText>
-                  <AppText style={{ color: Colors.black }}>
-                    {route.params.cgpa}
-                  </AppText>
+                <View style={{ marginHorizontal: 15 }}>
+                  <DetailHeading label="CGPA" />
+
+                  <View style={{ flexDirection: "row" }}>
+                    <AppText>
+                      {"  "}Current CGPA:{"  "}
+                    </AppText>
+                    <AppText style={{ color: Colors.black }}>
+                      {route.params.cgpa}
+                    </AppText>
+                  </View>
                 </View>
-              )}
-            </View>
-            <View style={styles.line} />
-            <BatchDetails
-              batchDetails={route.params.batchDetails}
-              data={[{ registration_no: route.params.registrationNum }]}
-              viewing
-            />
-            <View style={styles.line} />
-            <InstituteDetails
-              instituteDetails={route.params.instituteDetails}
-            />
+                <View style={styles.line} />
+                <BatchDetails
+                  batchDetails={route.params.batchDetails}
+                  data={[{ registration_no: route.params.registrationNum }]}
+                  viewing
+                />
+                <View style={styles.line} />
+                <InstituteDetails
+                  instituteDetails={route.params.instituteDetails}
+                />
+              </>
+            )}
             <View style={styles.line} />
             <AddDetails label="Experience">
               {data.experience?.map((exp) => (

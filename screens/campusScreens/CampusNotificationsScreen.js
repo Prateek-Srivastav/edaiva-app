@@ -104,16 +104,15 @@ function CampusNotificationsScreen({ navigation }) {
     navigation.setParams({ notificCount: notifications?.length });
   }, [isFocused]);
 
-  if (networkError && !loading)
-    return <NetworkError onPress={loadApplications} />;
-
-  if (error) return <Error onPress={loadApplications} />;
-
   return (
     <View style={styles.container}>
       <CustomHeader backDisabled screenName="Notifications" />
       {loading ? (
         <Loading />
+      ) : networkError && !loading ? (
+        <NetworkError onPress={() => loadApplications()} />
+      ) : error ? (
+        <Error onPress={() => loadApplications()} />
       ) : (
         <FlatList
           contentContainerStyle={{ width: "100%" }}
