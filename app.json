@@ -10,7 +10,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -38,19 +37,16 @@
     "hooks": {
       "postPublish": [
         {
-          "file": "@bugsnag/expo/hooks/post-publish.js",
-          "config": {}
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "edaiva-test",
+            "project": "c141c87ead5b",
+            "authToken": "0ac9467abadd4478915f3be1b980fe454004c168520b40748edb2610438fbcd5"
+          }
         }
       ]
     },
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/edaiva_logo_edit-03.png",
-          "color": "#ffffff"
-        }
-      ]
-    ]
+    "plugins": ["sentry-expo"],
+    "scheme": "edaiva-jobs-app"
   }
 }

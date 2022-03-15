@@ -177,13 +177,18 @@ function CampusSelectionScreen({ navigation, route }) {
             style={{ flex: 0, width: "60%", marginBottom: 5 }}
             title="No!"
             onPress={() => {
-              authContext.setTokens({
-                access: route.params.access,
-                refresh: route.params.refresh,
-              });
-              authStorage.storeToken(route.params.access, route.params.refresh);
+              if (route.params?.access) {
+                authContext.setTokens({
+                  access: route.params.access,
+                  refresh: route.params.refresh,
+                });
+                authStorage.storeToken(
+                  route.params.access,
+                  route.params.refresh
+                );
+              }
 
-              // navigation.navigate("Home");
+              navigation.navigate("Home");
             }}
           />
           <AppText style={{ fontSize: 19, color: Colors.black }}>

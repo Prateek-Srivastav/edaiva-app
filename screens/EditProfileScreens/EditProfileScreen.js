@@ -244,7 +244,11 @@ function EditProfileScreen() {
               </LargeText>
               {data.designation !== "" && (
                 <Card
-                  style={{ justifyContent: "flex-start", paddingVertical: 5 }}
+                  style={{
+                    justifyContent: "flex-start",
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
+                  }}
                 >
                   <NormalText>{data.designation}</NormalText>
                 </Card>

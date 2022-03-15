@@ -84,18 +84,18 @@ function ProfileScreen({ navigation }) {
     setUser(userDetail);
   }, [isFocused]);
 
-  if (error && data.error === "Candidate Profile not found!!") {
-    //  navigation.navigate("EditProfileDetail", {
-    //   component: "personal",
-    //   data: {},
-    //   isCampus:
-    //     campusProfileData?.detail === "Your are not a part of any institution !"
-    //       ? false
-    //       : true,
-    // });
+  // if (error && data.error === "Candidate Profile not found!!") {
+  //   //  navigation.navigate("EditProfileDetail", {
+  //   //   component: "personal",
+  //   //   data: {},
+  //   //   isCampus:
+  //   //     campusProfileData?.detail === "Your are not a part of any institution !"
+  //   //       ? false
+  //   //       : true,
+  //   // });
 
-    return <PersonalDetailsScreen data={{}} isCampus={true} />;
-  }
+  //   return <PersonalDetailsScreen data={{}} isCampus={true} />;
+  // }
 
   const pickDoc = async () => {
     const result = await DocumentPicker.getDocumentAsync({

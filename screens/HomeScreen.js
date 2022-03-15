@@ -9,7 +9,8 @@ import {
   FlatList,
   Dimensions,
   StatusBar,
-  ActivityIndicator,
+  BackHandler,
+  Alert,
 } from "react-native";
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 
@@ -27,13 +28,15 @@ import { formattedDate } from "../utilities/date";
 import NetworkError from "../components/NetworkError";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import interviewApi from "../api/interview";
 import candidateApi from "../api/candidate";
 import FilterModal from "../components/appmodals/FilterModal";
 import Card from "../components/Card";
 import formattedTime from "../utilities/time";
 import InterviewReminder from "../components/interview/InterviewReminder";
+import { RotateInUpLeft } from "react-native-reanimated";
+import campusCandidateApi from "../api/campusApis/candidate";
 
 const { width, height } = Dimensions.get("window");
 
@@ -46,6 +49,10 @@ function HomeScreen({ navigation }) {
   const [sortBy, setSortBy] = useState("latest");
 
   const isFocused = useIsFocused();
+
+  const { data: campusProfileData, request: loadCampusProfile } = useApi(
+    campusCandidateApi.getProfile
+  );
 
   const {
     data,
@@ -72,10 +79,30 @@ function HomeScreen({ navigation }) {
   }
 
   useEffect(() => {
+    loadCampusProfile();
     loadJobs({ sort: sortBy });
     loadInterviews();
     loadProfile();
   }, [isFocused, sortBy]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (
+          campusProfileData?.detail !==
+          "Your are not a part of any institution !"
+        ) {
+          navigation.navigate("CampusStack");
+        } else BackHandler.exitApp();
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   const getFilters = (appliedFilters) => {
     if (appliedFilters) setFilters(appliedFilters);

@@ -33,6 +33,7 @@ import CustomAlert from "../components/CustomAlert";
 import campusJobsApi from "../api/campusApis/jobs";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
+import campusCandidateApi from "../api/campusApis/candidate";
 
 const { width, height } = Dimensions.get("window");
 
@@ -67,6 +68,8 @@ function JobDetailScreen({ route, navigation }) {
   const [networkError, setNetworkError] = useState(false);
 
   const [visible, setVisible] = useState(false);
+  const [applyCampusVisible, setApplyCampusVisible] = useState(false);
+  const [placementCriteria, setPlacementCriteria] = useState();
 
   const {
     loading: revokeLoading,
@@ -74,6 +77,18 @@ function JobDetailScreen({ route, navigation }) {
     networkError: revokeNetworkError,
     request: revokeApplication,
   } = useApi(applicationApi.deleteApplication);
+
+  const {
+    data: campusProfileData,
+    // error,
+    // networkError,
+    cgpaLoading,
+    request: loadCampusProfile,
+  } = useApi(campusCandidateApi.getProfile);
+
+  useEffect(() => {
+    loadCampusProfile();
+  }, []);
 
   const revokeHandler = async () => {
     setVisible(false);
@@ -170,8 +185,10 @@ function JobDetailScreen({ route, navigation }) {
     }
     setNetworkError(false);
     setError(false);
-    if (route.params.isCampus) setJobDetails(response.data.job_detail);
-    else setJobDetails(response.data);
+    if (route.params.isCampus) {
+      setJobDetails(response.data.job_detail);
+      setPlacementCriteria(response.data.placement_criteria);
+    } else setJobDetails(response.data);
     setLoading(false);
   };
 
@@ -350,28 +367,6 @@ function JobDetailScreen({ route, navigation }) {
       </View>
     );
   };
-  // if (networkError && !loading) {
-  //   return <NetworkError onPress={() => loadJobDetails(jobId)} />;
-  // }
-
-  // if (error) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <AppText>Couldn't load jobs</AppText>
-  //       <CustomButton
-  //         title="Retry"
-  //         onPress={loadJobDetails}
-  //         style={{ height: 60, flex: 0.1, width: 200 }}
-  //       />
-  //     </View>
-  //   );
-  // }
-  // if (loading)
-  //   return (
-  //     <View style={styles.loading}>
-  //       <ActivityIndicator size="large" color={Colors.primary} />
-  //     </View>
-  //   );
 
   function convertToSlug(text) {
     return text
@@ -400,7 +395,7 @@ function JobDetailScreen({ route, navigation }) {
         backScreen={navigation.getState().routeNames[0]}
         onRightIconPress={onShare}
       />
-      {loading ? (
+      {loading || !campusProfileData ? (
         <Loading />
       ) : networkError && !loading ? (
         <NetworkError onPress={() => loadApplications()} />
@@ -642,7 +637,9 @@ function JobDetailScreen({ route, navigation }) {
             )}
             <CustomButton
               disabled={isApplied}
-              onPress={() => setIsPressed(true)}
+              onPress={() => {
+                return setIsPressed(true);
+              }}
               title={isApplied ? "Applied" : "Apply"}
               style={{ marginVertical: 0 }}
             />
@@ -653,6 +650,10 @@ function JobDetailScreen({ route, navigation }) {
             isPressed={isPressed}
             sendData={getData}
             sendIsApplied={getIsApplied}
+            isCampus={route.params.isCampus}
+            placementCriteria={placementCriteria}
+            cgpa={campusProfileData[0]?.cgpa}
+            jobId={jobId}
           />
           <RevokeApplication />
         </View>

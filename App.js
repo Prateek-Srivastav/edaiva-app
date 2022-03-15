@@ -6,20 +6,23 @@ import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import * as Sentry from "sentry-expo";
 
 import AuthNavigator from "./navigation/AuthNavigator";
 import AppNavigator from "./navigation/AppNavigator";
 import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
 import refreshAccessToken from "./utilities/refreshAccessToken";
-import logger from "./utilities/logger";
 import { navigationRef } from "./navigation/rootNavigation";
 import toastConfig from "./utilities/toastConfig";
-import CampusSelectionScreen from "./screens/campusScreens/CampusSelectionScreen";
-
-logger.start();
 
 enableScreens();
+
+Sentry.init({
+  dsn: "https://5e7f7ff3fa464559967c04663df5ed02@o1168372.ingest.sentry.io/6260247",
+  enableInExpoDevelopment: true,
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 const fetchFonts = () => {
   return Font.loadAsync({

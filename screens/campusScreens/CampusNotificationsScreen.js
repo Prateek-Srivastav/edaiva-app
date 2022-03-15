@@ -90,18 +90,10 @@ function CampusNotificationsScreen({ navigation }) {
 
   if (data) {
     applications = data;
-    console.log(data);
   }
-  const notifications = applications?.filter(
-    (application) =>
-      application.status === "hired" ||
-      application.status === "finalist" ||
-      application.status === "interviewing" ||
-      application.status === "shortlisted"
-  );
+
   useEffect(() => {
     loadApplications();
-    navigation.setParams({ notificCount: notifications?.length });
   }, [isFocused]);
 
   return (

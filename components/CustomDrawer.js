@@ -23,6 +23,7 @@ import CustomAlert from "./CustomAlert";
 import CustomButton from "./CustomButton";
 import useApi from "../hooks/useApi";
 import campusCandidateApi from "../api/campusApis/candidate";
+import candidateApi from "../api/candidate";
 
 const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
@@ -51,7 +52,7 @@ const NavigatorButton = ({ title, icon, ...otherProps }) => (
   <TouchableOpacity
     activeOpacity={0.7}
     {...otherProps}
-    style={styles.navigatorContainer}
+    style={styles.navigatorButtonContainer}
   >
     <View style={styles.iconContainer}>{icon}</View>
     <Text style={styles.navigatorText}>{title}</Text>
@@ -63,9 +64,17 @@ function CustomDrawer(props) {
   const [user, setUser] = useState({});
   const [visible, setVisible] = useState(false);
 
-  const { data: campusProfileData, request: loadProfile } = useApi(
+  const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
   );
+
+  const {
+    data,
+    error,
+    networkError,
+    loading,
+    request: loadProfile,
+  } = useApi(candidateApi.getProfile);
 
   const getUser = async () => {
     const data = await cache.get("user");
@@ -74,6 +83,7 @@ function CustomDrawer(props) {
 
   useEffect(() => {
     getUser();
+    loadCampusProfile();
     loadProfile();
   }, []);
 
@@ -148,8 +158,21 @@ function CustomDrawer(props) {
           <NavigatorButton
             title="Profile"
             icon={<Profile />}
-            onPress={() => props.navigation.navigate("ProfileStack")}
+            onPress={() =>
+              props.navigation.navigate(
+                error && data?.error === "Candidate Profile not found!!"
+                  ? "CreateProfile"
+                  : "ProfileStack"
+              )
+            }
           />
+          <NavigatorButton
+            title="Preference"
+            icon={<Preference />}
+            // onPress={() => props.navigation.navigate("Preference")}
+          />
+        </View>
+        <View>
           <NavigatorButton
             title={
               campusProfileData?.detail !==
@@ -169,13 +192,6 @@ function CustomDrawer(props) {
                   : "CampusStack"
               )
             }
-          />
-        </View>
-        <View>
-          <NavigatorButton
-            title="Preference"
-            icon={<Preference />}
-            // onPress={() => props.navigation.navigate("Preference")}
           />
           <NavigatorButton
             title="Wishlist"
@@ -244,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: Colors.primary,
   },
-  navigatorContainer: {
+  navigatorButtonContainer: {
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,

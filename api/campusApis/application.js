@@ -1,15 +1,16 @@
 import { placementClient as client } from "../client";
 
-const endpoint = "student-application/student-application";
+const endpoint = "student-application";
 
 const getCampusApplications = (applicationId) => {
-  if (applicationId) return client.get(`${endpoint}/${applicationId}`);
+  if (applicationId)
+    return client.get(`${endpoint}/student-application/${applicationId}`);
 
-  return client.get(`${endpoint}`);
+  return client.get(`${endpoint}/student-application`);
 };
 
-const postCampusApplication = (data) =>
-  client.post(`${endpoint}/application`, data);
+const postCampusApplication = (application) =>
+  client.post(`${endpoint}/`, { job_institute: application });
 
 // const deleteApplication = (applicationId) =>
 //   client.delete(`${endpoint}/application-candidate/${applicationId}`);

@@ -10,6 +10,7 @@ import {
   Dimensions,
   StatusBar,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 
@@ -27,7 +28,7 @@ import { formattedDate } from "../../utilities/date";
 import NetworkError from "../../components/NetworkError";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import interviewApi from "../../api/interview";
 import candidateApi from "../../api/candidate";
 import FilterModal from "../../components/appmodals/FilterModal";
@@ -77,6 +78,20 @@ function CampusJobsScreen({ navigation }) {
     loadInterviews();
     loadProfile();
   }, [isFocused]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   const getFilters = (appliedFilters) => {
     if (appliedFilters) setFilters(appliedFilters);

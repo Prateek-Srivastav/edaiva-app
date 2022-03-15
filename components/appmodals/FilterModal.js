@@ -202,7 +202,10 @@ function FilterModal(props) {
   ));
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler
+      activeOffsetX={[-10, 10]}
+      onGestureEvent={gestureHandler}
+    >
       <Animated.View style={[styles.modalContainer, style]}>
         <View style={styles.modalContentContainer}>
           <View style={styles.headingContainer}>

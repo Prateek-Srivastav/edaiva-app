@@ -16,6 +16,7 @@ import authStorage from "../auth/storage";
 import campusCandidateApi from "../api/campusApis/candidate";
 import Loading from "../components/Loading";
 import CampusSelectionScreen from "../screens/campusScreens/CampusSelectionScreen";
+import CreateProfileScreen from "../screens/CreateProfileScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -130,6 +131,7 @@ function AppNavigator() {
         <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
         <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
         <Drawer.Screen name="Home" component={TabNavigator} />
+        <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
       </Drawer.Navigator>
     );
   }
@@ -139,6 +141,7 @@ function AppNavigator() {
       drawerContent={(props) => <CustomDrawer {...props} />}
     >
       <Drawer.Screen name="Home" component={TabNavigator} />
+      <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
       <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />

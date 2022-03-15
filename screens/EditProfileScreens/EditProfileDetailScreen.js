@@ -61,7 +61,10 @@ function EditProfileDetailScreen({ route, navigation }) {
       <CustomHeader
         backScreen={route.params.isCampus ? "CampusEditProfile" : "EditProfile"}
         navigation={navigation}
-        screenName={(index >= 0 ? "Edit " : "Add ") + screenName}
+        screenName={
+          (index >= 0 || component === "personal" ? "Edit " : "Add ") +
+          screenName
+        }
       />
       {renderScreen}
     </View>

@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
-  Button,
   StyleSheet,
   useWindowDimensions,
   TouchableNativeFeedback,
   Dimensions,
-  TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView,
   StatusBar,
-  // Dimensions,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -22,9 +18,8 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-// import { AppToast } from "./ToastConfig";
 
-import { Feather, AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import AppText from "../AppText";
 import applicationApi from "../../api/application";
@@ -33,8 +28,7 @@ import CustomButton from "../CustomButton";
 import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
 import cache from "../../utilities/cache";
-import useApi from "../../hooks/useApi";
-import { useNavigation } from "@react-navigation/native";
+import campusApplicationApi from "../../api/campusApis/application";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -45,6 +39,21 @@ const SPRING_CONFIG = {
   restSpeedThreshold: 0.1,
   stiffness: 600,
 };
+
+const NormalText = ({ children }) => (
+  <Text
+    style={{
+      color: Colors.black,
+      fontFamily: "OpenSans-Regular",
+      fontSize: 14.5,
+      marginTop: 5,
+      marginBottom: 10,
+      marginLeft: 7,
+    }}
+  >
+    {children}
+  </Text>
+);
 
 function ApplicationModal(props) {
   const dimensions = useWindowDimensions();
@@ -93,14 +102,6 @@ function ApplicationModal(props) {
     top.value = withSpring(0, SPRING_CONFIG);
   }
 
-  // const {
-  //   data,
-  //   loading,
-  //   error,
-  //   networkError,
-  //   request: apply,
-  // } = useApi(applicationApi.postApplication);
-
   const handleApply = async () => {
     const user = await cache.get("user");
 
@@ -114,36 +115,41 @@ function ApplicationModal(props) {
         to: toTime,
       },
     };
-    if (!joiningDate)
+    if (!joiningDate && !props.isCampus)
       return Toast.show({
         type: "appError",
         text1: "Joining date is required!",
       });
 
-    const response = await applicationApi.postApplication(application);
+    let response;
+    if (props.isCampus)
+      response = await campusApplicationApi.postCampusApplication(props.jobId);
+    else response = await applicationApi.postApplication(application);
 
     setLoading(true);
-
+    console.log(response);
     if (!response.ok) {
       setLoading(false);
 
-      if (response.problem === "NETWORK_ERROR") return setNetworkError(true);
-      else return setError(true);
+      if (response.problem === "NETWORK_ERROR") {
+        Toast.show({
+          type: "appError",
+          text1: "No internet connection!",
+        });
+        return setNetworkError(true);
+      } else {
+        Toast.show({
+          type: "appError",
+          text1: response.data.detail
+            ? response.data.detail
+            : "Something went wrong",
+        });
+        return setError(true);
+      }
     }
     setNetworkError(false);
     setError(false);
     setLoading(false);
-
-    if (error)
-      return Toast.show({
-        type: "appError",
-        text1: "Something went wrong",
-      });
-    else if (loading)
-      return Toast.show({
-        type: "appWarning",
-        text1: "Applying...",
-      });
 
     Toast.show({
       type: "appSuccess",
@@ -151,12 +157,16 @@ function ApplicationModal(props) {
     });
 
     top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
-    sendIsApplied(true, response.data._id.$oid);
+    if (props.isCampus) sendIsApplied(true, response.data._id);
+    else sendIsApplied(true, response.data._id.$oid);
     setIsPressed(true);
   };
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler
+      activeOffsetX={[-10, 10]}
+      onGestureEvent={gestureHandler}
+    >
       <Animated.View style={[styles.modalContainer, style]}>
         <View style={styles.modalContentContainer}>
           <View style={styles.headingContainer}>
@@ -179,6 +189,7 @@ function ApplicationModal(props) {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               padding: 20,
+              paddingBottom: 50,
             }}
             style={styles.container}
           >
@@ -186,56 +197,74 @@ function ApplicationModal(props) {
             <AppText style={styles.boldText}>{props.data.job_title}</AppText>
             <AppText style={styles.text}>Organization</AppText>
             <AppText style={styles.boldText}>{props.data.company.name}</AppText>
-            <AppText style={styles.text}>When you are ready to join:</AppText>
 
-            <DatePicker
-              titleStyle={joiningDate ? styles.dateTimeText : ""}
-              // minDate={null}
-              onDateChange={(indFormat, usFormat, timestamp) => {
-                setJoiningDate(usFormat);
-              }}
-            />
+            {props.isCampus ? (
+              <>
+                <AppText style={styles.text}>Placement Criteria</AppText>
+                {props.placementCriteria?.map((criteria, index) => (
+                  <NormalText>
+                    {index + 1}) {criteria}
+                  </NormalText>
+                ))}
+                <AppText style={styles.text}>Your CGPA</AppText>
 
-            <AppText style={styles.text}>Availability</AppText>
-            <AppText style={{ color: "#A3A3A3", fontSize: 12.5 }}>
-              Specify date and time when you are available to take the call
-            </AppText>
-            <DatePicker
-              titleStyle={availabilityDate ? styles.dateTimeText : ""}
-              onDateChange={(date, timestamp) => {
-                setAvailabilityDate(timestamp);
-              }}
-            />
-            <View style={{ flexDirection: "row", marginBottom: 30 }}>
-              <View style={{ width: "48%", marginRight: 7, marginLeft: 3 }}>
-                <AppText style={styles.text}>From</AppText>
-                <TimePicker
-                  onTimeChange={(time) => {
-                    let hrs = time.getHours();
-                    let mins = time.getMinutes();
-
-                    if (hrs <= 9) hrs = "0" + hrs;
-                    if (mins < 10) mins = "0" + mins;
-
-                    setFromTime(hrs + ":" + mins);
+                <NormalText>{props.cgpa}</NormalText>
+              </>
+            ) : (
+              <>
+                <AppText style={styles.text}>
+                  When you are ready to join:
+                </AppText>
+                <DatePicker
+                  titleStyle={joiningDate ? styles.dateTimeText : ""}
+                  // minDate={null}
+                  onDateChange={(indFormat, usFormat, timestamp) => {
+                    setJoiningDate(usFormat);
                   }}
                 />
-              </View>
-              <View style={{ width: "48%" }}>
-                <AppText style={styles.text}>To</AppText>
-                <TimePicker
-                  onTimeChange={(time) => {
-                    let hrs = time.getHours();
-                    let mins = time.getMinutes();
 
-                    if (hrs <= 9) hrs = "0" + hrs;
-                    if (mins < 10) mins = "0" + mins;
-
-                    setToTime(hrs + ":" + mins);
+                <AppText style={styles.text}>Availability</AppText>
+                <AppText style={{ color: "#A3A3A3", fontSize: 12.5 }}>
+                  Specify date and time when you are available to take the call
+                </AppText>
+                <DatePicker
+                  titleStyle={availabilityDate ? styles.dateTimeText : ""}
+                  onDateChange={(date, timestamp) => {
+                    setAvailabilityDate(timestamp);
                   }}
                 />
-              </View>
-            </View>
+                <View style={{ flexDirection: "row" }}>
+                  <View style={{ width: "48%", marginRight: 7, marginLeft: 3 }}>
+                    <AppText style={styles.text}>From</AppText>
+                    <TimePicker
+                      onTimeChange={(time) => {
+                        let hrs = time.getHours();
+                        let mins = time.getMinutes();
+
+                        if (hrs <= 9) hrs = "0" + hrs;
+                        if (mins < 10) mins = "0" + mins;
+
+                        setFromTime(hrs + ":" + mins);
+                      }}
+                    />
+                  </View>
+                  <View style={{ width: "48%" }}>
+                    <AppText style={styles.text}>To</AppText>
+                    <TimePicker
+                      onTimeChange={(time) => {
+                        let hrs = time.getHours();
+                        let mins = time.getMinutes();
+
+                        if (hrs <= 9) hrs = "0" + hrs;
+                        if (mins < 10) mins = "0" + mins;
+
+                        setToTime(hrs + ":" + mins);
+                      }}
+                    />
+                  </View>
+                </View>
+              </>
+            )}
             <CustomButton
               title="Apply"
               onPress={() => {

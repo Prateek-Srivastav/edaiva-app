@@ -25,6 +25,7 @@ import { useIsFocused } from "@react-navigation/native";
 import campusCandidateApi from "../../api/campusApis/candidate";
 import { navigationRef } from "../rootNavigation";
 import CampusSelectionScreen from "../../screens/campusScreens/CampusSelectionScreen";
+import campusApplicationApi from "../../api/campusApis/application";
 
 const Tab = createBottomTabNavigator();
 
@@ -39,7 +40,7 @@ function CampusNavigator({ route, navigation }) {
     networkError,
     loading,
     request: loadApplications,
-  } = useApi(applicationApi.getApplications);
+  } = useApi(campusApplicationApi.getCampusApplications);
 
   // const { data: campusProfileData, request: loadCampusProfile } = useApi(
   //   campusCandidateApi.getProfile
@@ -55,13 +56,6 @@ function CampusNavigator({ route, navigation }) {
     loadApplications();
     // loadCampusProfile();
   }, [isFocused]);
-
-  // if (
-  //   campusProfileData?.detail !== "Your are not a part of any institution !"
-  // ) {
-  //   navigation.navigate("CampusSelection");
-  //   return null;
-  // }
 
   const notifications = applications?.filter(
     (application) =>

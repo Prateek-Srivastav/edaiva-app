@@ -159,7 +159,11 @@ function ViewProfileScreen({ navigation, route }) {
               </LargeText>
               {data.designation !== "" && (
                 <Card
-                  style={{ justifyContent: "flex-start", paddingVertical: 5 }}
+                  style={{
+                    justifyContent: "flex-start",
+                    paddingVertical: 5,
+                    paddingVertical: 10,
+                  }}
                 >
                   <NormalText>{data.designation}</NormalText>
                 </Card>

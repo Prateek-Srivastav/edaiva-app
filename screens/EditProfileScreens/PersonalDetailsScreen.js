@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
 
 function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const navigation = useNavigation();
-  console.log(navigation.getState());
+  // console.log(navigation.getState());
 
   if (isCampus && profileData.profile) {
     var { firstname, lastname } = profileData;
@@ -51,17 +51,17 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
   };
 
   const { usFormat: usFormatDob } = formattedNumericDate(
-    isCampus ? profileData.profile?.dob : profileData.dob?.$date
+    isCampus ? profileData.profile?.dob : profileData?.dob?.$date
   );
 
   const [dob, setDob] = useState(
     usFormatDob !== "NaN-NaN-NaN" ? usFormatDob : null
   );
   const [state, setState] = useState(
-    isCampus ? profileData.profile?.state : profileData.state
+    isCampus ? profileData.profile?.state : profileData?.state
   );
   const [country, setCountry] = useState(
-    isCampus ? profileData.profile?.country : profileData.country
+    isCampus ? profileData.profile?.country : profileData?.country
   );
   const [phone, setPhone] = useState(mobile);
   const [phoneCode, setPhoneCode] = useState();
@@ -137,11 +137,11 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
 
     if (
       (isCampus && !profileData.profile?.user) ||
-      (!isCampus && !profileData.user)
+      (!isCampus && !profileData?.user)
     ) {
       console.log("abcd");
       await createProfile(val);
-      return navigation.navigate("Profile");
+      return navigation.navigate("ProfileStack");
     } else {
       console.log("efgh");
       await updateProfile(val);
