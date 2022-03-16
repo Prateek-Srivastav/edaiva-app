@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import * as WebBrowser from "expo-web-browser";
 
 import AppText from "../AppText";
 import Colors from "../../constants/Colors";
@@ -24,7 +25,12 @@ function SocialLinkDetails({ sociallinks }) {
             }}
           >
             <NormalText>Facebook: </NormalText>
-            <AppText style={{ color: Colors.primary }}> {facebook}</AppText>
+            <AppText
+              onPress={() => WebBrowser.openBrowserAsync(facebook)}
+              style={{ color: Colors.primary }}
+            >
+              {facebook}
+            </AppText>
           </View>
           <View style={styles.line} />
         </>
@@ -39,7 +45,12 @@ function SocialLinkDetails({ sociallinks }) {
             }}
           >
             <NormalText>Github: </NormalText>
-            <AppText style={{ color: Colors.primary }}> {github}</AppText>
+            <AppText
+              onPress={() => WebBrowser.openBrowserAsync(github)}
+              style={{ color: Colors.primary }}
+            >
+              {github}
+            </AppText>
           </View>
           <View style={styles.line} />
         </>
@@ -54,7 +65,12 @@ function SocialLinkDetails({ sociallinks }) {
             }}
           >
             <NormalText>LinkedIn: </NormalText>
-            <AppText style={{ color: Colors.primary }}> {linkedin}</AppText>
+            <AppText
+              onPress={() => WebBrowser.openBrowserAsync(linkedin)}
+              style={{ color: Colors.primary }}
+            >
+              {linkedin}
+            </AppText>
           </View>
           <View style={styles.line} />
         </>
@@ -69,7 +85,12 @@ function SocialLinkDetails({ sociallinks }) {
             }}
           >
             <NormalText>Instagram: </NormalText>
-            <AppText style={{ color: Colors.primary }}> {instagram}</AppText>
+            <AppText
+              onPress={() => WebBrowser.openBrowserAsync(instagram)}
+              style={{ color: Colors.primary }}
+            >
+              {instagram}
+            </AppText>
           </View>
           <View style={styles.line} />
         </>
@@ -84,7 +105,12 @@ function SocialLinkDetails({ sociallinks }) {
             }}
           >
             <NormalText>Twitter: </NormalText>
-            <AppText style={{ color: Colors.primary }}> {twitter}</AppText>
+            <AppText
+              onPress={() => WebBrowser.openBrowserAsync(twitter)}
+              style={{ color: Colors.primary }}
+            >
+              {twitter}
+            </AppText>
           </View>
         </>
       )}

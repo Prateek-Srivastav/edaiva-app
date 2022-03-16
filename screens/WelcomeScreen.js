@@ -8,6 +8,7 @@ import {
   Image,
 } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
 
 import authApi from "../api/auth";
 import AuthContext from "../auth/context";
@@ -31,6 +32,10 @@ function WelcomeScreen({ navigation }) {
   });
 
   const authContext = useContext(AuthContext);
+
+  const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+
+  console.log(redirectUri);
 
   const handleGoogleAuth = async (authentication) => {
     setLoading(true);
@@ -138,7 +143,7 @@ function WelcomeScreen({ navigation }) {
           activeOpacity={0.5}
           style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
           disabled={!request}
-          onPress={() => promptAsync()}
+          onPress={() => promptAsync({ redirectUri })}
         >
           <Image
             source={require("../assets/google.png")}

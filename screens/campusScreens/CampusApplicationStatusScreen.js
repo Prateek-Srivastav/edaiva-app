@@ -8,24 +8,19 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { Feather, EvilIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 
 import AppText from "../../components/AppText";
 import Card from "../../components/Card";
 import Colors from "../../constants/Colors";
-import jobsApi from "../../api/jobs";
 import JobDetails from "../../components/JobDetails";
 import { BuildingIcon, Location, Share } from "../../assets/svg/icons";
 import useApi from "../../hooks/useApi";
 import Loading from "../../components/Loading";
-import interviewApi from "../../api/interview";
 import RescheduleModal from "../../components/appmodals/RescheduleModal";
 import { formattedDate } from "../../utilities/date";
 import formattedTime from "../../utilities/time";
-import applicationApi from "../../api/application";
-import CustomHeader from "../../components/CustomHeader";
-import { placementClient } from "../../api/client";
 import campusApplicationApi from "../../api/campusApis/application";
 import Error from "../../components/Error";
 import NetworkError from "../../components/NetworkError";

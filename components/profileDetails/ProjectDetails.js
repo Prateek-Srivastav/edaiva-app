@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as WebBrowser from "expo-web-browser";
 
 import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
@@ -79,7 +80,8 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
 
       <SmallText style={{ marginStart: 0 }}> {project.description}</SmallText>
       {project.link !== "" && (
-        <View
+        <TouchableOpacity
+          onPress={() => WebBrowser.openBrowserAsync(patent.link)}
           style={{
             flexDirection: "row",
             // justifyContent: "center",
@@ -90,7 +92,7 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
           <SmallText style={{ color: Colors.primary }}>
             {project.link}
           </SmallText>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );

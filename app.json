@@ -29,11 +29,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "bugsnag": {
-        "apiKey": "6d6a5fdf5a9243065ad827dfd7bd8b18"
-      }
-    },
+
     "hooks": {
       "postPublish": [
         {

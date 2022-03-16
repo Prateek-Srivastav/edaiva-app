@@ -11,7 +11,6 @@ import CampusNavigator from "./campusNavigation/CampusNavigator";
 import navigation from "./rootNavigation";
 import useApi from "../hooks/useApi";
 import expoNotificationsApi from "../api/expoNotifications";
-import logger from "../utilities/logger";
 import authStorage from "../auth/storage";
 import campusCandidateApi from "../api/campusApis/candidate";
 import Loading from "../components/Loading";
@@ -100,7 +99,7 @@ function AppNavigator() {
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(token, "aaaaaaaa");
-      logger.log(token);
+      console.log(token);
       sendPushToken({ expo_token: token });
 
       // if (Platform.OS === "android") {

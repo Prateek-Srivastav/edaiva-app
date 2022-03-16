@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import Colors from "../../constants/Colors";
-import logger from "../../utilities/logger";
 import CarouselItem from "./CarouselItem";
 
 const { width, height } = Dimensions.get("window");
@@ -107,7 +106,7 @@ const Carousel = ({ data }) => {
     );
   }
 
-  logger.log("Please provide Images");
+  console.log("Please provide Images");
   return null;
 };
 

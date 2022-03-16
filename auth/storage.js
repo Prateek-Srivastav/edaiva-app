@@ -1,6 +1,4 @@
 import * as SecureStore from "expo-secure-store";
-// import moment from "moment";
-import logger from "../utilities/logger";
 
 const accessKey = "accessToken";
 const refreshKey = "refreshToken";
@@ -10,7 +8,7 @@ const storeToken = async (accessToken, refreshToken) => {
     await SecureStore.setItemAsync(accessKey, accessToken);
     await SecureStore.setItemAsync(refreshKey, refreshToken);
   } catch (error) {
-    logger.log("Error storing the auth token.", error);
+    console.log("Error storing the auth token.", error);
   }
 };
 
@@ -30,7 +28,7 @@ const getToken = async () => {
       refreshToken: await SecureStore.getItemAsync(refreshKey),
     };
   } catch (error) {
-    logger.log("Error getting the auth token", error);
+    console.log("Error getting the auth token", error);
   }
 };
 
@@ -38,9 +36,9 @@ const removeToken = async () => {
   try {
     await SecureStore.deleteItemAsync(accessKey);
     await SecureStore.deleteItemAsync(refreshKey);
-    logger.log("deleted");
+    console.log("deleted");
   } catch (error) {
-    logger.log("Error removing the auth token.", error);
+    console.log("Error removing the auth token.", error);
   }
 };
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as WebBrowser from "expo-web-browser";
 
 import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
@@ -65,7 +66,8 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
       <SmallText>Date: {formattedDate(publication.date)}</SmallText>
       <SmallText>Description: {publication.description}</SmallText>
       {publication.link ? (
-        <View
+        <TouchableOpacity
+          onPress={() => WebBrowser.openBrowserAsync(patent.link)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -75,7 +77,7 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
           <SmallText style={{ color: Colors.primary }}>
             {publication.link}
           </SmallText>
-        </View>
+        </TouchableOpacity>
       ) : null}
     </View>
   );

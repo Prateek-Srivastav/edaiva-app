@@ -16,7 +16,6 @@ import cache from "../utilities/cache";
 import CustomButton from "../components/CustomButton";
 import Colors from "../constants/Colors";
 import authApi from "../api/auth";
-import logger from "../utilities/logger";
 
 const CustomInput = React.forwardRef((props, ref) => {
   const [borderColor, setBorderColor] = useState("#E1E1E1");
@@ -136,7 +135,7 @@ function VerificationCodeScreen({ navigation, route }) {
 
         // setErrorMessage(loginResult.data.detail);
         // console.log(loginResult);
-        return logger.log("Login failed");
+        return console.log("Login failed");
       }
       // setLoading(false);
       // setLoginFailed(false);
