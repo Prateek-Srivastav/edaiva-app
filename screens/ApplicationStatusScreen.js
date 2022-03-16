@@ -8,7 +8,7 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { Feather, EvilIcons } from "@expo/vector-icons";
+import { Feather, EvilIcons, FontAwesome5 } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 
 import AppText from "../components/AppText";
@@ -25,6 +25,7 @@ import { formattedDate } from "../utilities/date";
 import formattedTime from "../utilities/time";
 import applicationApi from "../api/application";
 import CustomHeader from "../components/CustomHeader";
+import { NormalText } from "../components/textStyles";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -407,17 +408,20 @@ function ApplicationStatusScreen({ route }) {
           </View>
           {applicationData[0].offerletter.length > 0 ? (
             <Card
-              style={{ alignItems: "center", width: "97%" }}
+              style={{
+                alignItems: "center",
+                width: "97%",
+                marginTop: 15,
+              }}
               touchable
-              // onPress={viewResume}
+              onPress={() =>
+                WebBrowser.openBrowserAsync(
+                  applicationData[0].offerletter[0].letter
+                )
+              }
             >
-              <FontAwesome5
-                name="file-upload"
-                style={styles.icon}
-                size={ICON_SIZE}
-                color={ICON_COLOR}
-              />
-              <NormalText>View Offer Letter</NormalText>
+              <Share color={Colors.primary} />
+              <NormalText color={Colors.primary}>View Offer Letter</NormalText>
             </Card>
           ) : (
             <StatusMessage />

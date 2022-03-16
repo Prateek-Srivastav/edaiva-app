@@ -9,15 +9,7 @@ import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-import Loading from "../Loading";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { NormalText } from "../textStyles";
 
 function SkillDetails({ data, skill, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -83,19 +75,7 @@ function SkillDetails({ data, skill, index, viewing, isCampus }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 

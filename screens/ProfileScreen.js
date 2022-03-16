@@ -28,7 +28,7 @@ import useApi from "../hooks/useApi";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import CustomHeader from "../components/CustomHeader";
 import AppText from "../components/AppText";
-import PersonalDetailsScreen from "./EditProfileScreens/PersonalDetailsScreen";
+import { Share } from "../assets/svg/icons";
 
 function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
@@ -83,19 +83,6 @@ function ProfileScreen({ navigation }) {
     setApplications(await cache.get("applications"));
     setUser(userDetail);
   }, [isFocused]);
-
-  // if (error && data.error === "Candidate Profile not found!!") {
-  //   //  navigation.navigate("EditProfileDetail", {
-  //   //   component: "personal",
-  //   //   data: {},
-  //   //   isCampus:
-  //   //     campusProfileData?.detail === "Your are not a part of any institution !"
-  //   //       ? false
-  //   //       : true,
-  //   // });
-
-  //   return <PersonalDetailsScreen data={{}} isCampus={true} />;
-  // }
 
   const pickDoc = async () => {
     const result = await DocumentPicker.getDocumentAsync({
@@ -188,7 +175,6 @@ function ProfileScreen({ navigation }) {
             style={{ backgroundColor: "#FFFFFF", elevation: 3 }}
           />
           <CustomButton
-            // activeOpacity={0.3}
             onPress={() => setVisible(false)}
             title="Cancel"
             titleStyle={{ color: Colors.primary }}
@@ -261,7 +247,11 @@ function ProfileScreen({ navigation }) {
             <LargeText>
               {firstname} {lastname}
             </LargeText>
-            <NormalText>{data.designation}</NormalText>
+            <NormalText>
+              {campusProfileData
+                ? campusProfileData[0].institution_details[0].institute_name
+                : data.designation}
+            </NormalText>
             <View
               style={{
                 flexDirection: "row",
@@ -351,13 +341,8 @@ function ProfileScreen({ navigation }) {
                   })
                 }
               >
-                <SimpleLineIcons
-                  name="share-alt"
-                  style={styles.icon}
-                  size={ICON_SIZE}
-                  color={ICON_COLOR}
-                />
-                <NormalText>View Profile</NormalText>
+                <Share color={Colors.primary} width={18} height={18} />
+                <NormalText>{"  "}View Profile</NormalText>
               </Card>
             </View>
 

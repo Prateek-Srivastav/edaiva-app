@@ -8,14 +8,7 @@ import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { SmallText, NormalText, MediumText } from "../textStyles";
 
 function AcademicDetails({ data, academic, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -71,21 +64,18 @@ function AcademicDetails({ data, academic, index, viewing, isCampus }) {
             flexDirection: "row",
             // justifyContent: "center",
             alignItems: "center",
-            marginTop: 7,
           }}
         >
           <SmallText>
-            With specialization in {academic.specialization}
+            With specialization in{" "}
+            <MediumText>{academic.specialization}</MediumText>
           </SmallText>
         </View>
       )}
       <View
         style={{
           flexDirection: "row",
-          // justifyContent: "center",
           alignItems: "center",
-          marginTop: 7,
-          marginBottom: 12,
         }}
       >
         <SmallText>
@@ -94,26 +84,17 @@ function AcademicDetails({ data, academic, index, viewing, isCampus }) {
         </SmallText>
       </View>
 
-      <SmallText style={{ marginStart: 0 }}>Grade: {academic.grade}</SmallText>
+      <SmallText style={{ marginStart: 0 }}>
+        {"  "}
+        <MediumText>Grade:</MediumText> {academic.grade}
+      </SmallText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 

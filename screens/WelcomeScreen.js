@@ -33,7 +33,9 @@ function WelcomeScreen({ navigation }) {
 
   const authContext = useContext(AuthContext);
 
-  const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+  const redirectUri = AuthSession.makeRedirectUri({
+    native: "com.jobs.edaiva",
+  });
 
   console.log(redirectUri);
 

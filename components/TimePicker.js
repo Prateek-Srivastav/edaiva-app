@@ -47,8 +47,13 @@ function TimePicker({ onTimeChange, value }) {
           mode="time"
           display="default"
           onChange={(event, time) => {
-            onChange(event, time);
-            onTimeChange(time);
+            if (event.type === "set") {
+              onChange(event, time);
+              onTimeChange(time);
+            } else {
+              setShow(false);
+              return;
+            }
           }}
         />
       )}

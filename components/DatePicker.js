@@ -5,7 +5,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import AppPicker from "./AppPicker";
 import Colors from "../constants/Colors";
-import { setLocale } from "yup";
 
 function DatePicker({
   disabled,
@@ -24,14 +23,14 @@ function DatePicker({
   const [selectedDate, setSelectedDate] = useState("Date");
 
   const onChange = (event, date) => {
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
+    let day = date?.getDate();
+    let month = date?.getMonth() + 1;
 
     if (day <= 9) day = "0" + day;
     if (month < 10) month = "0" + month;
 
-    const indFormat = day + "/" + month + "/" + date.getFullYear();
-    const usFormat = date.getFullYear() + "-" + month + "-" + day;
+    const indFormat = day + "/" + month + "/" + date?.getFullYear();
+    const usFormat = date?.getFullYear() + "-" + month + "-" + day;
 
     setShow(false);
     setSelectedDate(indFormat);
@@ -62,7 +61,11 @@ function DatePicker({
           mode="date"
           display="default"
           onChange={(event, date) => {
-            onChange(event, date);
+            if (event.type === "set") onChange(event, date);
+            else {
+              setShow(false);
+              return;
+            }
           }}
         />
       )}

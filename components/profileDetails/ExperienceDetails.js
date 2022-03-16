@@ -99,7 +99,7 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
+    marginTop: 10,
     marginStart: 7,
   },
 

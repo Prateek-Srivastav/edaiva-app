@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 
 import AppText from "../AppText";
@@ -14,23 +14,21 @@ function SocialLinkDetails({ sociallinks }) {
   let { facebook, github, instagram, linkedin, twitter } = sociallinks;
 
   return (
-    <View style={styles.container}>
+    <View style={{ marginTop: 10 }}>
       {facebook !== "" && (
         <>
           <View
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
-              marginTop: 10,
             }}
           >
             <NormalText>Facebook: </NormalText>
-            <AppText
+            <TouchableOpacity
               onPress={() => WebBrowser.openBrowserAsync(facebook)}
-              style={{ color: Colors.primary }}
             >
-              {facebook}
-            </AppText>
+              <AppText style={{ color: Colors.primary }}>{facebook}</AppText>
+            </TouchableOpacity>
           </View>
           <View style={styles.line} />
         </>
@@ -41,16 +39,14 @@ function SocialLinkDetails({ sociallinks }) {
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
-              marginTop: 10,
             }}
           >
             <NormalText>Github: </NormalText>
-            <AppText
+            <TouchableOpacity
               onPress={() => WebBrowser.openBrowserAsync(github)}
-              style={{ color: Colors.primary }}
             >
-              {github}
-            </AppText>
+              <AppText style={{ color: Colors.primary }}>{github}</AppText>
+            </TouchableOpacity>
           </View>
           <View style={styles.line} />
         </>
@@ -61,18 +57,16 @@ function SocialLinkDetails({ sociallinks }) {
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
-              marginTop: 10,
             }}
           >
             <NormalText>LinkedIn: </NormalText>
-            <AppText
+            <TouchableOpacity
               onPress={() => WebBrowser.openBrowserAsync(linkedin)}
-              style={{ color: Colors.primary }}
             >
-              {linkedin}
-            </AppText>
+              <AppText style={{ color: Colors.primary }}>{linkedin}</AppText>
+            </TouchableOpacity>
           </View>
-          <View style={styles.line} />
+          {instagram !== "" && twitter !== "" && <View style={styles.line} />}
         </>
       )}
       {instagram !== "" && (
@@ -81,16 +75,14 @@ function SocialLinkDetails({ sociallinks }) {
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
-              marginTop: 10,
             }}
           >
             <NormalText>Instagram: </NormalText>
-            <AppText
+            <TouchableOpacity
               onPress={() => WebBrowser.openBrowserAsync(instagram)}
-              style={{ color: Colors.primary }}
             >
-              {instagram}
-            </AppText>
+              <AppText style={{ color: Colors.primary }}>{instagram}</AppText>
+            </TouchableOpacity>
           </View>
           <View style={styles.line} />
         </>
@@ -101,17 +93,16 @@ function SocialLinkDetails({ sociallinks }) {
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
-              marginTop: 10,
             }}
           >
             <NormalText>Twitter: </NormalText>
-            <AppText
+            <TouchableOpacity
               onPress={() => WebBrowser.openBrowserAsync(twitter)}
-              style={{ color: Colors.primary }}
             >
-              {twitter}
-            </AppText>
+              <AppText style={{ color: Colors.primary }}>{twitter}</AppText>
+            </TouchableOpacity>
           </View>
+          <View style={styles.line} />
         </>
       )}
     </View>
@@ -120,24 +111,20 @@ function SocialLinkDetails({ sociallinks }) {
 
 const styles = StyleSheet.create({
   line: {
-    // height: 27,
-    // alignSelf: "center",
     width: "95%",
     height: 1.6,
     borderRadius: 10,
-    // marginHorizontal: 5,
     alignSelf: "center",
     backgroundColor: Colors.grey,
     elevation: 1,
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 10,
     opacity: 0.1,
   },
   normalText: {
     fontFamily: "OpenSans-Medium",
     fontSize: 16,
-    // marginTop: 10,
     color: Colors.grey,
+    marginStart: 7,
   },
 });
 

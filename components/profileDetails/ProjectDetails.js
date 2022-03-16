@@ -1,22 +1,13 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
 
-import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
-import { formattedDate } from "../../utilities/date";
+import { Pencil, Trash } from "../../assets/svg/icons";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { SmallText, NormalText, MediumText } from "../textStyles";
 
 function ProjectDetails({ data, project, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -71,22 +62,18 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
           flexDirection: "row",
           // justifyContent: "center",
           alignItems: "center",
-          marginTop: 7,
-          marginBottom: 12,
         }}
       >
         <SmallText>Worked as {project.role}</SmallText>
       </View>
 
-      <SmallText style={{ marginStart: 0 }}> {project.description}</SmallText>
+      <SmallText style={{}}>{project.description}</SmallText>
       {project.link !== "" && (
         <TouchableOpacity
-          onPress={() => WebBrowser.openBrowserAsync(patent.link)}
+          onPress={() => WebBrowser.openBrowserAsync(project.link)}
           style={{
             flexDirection: "row",
-            // justifyContent: "center",
             alignItems: "center",
-            marginTop: 7,
           }}
         >
           <SmallText style={{ color: Colors.primary }}>
@@ -100,19 +87,7 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 

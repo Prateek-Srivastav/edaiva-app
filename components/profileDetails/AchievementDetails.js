@@ -1,22 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Toast } from "react-native-toast-message";
 
-import { BuildingIcon, Pencil, Trash } from "../../assets/svg/icons";
+import { Pencil, Trash } from "../../assets/svg/icons";
 import { formattedDate } from "../../utilities/date";
-import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { SmallText, NormalText, MediumText } from "../textStyles";
 
 function AchievementDetails({ data, achievement, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -68,27 +58,20 @@ function AchievementDetails({ data, achievement, index, viewing, isCampus }) {
           </View>
         )}
       </View>
-      <SmallText>Date: {formattedDate(achievement.date)}</SmallText>
-      <SmallText>Description: {achievement.description}</SmallText>
+      <SmallText>
+        <MediumText>Date:</MediumText> {formattedDate(achievement.date)}
+      </SmallText>
+      <SmallText>
+        <MediumText>Description: </MediumText>
+        {achievement.description}
+      </SmallText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 

@@ -8,14 +8,7 @@ import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { SmallText, NormalText, MediumText } from "../textStyles";
 
 function CertificationDetails({
   data,
@@ -67,21 +60,24 @@ function CertificationDetails({
           </View>
         )}
       </View>
-      <SmallText>Issued By: {certification.issued_by}</SmallText>
       <SmallText>
-        Issued on: {formattedDate(certification.issue_date)}
+        <MediumText>Issued By:</MediumText> {certification.issued_by}
+      </SmallText>
+      <SmallText>
+        <MediumText>Issued on:</MediumText>{" "}
+        {formattedDate(certification.issue_date)}
       </SmallText>
 
       <View
         style={{
           flexDirection: "row",
-          // justifyContent: "center",
           alignItems: "center",
-          marginTop: 7,
-          marginBottom: 12,
         }}
       >
-        <SmallText>Certificate ID: {certification.certificate_id}</SmallText>
+        <SmallText>
+          <MediumText>Certificate ID:</MediumText>{" "}
+          {certification.certificate_id}
+        </SmallText>
       </View>
 
       {certification.link !== "" && (
@@ -89,9 +85,7 @@ function CertificationDetails({
           onPress={() => WebBrowser.openBrowserAsync(certification.link)}
           style={{
             flexDirection: "row",
-            // justifyContent: "center",
             alignItems: "center",
-            marginTop: 7,
           }}
         >
           <SmallText style={{ color: Colors.primary }}>
@@ -105,19 +99,7 @@ function CertificationDetails({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 

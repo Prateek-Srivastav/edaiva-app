@@ -19,7 +19,7 @@ const DetailHeading = ({ label, onPress, viewing }) => (
       alignItems: "center",
       // borderWidth: 1,
       width: "100%",
-      marginVertical: 6,
+      marginVertical: 10,
     }}
   >
     <SmallText>{label}</SmallText>

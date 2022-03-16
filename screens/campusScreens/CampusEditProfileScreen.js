@@ -158,7 +158,6 @@ function CampusEditProfileScreen() {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        // borderWidth: 1,
         width: "100%",
       }}
     >
@@ -262,13 +261,6 @@ function CampusEditProfileScreen() {
               <LargeText>
                 {user.firstname} {user.lastname}
               </LargeText>
-              {data.designation !== "" && (
-                <Card
-                  style={{ justifyContent: "flex-start", paddingVertical: 5 }}
-                >
-                  <NormalText>{data.designation}</NormalText>
-                </Card>
-              )}
             </View>
           </View>
           <ScrollView>
@@ -345,7 +337,6 @@ function CampusEditProfileScreen() {
                     style={{
                       width: "20%",
                       height: 30,
-
                       marginBottom: 0,
                     }}
                     numberOfLines={1}
@@ -354,6 +345,7 @@ function CampusEditProfileScreen() {
                         ? cgpa
                         : campusProfileData[0]?.cgpa
                     }
+                    value={cgpa}
                     onBlur={handleCgpaSubmit}
                     onChangeText={(text) => setCgpa(text)}
                     onSubmitEditing={handleCgpaSubmit}

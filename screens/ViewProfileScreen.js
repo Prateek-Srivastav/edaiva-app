@@ -74,7 +74,7 @@ function ViewProfileScreen({ navigation, route }) {
     }
     const userDetail = await cache.get("user");
     setUser(userDetail);
-    setAbout(data.description);
+    setAbout(data?.description);
   }, [isFocused]);
 
   if (networkError && !loading) return <NetworkError onPress={loadProfile} />;
@@ -157,7 +157,7 @@ function ViewProfileScreen({ navigation, route }) {
               <LargeText>
                 {user.firstname} {user.lastname}
               </LargeText>
-              {data.designation !== "" && (
+              {data.designation !== "" && !route.params.isCampus && (
                 <Card
                   style={{
                     justifyContent: "flex-start",
@@ -172,12 +172,15 @@ function ViewProfileScreen({ navigation, route }) {
           </View>
           <ScrollView>
             <PersonalDetails data={data} viewing />
-
-            <View style={{ ...styles.line, marginTop: 15 }} />
-            <View style={{ marginHorizontal: 15 }}>
-              <DetailHeading label="ABOUT" />
-              <ViewAbout data={data.description} />
-            </View>
+            {data.description !== "" && data.description && (
+              <>
+                <View style={{ ...styles.line, marginTop: 15 }} />
+                <View style={{ marginHorizontal: 15 }}>
+                  <DetailHeading label="ABOUT" />
+                  <ViewAbout data={data.description} />
+                </View>
+              </>
+            )}
             {route.params.isCampus && (
               <>
                 <View style={styles.line} />

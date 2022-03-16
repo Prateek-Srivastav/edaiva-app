@@ -9,14 +9,7 @@ import { formattedDate } from "../../utilities/date";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
-
-const SmallText = (props) => (
-  <Text style={{ ...styles.smallText, ...props.style }}>{props.children}</Text>
-);
-
-const NormalText = (props) => (
-  <Text style={styles.normalText}>{props.children}</Text>
-);
+import { SmallText, NormalText, MediumText } from "../textStyles";
 
 function PublicationDetails({ data, publication, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -35,7 +28,7 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
   return deleted ? null : (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <NormalText> {publication.title}</NormalText>
+        <NormalText>{publication.title}</NormalText>
         {!viewing && (
           <View
             style={{
@@ -62,16 +55,21 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
           </View>
         )}
       </View>
-      <SmallText>Publisher: {publication.publisher}</SmallText>
-      <SmallText>Date: {formattedDate(publication.date)}</SmallText>
-      <SmallText>Description: {publication.description}</SmallText>
+      <SmallText>
+        <MediumText>Publisher:</MediumText> {publication.publisher}
+      </SmallText>
+      <SmallText>
+        <MediumText>Date:</MediumText> {formattedDate(publication.date)}
+      </SmallText>
+      <SmallText>
+        <MediumText>Description:</MediumText> {publication.description}
+      </SmallText>
       {publication.link ? (
         <TouchableOpacity
-          onPress={() => WebBrowser.openBrowserAsync(patent.link)}
+          onPress={() => WebBrowser.openBrowserAsync(publication.link)}
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginTop: 7,
           }}
         >
           <SmallText style={{ color: Colors.primary }}>
@@ -85,19 +83,7 @@ function PublicationDetails({ data, publication, index, viewing, isCampus }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-  },
-
-  smallText: {
-    fontFamily: "OpenSans-Regular",
-    fontSize: 15,
-    color: Colors.grey,
-    marginStart: 7,
-  },
-  normalText: {
-    fontFamily: "OpenSans-Medium",
-    fontSize: 16,
-    color: Colors.grey,
+    marginTop: 10,
   },
 });
 
