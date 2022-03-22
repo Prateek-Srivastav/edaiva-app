@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import * as Notifications from "expo-notifications";
+import * as Linking from "expo-linking";
 
 import ProfileNavigator from "./ProfileNavigator";
 import TabNavigator from "./TabNavigator";
 import CustomDrawer from "../components/CustomDrawer";
 import WishlistNavigator from "./WishlistNavigator";
 import CampusNavigator from "./campusNavigation/CampusNavigator";
-import navigation from "./rootNavigation";
 import useApi from "../hooks/useApi";
 import expoNotificationsApi from "../api/expoNotifications";
 import authStorage from "../auth/storage";
@@ -16,6 +16,7 @@ import campusCandidateApi from "../api/campusApis/candidate";
 import Loading from "../components/Loading";
 import CampusSelectionScreen from "../screens/campusScreens/CampusSelectionScreen";
 import CreateProfileScreen from "../screens/CreateProfileScreen";
+import navigate from "./rootNavigation";
 
 const Drawer = createDrawerNavigator();
 
@@ -27,7 +28,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function AppNavigator() {
+function AppNavigator({ navigation }) {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -59,8 +60,11 @@ function AppNavigator() {
 
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          navigation.navigate("ProfileStack");
-          console.log(response);
+          // Linking.openURL(
+          //   "https://143.110.241.27:6204/applications/6209ff95afab70a746bf4d76"
+          // );
+          // navigate("Applications");
+          // console.log(response);
         });
 
       return () => {
@@ -98,7 +102,6 @@ function AppNavigator() {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token, "aaaaaaaa");
       console.log(token);
       sendPushToken({ expo_token: token });
 

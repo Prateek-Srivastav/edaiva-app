@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
 
 import authApi from "../api/auth";
 import AuthContext from "../auth/context";
@@ -18,26 +20,40 @@ import Carousel from "../components/carousels/Carousel";
 import Colors from "../constants/Colors";
 import { carouselData } from "../dummyData.js/carouselData";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import useApi from "../hooks/useApi";
 
 function WelcomeScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  WebBrowser.maybeCompleteAuthSession();
+
+  const {
+    data,
+    error,
+    request: getLinkedinLoginUrl,
+  } = useApi(authApi.getLinkedinLogin);
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
       "652348070444-ugnvs7e9duc2b2sipm774gragfh4q4ag.apps.googleusercontent.com",
     expoClientId:
       "652348070444-91kal7v5edkh5h1bq75t84qpetp1ko3u.apps.googleusercontent.com",
+    // redirectUri: AuthSession.makeRedirectUri({
+    //   native:
+    //     "com.googleusercontent.apps.652348070444-ugnvs7e9duc2b2sipm774gragfh4q4ag",
+    //   useProxy: true,
+    // }),
   });
 
   const authContext = useContext(AuthContext);
 
-  const redirectUri = AuthSession.makeRedirectUri({
-    native: "com.jobs.edaiva",
-  });
+  // const redirectUri = AuthSession.makeRedirectUri({
+  //   native: "com.jobs.edaiva",
+  // });
 
-  console.log(redirectUri);
+  // console.log(redirectUri);
 
   const handleGoogleAuth = async (authentication) => {
     setLoading(true);
@@ -68,13 +84,32 @@ function WelcomeScreen({ navigation }) {
     await cache.store("user", user);
   };
 
+  const handleLinkedinAuth = async (data) => {
+    setLoading(true);
+
+    let redirectUrl = data.redirect_url;
+
+    redirectUrl = redirectUrl.split("&");
+    redirectUrl.splice(2, 1);
+    const appRedirectUri = Linking.createURL();
+    // appRedirectUri = appRedirectUri.slice(1);
+    redirectUrl.push(`redirect_uri=${appRedirectUri}`);
+    redirectUrl = redirectUrl.join("&");
+    console.log(redirectUrl);
+
+    // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
+
+    // console.log(result);
+  };
+
   React.useEffect(() => {
     if (response?.type === "success") {
       const { authentication } = response;
       handleGoogleAuth(authentication);
     }
+    if (data) handleLinkedinAuth(data);
     console.log(response);
-  }, [response]);
+  }, [response, data]);
 
   return (
     <ScrollView
@@ -145,7 +180,7 @@ function WelcomeScreen({ navigation }) {
           activeOpacity={0.5}
           style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
           disabled={!request}
-          onPress={() => promptAsync({ redirectUri })}
+          onPress={() => promptAsync()}
         >
           <Image
             source={require("../assets/google.png")}
@@ -157,6 +192,7 @@ function WelcomeScreen({ navigation }) {
         <TouchableOpacity
           activeOpacity={0.5}
           style={styles.thirdPartyAuthContainer}
+          onPress={() => getLinkedinLoginUrl()}
         >
           <Image
             source={require("../assets/linkedin.png")}

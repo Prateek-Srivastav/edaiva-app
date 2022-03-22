@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -9,10 +9,13 @@ import {
   Dimensions,
 } from "react-native";
 import RenderHtml, { defaultSystemFonts } from "react-native-render-html";
+import jobsApi from "../api/jobs";
 
 import AppText from "../components/AppText";
 import Card from "../components/Card";
 import Colors from "../constants/Colors";
+import useApi from "../hooks/useApi";
+import Loading from "./Loading";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -30,14 +33,27 @@ const NormalText = ({ children }) => (
   </Text>
 );
 
-function JobDetails({ data: jobDetails, isCampus }) {
+function JobDetails({ data, jobId, isCampus }) {
   const [showDetail, setShowDetail] = useState(1);
-  const [isPressed, setIsPressed] = useState(false);
 
-  // const { width } = Dimensions.get("screen");
   const [position] = useState(new Animated.ValueXY());
 
-  // const data = dummyData[1];
+  const {
+    data: jobData,
+    error,
+    networkError,
+    loading,
+    request: loadJobDetails,
+  } = useApi(jobsApi.getJobDetails);
+
+  useEffect(() => {
+    loadJobDetails(jobId);
+  }, []);
+
+  let jobDetails;
+
+  if (jobId && !loading) jobDetails = jobData;
+  else jobDetails = data;
 
   const animStyles = {
     top: 0,
@@ -170,7 +186,9 @@ function JobDetails({ data: jobDetails, isCampus }) {
     );
   };
 
-  return (
+  return !jobDetails || loading ? (
+    <Loading />
+  ) : (
     <View
       style={{
         paddingBottom: 10,
@@ -303,7 +321,7 @@ function JobDetails({ data: jobDetails, isCampus }) {
 const styles = StyleSheet.create({
   card: {
     width: "100%",
-    // top: -5,
+    top: -5,
     flexDirection: "column",
     // flex: 0.75,
     justifyContent: "flex-start",

@@ -23,6 +23,18 @@
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.edaiva.com"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "package": "com.prateeksri.edaivajobsApp",
       "useNextNotificationsApi": true
     },
@@ -43,6 +55,6 @@
       ]
     },
     "plugins": ["sentry-expo"],
-    "scheme": "edaiva-jobs-app"
+    "scheme": "https"
   }
 }

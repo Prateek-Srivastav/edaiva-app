@@ -58,9 +58,8 @@ function ApplicationStatusScreen({ route }) {
   );
 
   useEffect(() => {
-    loadJobDetails(jobId);
-    loadInterviews(applicationId);
     loadApplicationDetails(applicationId);
+    loadInterviews(applicationId);
   }, []);
 
   if (loading) return <Loading />;
@@ -85,7 +84,7 @@ function ApplicationStatusScreen({ route }) {
     if (
       applicationStatus === "hired" &&
       applicationData &&
-      applicationData[0].offerletter.length === 0
+      applicationData[0]?.offerletter.length === 0
     ) {
       color = "#2D811F";
       message =
@@ -348,7 +347,9 @@ function ApplicationStatusScreen({ route }) {
       detail = interviewData ? <InterviewDetail /> : <View></View>;
       animate(width / 5);
     } else if (show === 2) {
-      detail = <JobDetails data={data} />;
+      detail = (
+        <JobDetails data={data} jobId={applicationData[0].job._id.$oid} />
+      );
       animate(3 * (width / 5));
     }
 
@@ -377,7 +378,7 @@ function ApplicationStatusScreen({ route }) {
     );
   };
 
-  return !loading && data && interviewData && applicationData ? (
+  return !loading && interviewData && applicationData ? (
     <View style={styles.container}>
       {/* <CustomHeader  navigation={navigation} /> */}
       <View
@@ -388,7 +389,7 @@ function ApplicationStatusScreen({ route }) {
         }}
       >
         <Card style={styles.card}>
-          <Text style={styles.heading}>{data.job_title}</Text>
+          <Text style={styles.heading}>{applicationData[0].job.job_title}</Text>
 
           <View
             style={{
@@ -399,7 +400,9 @@ function ApplicationStatusScreen({ route }) {
           >
             <BuildingIcon color="#BDEEFF" />
 
-            <Text style={styles.text}>{data.company.name}</Text>
+            <Text style={styles.text}>
+              {applicationData[0].job.company[0].name}
+            </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Location color="#BDEEFF" />

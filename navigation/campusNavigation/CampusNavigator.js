@@ -19,12 +19,8 @@ import {
 } from "../../assets/svg/icons";
 
 import CampusNotificationsNavigator from "./CampusNotificationsNavigator";
-import applicationApi from "../../api/application";
 import useApi from "../../hooks/useApi";
 import { useIsFocused } from "@react-navigation/native";
-import campusCandidateApi from "../../api/campusApis/candidate";
-import { navigationRef } from "../rootNavigation";
-import CampusSelectionScreen from "../../screens/campusScreens/CampusSelectionScreen";
 import campusApplicationApi from "../../api/campusApis/application";
 
 const Tab = createBottomTabNavigator();

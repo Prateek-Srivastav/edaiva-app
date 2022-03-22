@@ -15,6 +15,8 @@ const verifyOtp = (data) => client.post("user/otp_verification/", data);
 const googleLogin = (accessToken) =>
   client.get("user/callback/google-app", { access_token: accessToken });
 
+const getLinkedinLogin = () => client.get("/user/login/linkedin");
+
 const linkedinLogin = (accessToken) =>
   client.get("user/callback/linkedin-app", { access_token: accessToken });
 
@@ -25,5 +27,6 @@ export default {
   resendOtp,
   verifyOtp,
   googleLogin,
+  getLinkedinLogin,
   linkedinLogin,
 };
