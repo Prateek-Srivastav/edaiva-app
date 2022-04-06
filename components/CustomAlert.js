@@ -10,7 +10,7 @@ import {
   Animated,
 } from "react-native";
 
-const CustomAlert = ({ visible, children, modalWidth }) => {
+const CustomAlert = ({ visible, children, modalWidth, modalStyle }) => {
   const [showModal, setShowModal] = useState(visible);
   const scaleValue = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -42,6 +42,7 @@ const CustomAlert = ({ visible, children, modalWidth }) => {
             styles.modalContainer,
             { width: modalWidth ? modalWidth : "80%" },
             { transform: [{ scale: scaleValue }] },
+            modalStyle,
           ]}
         >
           {children}

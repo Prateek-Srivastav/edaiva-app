@@ -13,12 +13,15 @@ const resendOtp = (email) => client.post("user/resend_otp/", { email });
 const verifyOtp = (data) => client.post("user/otp_verification/", data);
 
 const googleLogin = (accessToken) =>
-  client.get("user/callback/google-app", { access_token: accessToken });
+  client.get("user/callback/google-app", {
+    access_token: accessToken,
+    platform: "app",
+  });
 
 const getLinkedinLogin = () => client.get("/user/login/linkedin");
 
 const linkedinLogin = (accessToken) =>
-  client.get("user/callback/linkedin-app", { access_token: accessToken });
+  client.get("/user/callback/linkedin", { code: accessToken, platform: "app" });
 
 export default {
   login,

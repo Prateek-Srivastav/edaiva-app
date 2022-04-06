@@ -406,7 +406,6 @@ function ApplicationStatusScreen({ route }) {
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Location color="#BDEEFF" />
-
             <Text style={styles.text}>{route.params.location}</Text>
           </View>
           {applicationData[0].offerletter.length > 0 ? (

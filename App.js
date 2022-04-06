@@ -35,11 +35,11 @@ const fetchFonts = () => {
   });
 };
 
-const config = {
-  screens: {
-    AuthNavigator: "/",
-  },
-};
+// const config = {
+//   screens: {
+//     AuthNavigator: "/",
+//   },
+// };
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -67,23 +67,16 @@ export default function App() {
 
   // const prefix = Linking.createURL("edaiva")
 
-  const universal = Linking.createURL("https://*.edaiva.com");
+  // const universal = Linking.createURL("https://*.edaiva.com");
 
   // console.log(Linking.createURL("", { scheme: "https" }));
 
   return (
     <AuthContext.Provider value={{ tokens, setTokens }}>
-      <NavigationContainer
-        linking={{
-          prefixes: [universal],
-          config,
-        }}
-        ref={navigationRef}
-      >
+      <NavigationContainer>
         {tokens ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
     </AuthContext.Provider>
-    // <CampusSelectionScreen />
   );
 }

@@ -249,7 +249,7 @@ function ProfileScreen({ navigation }) {
             </LargeText>
             <NormalText>
               {campusProfileData
-                ? campusProfileData[0].institution_details[0].institute_name
+                ? campusProfileData[0]?.institution_details[0].institute_name
                 : data.designation}
             </NormalText>
             <View
@@ -269,7 +269,7 @@ function ProfileScreen({ navigation }) {
                   paddingVertical: 20,
                 }}
               >
-                <LargeText>{applications}</LargeText>
+                <LargeText>{applications ? applications : 0}</LargeText>
                 <NormalText>Jobs Applied</NormalText>
               </Card>
               <Card

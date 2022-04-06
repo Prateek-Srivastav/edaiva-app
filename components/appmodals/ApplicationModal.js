@@ -130,7 +130,6 @@ function ApplicationModal(props) {
     console.log(response);
     if (!response.ok) {
       setLoading(false);
-
       if (response.problem === "NETWORK_ERROR") {
         Toast.show({
           type: "appError",
@@ -140,9 +139,10 @@ function ApplicationModal(props) {
       } else {
         Toast.show({
           type: "appError",
-          text1: response.data.detail
-            ? response.data.detail
-            : "Something went wrong",
+          text1: "Something went wrong",
+          // response.data.detail
+          // ? response.data.detail
+          // : "Something went wrong",
         });
         return setError(true);
       }

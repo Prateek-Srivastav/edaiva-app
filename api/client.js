@@ -11,12 +11,12 @@ export const jobClient = create({
   baseURL: "http://167.172.236.197:4202/api",
 });
 
-export const pushTokenClient = create({
-  baseURL: "http://167.172.236.197:8008",
-});
-
 export const authClient = create({
   baseURL: "http://167.172.236.197:8011/api/gateway/core-service",
+});
+
+export const pushTokenClient = create({
+  baseURL: "http://167.172.236.197:8008",
 });
 
 export const placementClient = create({

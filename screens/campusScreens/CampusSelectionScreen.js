@@ -12,12 +12,14 @@ import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import AuthContext from "../../auth/context";
+import { ErrorMessage } from "../../components/forms";
 
 function CampusSelectionScreen({ navigation, route }) {
   const [visible, setVisible] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+  const [errorVisible, setErrorVisible] = useState(false);
 
   let batchCode;
   const authContext = useContext(AuthContext);
@@ -31,6 +33,11 @@ function CampusSelectionScreen({ navigation, route }) {
   // } = useApi(campusCandidateApi.joinBatch);
 
   const submitHandler = async () => {
+    if (!batchCode) {
+      setErrorVisible(true);
+      return;
+    }
+
     setVisible(false);
 
     setLoading(true);
@@ -92,10 +99,12 @@ function CampusSelectionScreen({ navigation, route }) {
 
         <Input
           placeholder="Enter batch code"
-          onChangeText={(text) => (batchCode = text)}
+          onChangeText={(text) => {
+            batchCode = text;
+          }}
           defaultValue={batchCode}
         />
-
+        <ErrorMessage error="Please enter batch code." visible={errorVisible} />
         <View
           style={{
             flexDirection: "row",
