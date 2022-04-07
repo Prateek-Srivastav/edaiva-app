@@ -68,6 +68,8 @@ function ProfileScreen({ navigation }) {
     request: loadProfile,
   } = useApi(candidateApi.getProfile);
 
+  console.log(campusProfileData);
+
   const {
     error: resumeError,
     networkError: resumeNetworkError,
@@ -109,7 +111,7 @@ function ProfileScreen({ navigation }) {
   };
 
   const viewResume = async () => {
-    if (!resume & !data.resume)
+    if (!resume && !data.resume)
       return Toast.show({
         type: "appWarning",
         text1: "Upload a resume first",
@@ -226,7 +228,7 @@ function ProfileScreen({ navigation }) {
           </Card>
         )}
       </CustomHeader>
-      {loading || !data ? (
+      {loading || !data || !campusProfileData ? (
         <Loading />
       ) : (
         <>
@@ -248,9 +250,10 @@ function ProfileScreen({ navigation }) {
               {firstname} {lastname}
             </LargeText>
             <NormalText>
-              {campusProfileData
-                ? campusProfileData[0]?.institution_details[0].institute_name
-                : data.designation}
+              {campusProfileData?.detail ===
+              "Your are not a part of any institution !"
+                ? data.designation
+                : campusProfileData[0]?.institution_details[0].institute_name}
             </NormalText>
             <View
               style={{
@@ -351,16 +354,7 @@ function ProfileScreen({ navigation }) {
               touchable
               onPress={pickDoc}
             >
-              <FontAwesome5
-                name="file-upload"
-                style={styles.icon}
-                size={ICON_SIZE}
-                color={ICON_COLOR}
-              />
-              <NormalText>
-                {data.resume ? "Update" : "Upload"} Resume
-              </NormalText>
-              {resumeLoading && (
+              {resumeLoading ? (
                 <Loading
                   size="small"
                   style={{
@@ -369,10 +363,22 @@ function ProfileScreen({ navigation }) {
                     position: "absolute",
                   }}
                 />
+              ) : (
+                <>
+                  <FontAwesome5
+                    name="file-upload"
+                    style={styles.icon}
+                    size={ICON_SIZE}
+                    color={ICON_COLOR}
+                  />
+                  <NormalText>
+                    {data.resume || resume ? "Update" : "Upload"} Resume
+                  </NormalText>
+                </>
               )}
             </Card>
 
-            {data.resume && (
+            {(data.resume || resume) && (
               <Card
                 style={{ alignItems: "center", width: "97%" }}
                 touchable

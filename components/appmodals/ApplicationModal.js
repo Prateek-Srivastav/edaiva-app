@@ -139,10 +139,9 @@ function ApplicationModal(props) {
       } else {
         Toast.show({
           type: "appError",
-          text1: "Something went wrong",
-          // response.data.detail
-          // ? response.data.detail
-          // : "Something went wrong",
+          text1: response.data.detail
+            ? response.data.detail[0]?.msg
+            : "Something went wrong",
         });
         return setError(true);
       }

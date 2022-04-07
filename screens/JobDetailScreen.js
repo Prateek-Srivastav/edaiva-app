@@ -91,6 +91,35 @@ function JobDetailScreen({ route, navigation }) {
   }, []);
 
   const revokeHandler = async () => {
+    // setLoading(true);
+    // console.log(response);
+    // if (!response.ok) {
+    //   setLoading(false);
+    //   if (response.problem === "NETWORK_ERROR") {
+    //     Toast.show({
+    //       type: "appError",
+    //       text1: "No internet connection!",
+    //     });
+    //     return setNetworkError(true);
+    //   } else {
+    //     Toast.show({
+    //       type: "appError",
+    //       text1: response.data.detail
+    //         ? response.data.detail[0]?.msg
+    //         : "Something went wrong",
+    //     });
+    //     return setError(true);
+    //   }
+    // }
+    // setNetworkError(false);
+    // setError(false);
+    // setLoading(false);
+
+    // Toast.show({
+    //   type: "appSuccess",
+    //   text1: "Applied successfully!",
+    // });
+
     setVisible(false);
     await revokeApplication(applicationId);
     if (revokeError)

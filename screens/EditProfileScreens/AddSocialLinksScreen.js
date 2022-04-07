@@ -11,16 +11,24 @@ import useApi from "../../hooks/useApi";
 
 function AddSocialLinksScreen({ data }) {
   const [selectedSocial, setSelectedSocial] = useState();
-
-  let { facebook, github, instagram, linkedin, twitter } = data.sociallinks;
-
-  const [fb, setFb] = useState(facebook ? facebook : "");
-  const [gh, setGh] = useState(github ? github : "");
-  const [insta, setInsta] = useState(instagram ? instagram : "");
-  const [li, setLi] = useState(linkedin ? linkedin : "");
-  const [twt, setTwt] = useState(twitter ? twitter : "");
-  // const [showFb, setShowFb] = useState(false);
+  const [isEditVisible, setIsEditVisible] = useState(false);
   const [value, setValue] = useState("");
+  const [editValue, setEditValue] = useState("");
+
+  const [fb, setFb] = useState(
+    data.sociallinks ? data.sociallinks.facebook : ""
+  );
+  const [gh, setGh] = useState(data.sociallinks ? data.sociallinks.github : "");
+  const [insta, setInsta] = useState(
+    data.sociallinks ? data.sociallinks.instagram : ""
+  );
+  const [li, setLi] = useState(
+    data.sociallinks ? data.sociallinks.linkedin : ""
+  );
+  const [twt, setTwt] = useState(
+    data.sociallinks ? data.sociallinks.twitter : ""
+  );
+  // const [showFb, setShowFb] = useState(false);
 
   const socialMedia = [
     { _id: 1, name: !fb || fb === "" ? "Facebook" : null },
@@ -44,21 +52,46 @@ function AddSocialLinksScreen({ data }) {
     else if (selectedSocial === "Linkedin") setLi(text);
     else if (selectedSocial === "Instagram") setInsta(text);
     else if (selectedSocial === "Twitter") setTwt(text);
-    setValue(text);
   };
 
   const handleSubmit = async (values) => {
+    if (selectedSocial === "Facebook") setFb(value);
+    else if (selectedSocial === "Github") setGh(value);
+    else if (selectedSocial === "Linkedin") setLi(value);
+    else if (selectedSocial === "Instagram") setInsta(value);
+    else if (selectedSocial === "Twitter") setTwt(value);
+
     const val = {
-      facebook: fb,
-      github: gh,
-      instagram: insta,
-      linkedin: li,
-      twitter: twt,
+      facebook: selectedSocial === "Facebook" ? value : fb,
+      github: selectedSocial === "Github" ? value : gh,
+      instagram: selectedSocial === "Instagram" ? value : insta,
+      linkedin: selectedSocial === "Linkedin" ? value : li,
+      twitter: selectedSocial === "Twitter" ? value : twt,
     };
 
     await updateProfile({ sociallinks: val });
-
     setValue("");
+    setSelectedSocial(null);
+  };
+
+  const handleEdit = async (values) => {
+    if (selectedSocial === "Facebook") setFb(value);
+    else if (selectedSocial === "Github") setGh(value);
+    else if (selectedSocial === "Linkedin") setLi(value);
+    else if (selectedSocial === "Instagram") setInsta(value);
+    else if (selectedSocial === "Twitter") setTwt(value);
+
+    const val = {
+      facebook: selectedSocial === "Facebook" ? value : fb,
+      github: selectedSocial === "Github" ? value : gh,
+      instagram: selectedSocial === "Instagram" ? value : insta,
+      linkedin: selectedSocial === "Linkedin" ? value : li,
+      twitter: selectedSocial === "Twitter" ? value : twt,
+    };
+
+    await updateProfile({ sociallinks: val });
+    setValue("");
+    setIsEditVisible(false);
     setSelectedSocial(null);
   };
 
@@ -69,31 +102,71 @@ function AddSocialLinksScreen({ data }) {
     >
       {fb !== "" && (
         <>
-          <CardInput defaultValue={fb} label="Facebook" />
+          <CardInput
+            onFocus={() => setIsEditVisible(true)}
+            onBlur={() => setIsEditVisible(false)}
+            defaultValue={fb}
+            label="Facebook"
+          />
+          {isEditVisible && (
+            <CustomButton title="Edit" onPress={handleSubmit} />
+          )}
           <View style={styles.line} />
         </>
       )}
       {gh !== "" && (
         <>
-          <CardInput defaultValue={gh} label="Github" />
+          <CardInput
+            onFocus={() => setIsEditVisible(true)}
+            onBlur={() => setIsEditVisible(false)}
+            defaultValue={gh}
+            label="Github"
+          />
+          {isEditVisible && (
+            <CustomButton title="Edit" onPress={handleSubmit} />
+          )}
           <View style={styles.line} />
         </>
       )}
       {li !== "" && (
         <>
-          <CardInput defaultValue={li} label="Linkedin" />
+          <CardInput
+            onFocus={() => setIsEditVisible(true)}
+            onBlur={() => setIsEditVisible(false)}
+            defaultValue={li}
+            label="Linkedin"
+          />
+          {isEditVisible && (
+            <CustomButton title="Edit" onPress={handleSubmit} />
+          )}
           <View style={styles.line} />
         </>
       )}
       {insta !== "" && (
         <>
-          <CardInput defaultValue={insta} label="Instagram" />
+          <CardInput
+            onFocus={() => setIsEditVisible(true)}
+            onBlur={() => setIsEditVisible(false)}
+            defaultValue={insta}
+            label="Instagram"
+          />
+          {isEditVisible && (
+            <CustomButton title="Edit" onPress={handleSubmit} />
+          )}
           <View style={styles.line} />
         </>
       )}
       {twt !== "" && (
         <>
-          <CardInput defaultValue={twt} label="Twitter" />
+          <CardInput
+            onFocus={() => setIsEditVisible(true)}
+            onBlur={() => setIsEditVisible(false)}
+            defaultValue={twt}
+            label="Twitter"
+          />
+          {isEditVisible && (
+            <CustomButton title="Edit" onPress={handleSubmit} />
+          )}
           <View style={styles.line} />
         </>
       )}
@@ -107,7 +180,8 @@ function AddSocialLinksScreen({ data }) {
       <CardInput
         label="Link"
         placeholder="Paste Link here..."
-        onChangeText={handleChangeLink}
+        onChangeText={(text) => setValue(text)}
+        // onSubmitEditing={handleChangeLink}
         value={value}
       />
       <CustomButton title="Add" onPress={handleSubmit} />

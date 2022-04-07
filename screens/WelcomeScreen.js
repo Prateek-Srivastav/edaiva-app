@@ -46,7 +46,7 @@ function WelcomeScreen({ navigation }) {
     androidClientId:
       "652348070444-7hrspqv4j9l2k3fq0gunp7dvjfa87hd4.apps.googleusercontent.com",
     expoClientId:
-      "59459676087-8ob58ai85migig68pkfiqhg7m8r9s8tq.apps.googleusercontent.com",
+      "652348070444-91kal7v5edkh5h1bq75t84qpetp1ko3u.apps.googleusercontent.com",
   });
 
   const authContext = useContext(AuthContext);

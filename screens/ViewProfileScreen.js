@@ -139,9 +139,7 @@ function ViewProfileScreen({ navigation, route }) {
               source={
                 data.profilepicture
                   ? {
-                      uri: profilePicture
-                        ? profilePicture
-                        : data.profilepicture,
+                      uri: data.profilepicture,
                     }
                   : require("../assets/dummyDP.png")
               }

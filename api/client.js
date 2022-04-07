@@ -24,6 +24,7 @@ export const placementClient = create({
 });
 
 export const frontEndClient = "http://143.110.241.27:6204";
+
 // export const frontEndClient = "https://devjobs.edaiva.com";
 
 // export const jobClient = create({

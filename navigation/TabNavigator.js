@@ -122,11 +122,8 @@ function MainNavigator({ route }) {
             borderTopRightRadius: 5,
             width: "70%",
             overflow: "hidden",
-            // position: "absolute",
-            // elevation: 5,
           },
-          // tabBarActiveTintColor: Colors.black,
-          // tabBarInactiveTintColor: Colors.primary,
+          tabBarHideOnKeyboard: true,
           tabBarShowLabel: false,
           lazy: false,
         })}
