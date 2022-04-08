@@ -23,6 +23,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import useApi from "../hooks/useApi";
 import CustomAlert from "../components/CustomAlert";
 import Loading from "../components/Loading";
+import showToast from "../components/ShowToast";
 
 function WelcomeScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -102,12 +103,14 @@ function WelcomeScreen({ navigation }) {
     if (!url) {
       return;
     }
+    console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
-    const matches = url.match(
-      "https://auth.expo.io/@prateeksri/edaivajobsApp?code="
-    );
+    const regex =
+      /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsApp?/g;
+
+    const matches = url.match(regex);
     if (matches && matches.length) {
       // We have the correct URL, parse it out to get the token
 
@@ -145,13 +148,15 @@ function WelcomeScreen({ navigation }) {
       };
 
       const obj = url.split("=");
-      console.log(obj);
       if (obj[1]) {
         setLinkedInToken({ code: obj[1] });
         setLdAuthStarted(false);
         handleLinkedinAuth(obj[1]);
       }
-    } else return;
+    } else {
+      showToast({ type: "appError", message: "Some error occurred!" });
+      return setVisible(false);
+    }
   };
 
   const LinkedinAuth = () => (

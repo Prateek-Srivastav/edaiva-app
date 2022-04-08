@@ -66,7 +66,7 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{linkedin}</AppText>
             </TouchableOpacity>
           </View>
-          {instagram !== "" && twitter !== "" && <View style={styles.line} />}
+          {instagram !== "" && <View style={styles.line} />}
         </>
       )}
       {instagram !== "" && (

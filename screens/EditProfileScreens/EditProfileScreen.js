@@ -277,7 +277,7 @@ function EditProfileScreen() {
                 aboutUpdateLoading ? (
                   <Loading />
                 ) : (
-                  <ViewAbout data={about ? about : data.description} />
+                  <ViewAbout data={about ? about : data?.description} />
                 )
               ) : (
                 <CardInput
@@ -285,7 +285,7 @@ function EditProfileScreen() {
                   numberOfLines={6}
                   multiline
                   placeholder="Tell something about you..."
-                  defaultValue={about ? about : data.description}
+                  defaultValue={about ? about : data?.description}
                   onBlur={handleAboutSubmit}
                   onChangeText={(text) => setAbout(text)}
                   onSubmitEditing={handleAboutSubmit}

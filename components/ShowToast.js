@@ -1,10 +1,10 @@
 import Toast from "react-native-toast-message";
 
-function ShowToast({ type, message }) {
+function showToast({ type, message }) {
   return Toast.show({
     type: type,
     text1: message,
   });
 }
 
-export default ShowToast;
+export default showToast;

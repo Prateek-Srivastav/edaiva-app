@@ -34,6 +34,7 @@ import campusJobsApi from "../api/campusApis/jobs";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
 import campusCandidateApi from "../api/campusApis/candidate";
+import showToast from "../components/ShowToast";
 
 const { width, height } = Dimensions.get("window");
 
@@ -68,7 +69,6 @@ function JobDetailScreen({ route, navigation }) {
   const [networkError, setNetworkError] = useState(false);
 
   const [visible, setVisible] = useState(false);
-  const [applyCampusVisible, setApplyCampusVisible] = useState(false);
   const [placementCriteria, setPlacementCriteria] = useState();
 
   const {
@@ -250,6 +250,9 @@ function JobDetailScreen({ route, navigation }) {
         id: jobDetails._id,
       },
     ]);
+
+    showToast({ type: "appSuccess", message: "Added to wishlist!" });
+
     setInWishlist(true);
   };
 
@@ -263,6 +266,9 @@ function JobDetailScreen({ route, navigation }) {
       }
     });
     await cache.store("wishlist", [...wl]);
+
+    showToast({ type: "appWarning", message: "Removed from wishlist!" });
+
     setInWishlist(false);
   };
 
@@ -427,9 +433,9 @@ function JobDetailScreen({ route, navigation }) {
       {loading || !campusProfileData ? (
         <Loading />
       ) : networkError && !loading ? (
-        <NetworkError onPress={() => loadApplications()} />
+        <NetworkError onPress={() => loadJobDetails(jobId)} />
       ) : error ? (
-        <Error onPress={() => loadApplications()} />
+        <Error onPress={() => loadJobDetails(jobId)} />
       ) : (
         <View
           style={{
