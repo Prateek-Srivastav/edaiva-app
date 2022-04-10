@@ -18,6 +18,7 @@ import {
 } from "../assets/svg/icons";
 import NotificationsNavigator from "./NotificationsNavigator";
 import applicationApi from "../api/application";
+import notificationApi from "../api/notifications";
 import useApi from "../hooks/useApi";
 import authStorage from "../auth/storage";
 
@@ -40,11 +41,18 @@ function MainNavigator({ route }) {
   if (data) {
     applications = data;
   }
-  const notifications = applications?.filter(
-    (application) =>
-      application.status === "hired" ||
-      application.status === "finalist" ||
-      application.status === "interviewing"
+  const {
+    res: notificationData,
+    data: notificData,
+    request: loadNotifications,
+  } = useApi(notificationApi.getNotifications);
+
+  if (data) {
+    applications = data;
+  }
+
+  const notifications = notificData?.records?.filter(
+    (notific) => notific.status !== "seen"
   );
 
   const getToken = async () => {
@@ -63,6 +71,7 @@ function MainNavigator({ route }) {
 
   useEffect(() => {
     loadApplications();
+    loadNotifications("job");
   }, [isFocused]);
 
   const { width, height } = Dimensions.get("window");
@@ -194,8 +203,8 @@ function MainNavigator({ route }) {
           component={NotificationsNavigator}
           options={({ route }) => ({
             headerShown: false,
-            tabBarBadge: notifications?.length,
-            // tabBarBadge: notifications.length,
+            tabBarBadge:
+              notifications?.length === 0 ? null : notifications?.length,
             tabBarBadgeStyle: {
               backgroundColor: Colors.bg,
               color: Colors.black,

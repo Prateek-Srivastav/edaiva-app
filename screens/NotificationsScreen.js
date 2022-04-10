@@ -1,5 +1,5 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
 
 import AppText from "../components/AppText";
@@ -20,23 +20,36 @@ const NormalText = (props) => (
   </Text>
 );
 
-const NotificationItem = ({ status, job, onPress }) => {
+const NotificationItem = ({
+  status,
+  job,
+  onPress,
+  companyName,
+  title,
+  body,
+}) => {
   let image;
   let heading;
   let details;
 
+  console.log(body[-1]);
+
   if (status === "hired") {
     image = require("../assets/selected.png");
     heading = "Congratulations!!.. You did it.";
-    details = "You are selected for the role of Telecalling in iraitech.";
+    details = `You are selected for the role of ${job} in ${companyName}.`;
+  } else if (status === "finalist") {
+    image = require("../assets/shortlisted.png");
+    heading = "Woah!. You are the finalist!!..";
+    details = `You are the finalist for the ${job} in ${companyName}`;
   } else if (status === "finalist") {
     image = require("../assets/shortlisted.png");
     heading = "Woah!. You have been shortlisted!!..";
-    details = "You have been shortlisted for the Tele-calling in.......";
+    details = `You have been shortlisted for the ${job} in ${companyName}`;
   } else if (status === "interviewing") {
     image = require("../assets/bell.png");
-    heading = "Interview Reminder";
-    details = "You have an interview schedule today at 2 pm";
+    heading = "Interviewing";
+    details = `Your job status for the ${job} in ${companyName} is set to interviewing.`;
   } else return null;
 
   return (
@@ -55,7 +68,7 @@ const NotificationItem = ({ status, job, onPress }) => {
         <View
           style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
         >
-          <NormalText>{heading}</NormalText>
+          <NormalText>{title}</NormalText>
           {status === "interviewing" && (
             <>
               <View style={styles.separator} />
@@ -65,7 +78,7 @@ const NotificationItem = ({ status, job, onPress }) => {
             </>
           )}
         </View>
-        <AppText numberOfLines={1}>{details}</AppText>
+        <AppText numberOfLines={2}>{body}</AppText>
       </View>
     </TouchableOpacity>
   );
@@ -74,43 +87,83 @@ const NotificationItem = ({ status, job, onPress }) => {
 function NotificationsScreen({ navigation }) {
   const isFocused = useIsFocused();
 
-  const {
-    data,
-    error,
-    networkError,
-    loading,
-    request: loadApplications,
-  } = useApi(applicationApi.getApplications);
+  const [applications, setApplications] = useState();
+  const [notifications, setNotifications] = useState();
+  const [loading, setLoading] = useState(false);
+  const [notificLoading, setNotificLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
 
-  let applications;
+  // const {
+  //   data,
+  //   error,
+  //   networkError,
+  //   loading,
+  //   request: loadApplications,
+  // } = useApi(applicationApi.getApplications);
 
-  const {
-    res: notificationData,
-    data: ntificData,
-    request: loadNotifications,
-  } = useApi(notificationApi.getNotifications);
+  const loadScreen = async () => {
+    setNotificLoading(true);
+    setLoading(true);
 
-  console.log(notificationData);
+    const applicationResponse = await applicationApi.getApplications();
 
-  if (data) {
-    applications = data;
-  }
-  const notifications = applications?.filter(
-    (application) =>
-      application.status === "hired" ||
-      application.status === "finalist" ||
-      application.status === "interviewing"
-  );
+    let notificResponse = await notificationApi.getNotifications("job");
+
+    if (!applicationResponse.ok) {
+      console.log(applicationResponse, "res !ok");
+      if (applicationResponse.problem === "NETWORK_ERROR") {
+        setLoading(false);
+        setNetworkError(true);
+        return Toast.show({
+          type: "appError",
+          text1: "No internet connection!",
+        });
+      } else if (applicationResponse.data.code === "token_not_valid") {
+        setLoading(false);
+        console.log("token not valid");
+        return setTokenValid(false);
+      } else {
+        setData(applicationResponse.data);
+        setLoading(false);
+        return setError(true);
+      }
+    }
+    // let application = [];
+
+    notificResponse.data.records.forEach((notific, index) => {
+      const applicationId =
+        notific.notification.notification_details.url.split("/")[2];
+      console.log(applicationId);
+
+      const application = applicationResponse.data.filter(
+        (application) => application._id.$oid === applicationId
+      )[0];
+
+      notificResponse.data.records[index] = { ...notific, ...application };
+    });
+
+    // application.map((applic) => {
+    //   applic._id.$oid ===
+    // })
+
+    console.log(notificResponse);
+    setNotifications(notificResponse.data.records);
+    // setApplications(application);
+    setNotificLoading(false);
+    setLoading(false);
+  };
+
+  if (applications) console.log(applications);
+
   useEffect(() => {
-    loadApplications();
-    loadNotifications("job");
-    navigation.setParams({ notificCount: notifications?.length });
+    loadScreen();
   }, [isFocused]);
 
   return (
     <>
       <CustomHeader backDisabled screenName="Notifications" />
-      {loading ? (
+      {loading || notificLoading ? (
         <Loading />
       ) : networkError && !loading ? (
         <NetworkError onPress={() => loadApplications()} />
@@ -120,7 +173,7 @@ function NotificationsScreen({ navigation }) {
         <View style={styles.container}>
           <FlatList
             contentContainerStyle={{ width: "100%" }}
-            data={applications}
+            data={notifications}
             keyExtractor={(index) => index + Math.random()}
             renderItem={(itemData) => {
               const { city, state, country } =
@@ -133,7 +186,6 @@ function NotificationsScreen({ navigation }) {
                   <NotificationItem
                     onPress={() =>
                       navigation.navigate("ApplicationStatus", {
-                        jobId: itemData.item.job._id.$oid,
                         location,
                         applicationStatus: itemData.item.status,
                         applicationId: itemData.item._id.$oid,
@@ -141,6 +193,11 @@ function NotificationsScreen({ navigation }) {
                     }
                     job={itemData.item.job.job_title}
                     status={itemData.item.status}
+                    companyName={itemData.item.job.company[0].name}
+                    title={
+                      itemData.item.notification.notification_details.title
+                    }
+                    body={itemData.item.notification.notification_details.body}
                   />
                   <View style={styles.line} />
                 </>
