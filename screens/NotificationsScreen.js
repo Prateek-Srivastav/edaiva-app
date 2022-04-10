@@ -84,13 +84,13 @@ function NotificationsScreen({ navigation }) {
 
   let applications;
 
-  // const { res: notificationData } = useApi(notificationApi.getNotifications);
+  const {
+    res: notificationData,
+    data: ntificData,
+    request: loadNotifications,
+  } = useApi(notificationApi.getNotifications);
 
-  const req = async () => {
-    const res = await notificationApi.getNotifications("job");
-    console.log(res);
-  };
-  req();
+  console.log(notificationData);
 
   if (data) {
     applications = data;
@@ -103,6 +103,7 @@ function NotificationsScreen({ navigation }) {
   );
   useEffect(() => {
     loadApplications();
+    loadNotifications("job");
     navigation.setParams({ notificCount: notifications?.length });
   }, [isFocused]);
 

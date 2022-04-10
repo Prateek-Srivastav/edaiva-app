@@ -71,35 +71,18 @@ const SelectedInputs = (array) => {
 function PreferenceScreen() {
   const navigation = useNavigation();
 
+  const [loading, setLoading] = useState(false);
+  const [jobTypesLoading, setJobTypesLoading] = useState(false);
   const [experience, setExperience] = useState(null);
   const [jobType, setJobType] = useState([]);
+  const [jobTypes, setJobTypes] = useState([]);
   const [jobTypeName, setJobTypeName] = useState([]);
   const [keywordText, setKeywordText] = useState();
   const [keywordArray, setKeywordArray] = useState([]);
   const [prefJobRoleText, setPrefJobRoleText] = useState();
   const [prefJobRoleArray, setPrefJobRoleArray] = useState([]);
 
-  const {
-    data,
-    error,
-    networkError,
-    loading,
-    request: loadProfile,
-  } = useApi(candidateApi.getProfile);
-
-  const {
-    data: jobTypes,
-    loading: jobTypesLoading,
-    request: loadJobTypes,
-  } = useApi(jobsApi.getJobTypes);
-
   const { request: updateProfile, res } = useApi(candidateApi.updateProfile);
-
-  // const jobTypes = [
-  //   { _id: 1, name: "Full Time" },
-  //   { _id: 2, name: "Part Time" },
-  //   { _id: 3, name: "Internship" },
-  // ];
 
   const experiences = [
     { _id: 1, name: "All" },
@@ -112,24 +95,30 @@ function PreferenceScreen() {
 
   useEffect(() => {
     loadScreen();
-    loadJobTypes();
   }, []);
 
   const loadScreen = async () => {
+    setJobTypesLoading(true);
+    setLoading(true);
     const response = await candidateApi.getProfile();
 
     const jobTypesResponse = await jobsApi.getJobTypes();
 
-    console.log(response);
-    if (!response.ok)
+    if (!response.ok) {
+      setLoading(false);
+      setJobTypesLoading(false);
+
       return showToast({ type: "appError", message: "Something went wrong!" });
+    }
+
+    setJobTypes(jobTypesResponse.data);
 
     setPrefJobRoleArray(
       response.data.job_preference ? response.data.job_preference.job_roles : []
     );
     setJobType(
-      response.data.job_preference.job_types
-        ? response.data.job_preference.job_types
+      response.data.job_preference.job_type
+        ? response.data.job_preference.job_type
         : []
     );
     setKeywordArray(
@@ -137,23 +126,17 @@ function PreferenceScreen() {
     );
     setExperience(response.data.job_preference.experience);
 
-    // for (_id in jobTypes) {
-    //   let typeName = jobTypes.filter((jobtype) => {
-    //     if (jobtype._id === response.data.job_preference.job_type[index])
-    //       return jobtype.name;
-    //   });
-
-    //   setJobTypeName(typeName);
-    // }
+    let typeName = [];
     response.data.job_preference.job_type.forEach((e) => {
-      let typeName = jobTypesResponse.data.filter((jobtype) => {
-        if (jobtype._id === e) return jobtype.name;
-      });
-      setJobTypeName([...jobTypeName, typeName.name]);
-      console.log(typeName);
+      typeName.push(
+        jobTypesResponse.data.filter((jobtype) => jobtype._id === e)[0]
+      );
     });
 
-    console.log(jobTypeName + "helllllllllllllllllllooooooooooooooooo");
+    setJobTypeName(typeName.map((item) => item.name));
+
+    setJobTypesLoading(false);
+    setLoading(false);
   };
 
   const handleSubmit = async () => {
@@ -190,12 +173,10 @@ function PreferenceScreen() {
           </AppText>
 
           <AppPicker
-            selectedItem={jobType}
+            selectedItem={jobTypeName}
             onSelectItem={(item) => {
-              if (jobType?.find((type) => type === item._id)) {
-                console.log(jobType);
-                return;
-              }
+              if (jobType?.find((type) => type === item._id)) return;
+
               setJobType([...jobType, item._id]);
               if (!jobTypeName?.find((type) => type === item.name))
                 setJobTypeName([...jobTypeName, item.name]);
@@ -212,7 +193,7 @@ function PreferenceScreen() {
           />
 
           <AppPicker
-            selectedItem={experience}
+            selectedItem={experience + (experience !== "All" ? " Years" : "")}
             onSelectItem={(item) => {
               let exp = item.name;
               exp = exp.split(" ");

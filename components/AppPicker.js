@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -16,8 +16,16 @@ import Loading from "./Loading";
 
 function AppPicker(props) {
   const [visible, setVisible] = useState(false);
-  const [selectedItemArray, setSelectedItemArray] = useState([]);
-  const [selectedItem, setSelectedItem] = useState([]);
+  const [selectedItemArray, setSelectedItemArray] = useState(
+    Array.isArray(props.selectedItem)
+      ? [...props.selectedItem]
+      : [props.selectedItem]
+  );
+  const [selectedItem, setSelectedItem] = useState(
+    Array.isArray(props.selectedItem)
+      ? [...props.selectedItem]
+      : [props.selectedItem]
+  );
 
   const {
     dateTimePicker,
@@ -28,6 +36,13 @@ function AppPicker(props) {
     multiSelect,
   } = props;
 
+  useEffect(() => {
+    if (Array.isArray(props.selectedItem))
+      setSelectedItemArray(props.selectedItem);
+    else setSelectedItem([props.selectedItem]);
+  }, []);
+
+  console.log(selectedItemArray);
   return (
     <View
       style={{
@@ -89,7 +104,7 @@ function AppPicker(props) {
                   selected={multiSelect ? selectedItemArray : selectedItem}
                   onPress={() => {
                     if (multiSelect) {
-                      setSelectedItemArray(selectedItemArray, [item.name]);
+                      setSelectedItemArray([...selectedItemArray, item.name]);
                       onSelectItem(item);
                     } else if (!multiSelect) {
                       setSelectedItem([item.name]);
