@@ -16,7 +16,8 @@ import campusCandidateApi from "../api/campusApis/candidate";
 import Loading from "../components/Loading";
 import CampusSelectionScreen from "../screens/campusScreens/CampusSelectionScreen";
 import CreateProfileScreen from "../screens/CreateProfileScreen";
-import navigate from "./rootNavigation";
+import navigation from "./rootNavigation";
+import PreferenceScreen from "../screens/PreferenceScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -28,7 +29,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function AppNavigator({ navigation }) {
+function AppNavigator() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -63,8 +64,9 @@ function AppNavigator({ navigation }) {
           // Linking.openURL(
           //   "https://143.110.241.27:6204/applications/6209ff95afab70a746bf4d76"
           // );
-          // navigate("Applications");
-          // console.log(response);
+          navigation.navigate("NotificationsStack");
+          console.log(response);
+          console.log("response");
         });
 
       return () => {
@@ -134,6 +136,7 @@ function AppNavigator({ navigation }) {
         <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
         <Drawer.Screen name="Home" component={TabNavigator} />
         <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
+        <Drawer.Screen name="Preference" component={PreferenceScreen} />
       </Drawer.Navigator>
     );
   }
@@ -148,6 +151,7 @@ function AppNavigator({ navigation }) {
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
       <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />
+      <Drawer.Screen name="Preference" component={PreferenceScreen} />
     </Drawer.Navigator>
   );
 }

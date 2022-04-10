@@ -68,7 +68,7 @@ function ProfileScreen({ navigation }) {
     request: loadProfile,
   } = useApi(candidateApi.getProfile);
 
-  console.log(campusProfileData);
+  // console.log(data);
 
   const {
     error: resumeError,

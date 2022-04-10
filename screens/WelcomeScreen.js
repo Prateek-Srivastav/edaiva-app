@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   ScrollView,
@@ -87,14 +87,13 @@ function WelcomeScreen({ navigation }) {
 
     redirectUrl = redirectUrl.split("&");
     redirectUrl.splice(2, 1);
-    const appRedirectUri = "https://auth.expo.io/@prateeksri/edaivajobsApp";
+    const appRedirectUri = "https://auth.expo.io/@prateeksri/edaivajobsapp";
     // appRedirectUri = appRedirectUri.slice(1);
     redirectUrl.push(`redirect_uri=${appRedirectUri}`);
     redirectUrl = redirectUrl.join("&");
     setRedirectUrl(redirectUrl);
-    console.log(redirectUrl);
+    setVisible(true);
     setLdAuthStarted(true);
-    console.log(ldAuthStart);
     // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
     // console.log(result);
   };
@@ -103,19 +102,21 @@ function WelcomeScreen({ navigation }) {
     if (!url) {
       return;
     }
-    console.log(url);
+    // console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
     const regex =
-      /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsApp?/g;
+      /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsapp?code=/g;
 
     const matches = url.match(regex);
+    console.log(matches);
     if (matches && matches.length) {
       // We have the correct URL, parse it out to get the token
 
       const handleLinkedinAuth = async (token) => {
         setLoading(true);
+        setVisible(false);
         const result = await authApi.linkedinLogin(token);
         if (!result.ok) {
           setLoading(false);
@@ -154,14 +155,16 @@ function WelcomeScreen({ navigation }) {
         handleLinkedinAuth(obj[1]);
       }
     } else {
-      showToast({ type: "appError", message: "Some error occurred!" });
-      return setVisible(false);
+      showToast({ type: "appError", message: "Something went wrong!" });
+      setLdAuthStarted(false);
+      setVisible(false);
+      return;
     }
   };
 
   const LinkedinAuth = () => (
     <CustomAlert
-      visible={!linkedinToken && ldAuthStart && visible}
+      visible={ldAuthStart && visible}
       modalStyle={{
         flex: 1,
         paddingHorizontal: 4,
@@ -187,10 +190,10 @@ function WelcomeScreen({ navigation }) {
       const { authentication } = response;
       handleGoogleAuth(authentication);
     }
-    if (data) {
-      modifyRedirectUrl(data);
-      setVisible(true);
-    }
+    // if (data) {
+    //   modifyRedirectUrl(data);
+    //   setVisible(true);
+    // }
 
     // const onBackPress = () => {
     //   if (visible) setVisible(false);
@@ -203,6 +206,10 @@ function WelcomeScreen({ navigation }) {
     // return () =>
     //   BackHandler.removeEventListener("hardwareBackPress", onBackPress);
   }, [response, data]);
+
+  useEffect(() => {
+    getLinkedinLoginUrl();
+  }, []);
 
   return (
     <ScrollView
@@ -286,7 +293,7 @@ function WelcomeScreen({ navigation }) {
           <TouchableOpacity
             activeOpacity={0.5}
             style={styles.thirdPartyAuthContainer}
-            onPress={() => getLinkedinLoginUrl()}
+            onPress={() => modifyRedirectUrl(data)}
           >
             <Image
               source={require("../assets/linkedin.png")}

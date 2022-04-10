@@ -7,6 +7,7 @@ const getJobs = (filters) => {
     filters;
 
   return client.get(endpoint, {
+    recommended: true,
     country,
     state,
     city,
@@ -20,7 +21,10 @@ const getJobs = (filters) => {
 
 const getJobDetails = (jobId) => client.get(`${endpoint}/detail/${jobId}`);
 
+const getJobTypes = () => client.get(`${endpoint}/jobtypes`);
+
 export default {
   getJobs,
   getJobDetails,
+  getJobTypes,
 };

@@ -169,7 +169,7 @@ function CustomDrawer(props) {
           <NavigatorButton
             title="Preference"
             icon={<Preference />}
-            // onPress={() => props.navigation.navigate("Preference")}
+            onPress={() => props.navigation.navigate("Preference")}
           />
         </View>
         <View>

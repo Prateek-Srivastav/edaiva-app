@@ -21,7 +21,7 @@ const googleLogin = (accessToken) =>
 const getLinkedinLogin = () => client.get("/user/login/linkedin");
 
 const linkedinLogin = (accessToken) =>
-  client.get("/user/callback/linkedin", { code: accessToken, platform: "app" });
+  client.get("user/callback/linkedin", { code: accessToken, platform: "app" });
 
 export default {
   login,

@@ -13,7 +13,10 @@ function ApplicationStatusIndicator({ applicationStatus }) {
     bgColor = "rgba(233, 126, 0, 0.15)";
     primaryColor = "#E97E00";
     text = "Interviewing";
-  } else if (applicationStatus === "applied") {
+  } else if (
+    applicationStatus === "applied" ||
+    applicationStatus === "not-interested"
+  ) {
     bgColor = "#CBF1FF4D";
     primaryColor = Colors.primary;
     text = "Applied";

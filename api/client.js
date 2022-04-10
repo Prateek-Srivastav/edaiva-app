@@ -15,9 +15,9 @@ import cache from "../utilities/cache";
 //   baseURL: "http://167.172.236.197:8011/api/gateway/core-service",
 // });
 
-export const pushTokenClient = create({
-  baseURL: "http://167.172.236.197:8008",
-});
+// export const notificationClient = create({
+//   baseURL: "http://167.172.236.197:8008",
+// });
 
 export const placementClient = create({
   baseURL: "http://167.172.236.197:8011/api/gateway/placement-service",
@@ -39,13 +39,17 @@ const apiClient = create({
   baseURL: "https://godevgw.edaiva.com/api/gateway",
 });
 
+export const notificationClient = create({
+  baseURL: "https://godevgw.edaiva.com:8007",
+});
+
 apiClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getToken();
   if (!authToken) return;
   request.headers["Authorization"] = `Bearer ${authToken.accessToken}`;
 });
 
-pushTokenClient.addAsyncRequestTransform(async (request) => {
+notificationClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getToken();
   if (!authToken) return;
   request.headers["Authorization"] = `Bearer ${authToken.accessToken}`;

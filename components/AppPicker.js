@@ -16,9 +16,17 @@ import Loading from "./Loading";
 
 function AppPicker(props) {
   const [visible, setVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState();
+  const [selectedItemArray, setSelectedItemArray] = useState([]);
+  const [selectedItem, setSelectedItem] = useState([]);
 
-  const { dateTimePicker, items, onSelectItem, onPress, disabled } = props;
+  const {
+    dateTimePicker,
+    items,
+    onSelectItem,
+    onPress,
+    disabled,
+    multiSelect,
+  } = props;
 
   return (
     <View
@@ -78,11 +86,16 @@ function AppPicker(props) {
               return (
                 <PickerItem
                   label={item.name}
-                  selected={selectedItem}
+                  selected={multiSelect ? selectedItemArray : selectedItem}
                   onPress={() => {
-                    setSelectedItem(item.name);
-                    onSelectItem(item);
-                    setVisible(false);
+                    if (multiSelect) {
+                      setSelectedItemArray(selectedItemArray, [item.name]);
+                      onSelectItem(item);
+                    } else if (!multiSelect) {
+                      setSelectedItem([item.name]);
+                      onSelectItem(item);
+                      setVisible(false);
+                    }
                   }}
                 />
               );

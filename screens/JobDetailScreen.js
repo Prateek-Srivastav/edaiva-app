@@ -72,13 +72,6 @@ function JobDetailScreen({ route, navigation }) {
   const [placementCriteria, setPlacementCriteria] = useState();
 
   const {
-    loading: revokeLoading,
-    error: revokeError,
-    networkError: revokeNetworkError,
-    request: revokeApplication,
-  } = useApi(applicationApi.deleteApplication);
-
-  const {
     data: campusProfileData,
     // error,
     // networkError,
@@ -91,57 +84,34 @@ function JobDetailScreen({ route, navigation }) {
   }, []);
 
   const revokeHandler = async () => {
-    // setLoading(true);
-    // console.log(response);
-    // if (!response.ok) {
-    //   setLoading(false);
-    //   if (response.problem === "NETWORK_ERROR") {
-    //     Toast.show({
-    //       type: "appError",
-    //       text1: "No internet connection!",
-    //     });
-    //     return setNetworkError(true);
-    //   } else {
-    //     Toast.show({
-    //       type: "appError",
-    //       text1: response.data.detail
-    //         ? response.data.detail[0]?.msg
-    //         : "Something went wrong",
-    //     });
-    //     return setError(true);
-    //   }
-    // }
-    // setNetworkError(false);
-    // setError(false);
-    // setLoading(false);
-
-    // Toast.show({
-    //   type: "appSuccess",
-    //   text1: "Applied successfully!",
-    // });
+    const response = await applicationApi.deleteApplication(applicationId);
 
     setVisible(false);
-    await revokeApplication(applicationId);
-    if (revokeError)
-      return Toast.show({
-        type: "appError",
-        text1: "Something went wrong",
-      });
-    else if (revokeLoading)
-      return Toast.show({
-        type: "appWarning",
-        text1: "Revoking...",
-      });
-    else if (revokeNetworkError)
-      return Toast.show({
-        type: "appError",
-        text1: "Connection Lost...",
-      });
+    console.log(response);
+    if (!response.ok) {
+      if (response.problem === "NETWORK_ERROR") {
+        return Toast.show({
+          type: "appError",
+          text1: "No internet connection!",
+        });
+      } else {
+        return Toast.show({
+          type: "appError",
+          text1: response.data.details
+            ? response.data.details
+            : "Something went wrong",
+        });
+      }
+    }
+    setNetworkError(false);
+    setError(false);
+    setLoading(false);
 
     Toast.show({
-      type: "appInfo",
-      text1: "Application revoked!",
+      type: "appSuccess",
+      text1: "Revoked successfully!",
     });
+
     setIsApplied(false);
   };
 

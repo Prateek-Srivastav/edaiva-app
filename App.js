@@ -73,7 +73,7 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ tokens, setTokens }}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         {tokens ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />

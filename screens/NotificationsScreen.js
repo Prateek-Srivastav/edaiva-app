@@ -5,6 +5,7 @@ import { FlatList, Image, View, StyleSheet, Text } from "react-native";
 import AppText from "../components/AppText";
 import Colors from "../constants/Colors";
 import applicationApi from "../api/application";
+import notificationApi from "../api/notifications";
 import useApi from "../hooks/useApi";
 import { useIsFocused } from "@react-navigation/native";
 import NetworkError from "../components/NetworkError";
@@ -82,6 +83,14 @@ function NotificationsScreen({ navigation }) {
   } = useApi(applicationApi.getApplications);
 
   let applications;
+
+  // const { res: notificationData } = useApi(notificationApi.getNotifications);
+
+  const req = async () => {
+    const res = await notificationApi.getNotifications("job");
+    console.log(res);
+  };
+  req();
 
   if (data) {
     applications = data;

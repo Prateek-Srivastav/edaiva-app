@@ -17,7 +17,10 @@ const ApplicationStatus = ({ applicationStatus }) => {
   let primaryColor;
   let text;
 
-  if (applicationStatus === "applied") {
+  if (
+    applicationStatus === "applied" ||
+    applicationStatus === "not-interested"
+  ) {
     bgColor = "#CBF1FF4D";
     primaryColor = Colors.primary;
     text = "Applied";

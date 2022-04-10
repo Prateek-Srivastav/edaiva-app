@@ -14,13 +14,17 @@ function PickerItem({ label, onPress, selected }) {
       <View
         style={{
           ...styles.dotContainer,
-          borderColor: selected === label ? Colors.primary : "#ccc",
+          borderColor: selected.find((element) => element === label)
+            ? Colors.primary
+            : "#ccc",
         }}
       >
         <View
           style={{
             ...styles.dot,
-            backgroundColor: selected === label ? Colors.primary : "white",
+            backgroundColor: selected.find((element) => element === label)
+              ? Colors.primary
+              : "white",
           }}
         />
       </View>

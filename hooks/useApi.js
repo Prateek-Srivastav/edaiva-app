@@ -3,6 +3,7 @@ import Toast from "react-native-toast-message";
 
 function useApi(apiFunc) {
   const [data, setData] = useState();
+  const [res, setRes] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
@@ -33,13 +34,14 @@ function useApi(apiFunc) {
     }
 
     setData(response.data);
+    setRes(response);
     setNetworkError(false);
     setError(false);
     setLoading(false);
-    console.log(response, "rees OK");
+    // console.log(response, "rees OK");
   };
 
-  return { data, error, networkError, loading, request, tokenValid };
+  return { res, data, error, networkError, loading, request, tokenValid };
 }
 
 export default useApi;

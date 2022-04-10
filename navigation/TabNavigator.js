@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Animated, Dimensions, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import { io } from "socket.io-client";
 
 import JobsNavigator from "./JobsNavigator";
 import Colors from "../constants/Colors";
@@ -14,18 +16,16 @@ import {
   HomeFilled,
   HomeOutline,
 } from "../assets/svg/icons";
-
 import NotificationsNavigator from "./NotificationsNavigator";
 import applicationApi from "../api/application";
 import useApi from "../hooks/useApi";
-import { useIsFocused } from "@react-navigation/native";
+import authStorage from "../auth/storage";
 
 const Tab = createBottomTabNavigator();
 
 function MainNavigator({ route }) {
-  const [isTabBarVisible, setIsTabBarVisible] = useState(true);
-
   const isFocused = useIsFocused();
+  const [accessToken, setAccessToken] = useState();
 
   const {
     data,
@@ -46,6 +46,21 @@ function MainNavigator({ route }) {
       application.status === "finalist" ||
       application.status === "interviewing"
   );
+
+  const getToken = async () => {
+    const token = await authStorage.getToken();
+    setAccessToken(token.accessToken);
+    return accessToken;
+  };
+  getToken();
+  const socket = io("https://godevgw.edaiva.com:8007/socket.io/", {
+    query: { token: accessToken },
+  });
+
+  socket.on("connect", () => console.log("socket connection success!!"));
+
+  socket.on("notification", (msg) => console.log(msg));
+
   useEffect(() => {
     loadApplications();
   }, [isFocused]);
@@ -76,16 +91,12 @@ function MainNavigator({ route }) {
   };
 
   const getTabBarVisibility = (route) => {
-    const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+    const routeName = getFocusedRouteNameFromRoute(route) ?? "Jobs";
 
     if (routeName === "JobDetail" || routeName === "ApplicationStatus")
       return "none";
 
     return "flex";
-  };
-
-  const getNotificationCount = (route) => {
-    console.log(route);
   };
 
   return (
