@@ -32,7 +32,7 @@ const NotificationItem = ({
   let heading;
   let details;
 
-  console.log(body[-1]);
+  // console.log(body[-1]);
 
   if (status === "hired") {
     image = require("../assets/selected.png");
@@ -147,14 +147,14 @@ function NotificationsScreen({ navigation }) {
     //   applic._id.$oid ===
     // })
 
-    console.log(notificResponse);
+    // console.log(notificResponse);
     setNotifications(notificResponse.data.records);
     // setApplications(application);
     setNotificLoading(false);
     setLoading(false);
   };
 
-  if (applications) console.log(applications);
+  // if (applications) console.log(applications);
 
   useEffect(() => {
     loadScreen();

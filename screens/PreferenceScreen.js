@@ -23,14 +23,6 @@ import Loading from "../components/Loading";
 import showToast from "../components/ShowToast";
 import CustomButton from "../components/CustomButton";
 
-const validationSchema = Yup.object().shape({
-  firstname: Yup.string().required().label("First Name"),
-  lastname: Yup.string().required().label("Last Name"),
-  designation: Yup.string().required().label("Designation"),
-  city: Yup.string().required().label("City"),
-  pincode: Yup.string().required().label("Pincode"),
-});
-
 const SelectedInputs = (array) => {
   return array.map((item) => (
     <View
@@ -175,11 +167,22 @@ function PreferenceScreen() {
           <AppPicker
             selectedItem={jobTypeName}
             onSelectItem={(item) => {
-              if (jobType?.find((type) => type === item._id)) return;
+              const index = jobType.indexOf(item._id);
+              console.log(index + "a");
+              if (index !== -1) {
+                let typeArr = jobType;
+                console.log("nbcde");
+                typeArr.splice(index, 1);
 
-              setJobType([...jobType, item._id]);
-              if (!jobTypeName?.find((type) => type === item.name))
+                setJobType(typeArr);
+                setJobTypeName(
+                  jobTypeName.filter((typeName) => typeName !== item.name)
+                );
+              } else if (index === -1) {
+                console.log("wxyz");
+                setJobType([...jobType, item._id]);
                 setJobTypeName([...jobTypeName, item.name]);
+              }
             }}
             multiSelect
             name="jobType"

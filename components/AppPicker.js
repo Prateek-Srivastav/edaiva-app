@@ -42,7 +42,7 @@ function AppPicker(props) {
     else setSelectedItem([props.selectedItem]);
   }, []);
 
-  console.log(selectedItemArray);
+  // console.log(selectedItemArray);
   return (
     <View
       style={{
@@ -101,10 +101,12 @@ function AppPicker(props) {
               return (
                 <PickerItem
                   label={item.name}
-                  selected={multiSelect ? selectedItemArray : selectedItem}
+                  selected={multiSelect ? props.selectedItem : selectedItem}
                   onPress={() => {
                     if (multiSelect) {
-                      setSelectedItemArray([...selectedItemArray, item.name]);
+                      // setSelectedItemArray([...selectedItemArray, item.name]);
+                      setSelectedItemArray(props.selectedItem);
+                      console.log(props.selectedItem);
                       onSelectItem(item);
                     } else if (!multiSelect) {
                       setSelectedItem([item.name]);
