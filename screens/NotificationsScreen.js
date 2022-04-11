@@ -1,6 +1,7 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 import AppText from "../components/AppText";
 import Colors from "../constants/Colors";
@@ -11,7 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 import NetworkError from "../components/NetworkError";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Swipeable, TouchableOpacity } from "react-native-gesture-handler";
 import CustomHeader from "../components/CustomHeader";
 
 const NormalText = (props) => (
@@ -21,66 +22,96 @@ const NormalText = (props) => (
 );
 
 const NotificationItem = ({
-  status,
   job,
   onPress,
   companyName,
   title,
   body,
+  onDelete,
 }) => {
   let image;
   let heading;
   let details;
 
-  // console.log(body[-1]);
+  let status = body.split(" ");
+  status = status[status.length - 1];
 
-  if (status === "hired") {
+  if (status === "Hired") {
     image = require("../assets/selected.png");
     heading = "Congratulations!!.. You did it.";
     details = `You are selected for the role of ${job} in ${companyName}.`;
-  } else if (status === "finalist") {
+  } else if (status === "Finalist") {
     image = require("../assets/shortlisted.png");
     heading = "Woah!. You are the finalist!!..";
     details = `You are the finalist for the ${job} in ${companyName}`;
-  } else if (status === "finalist") {
+  } else if (status === "Review") {
     image = require("../assets/shortlisted.png");
     heading = "Woah!. You have been shortlisted!!..";
     details = `You have been shortlisted for the ${job} in ${companyName}`;
-  } else if (status === "interviewing") {
+  } else if (status === "Interviewing") {
     image = require("../assets/bell.png");
     heading = "Interviewing";
     details = `Your job status for the ${job} in ${companyName} is set to interviewing.`;
   } else return null;
 
+  const renderRightActions = () => (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "flex-end",
+        width: 50,
+        marginHorizontal: 7,
+      }}
+    >
+      <TouchableOpacity
+        onPress={onDelete}
+        activeOpacity={0.7}
+        style={styles.rightActionContainer}
+      >
+        <Feather name="trash-2" size={24} color="red" />
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.notificationContainer}>
-      <View style={styles.imgContainer}>
-        <Image
-          source={image}
-          resizeMode="contain"
-          style={{
-            height: 25,
-            width: 25,
-          }}
-        />
-      </View>
-      <View style={{ flex: 1 }}>
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
-        >
-          <NormalText>{title}</NormalText>
-          {status === "interviewing" && (
-            <>
-              <View style={styles.separator} />
-              <NormalText style={{ flex: 1 }} numberOfLines={1}>
-                {job}
-              </NormalText>
-            </>
-          )}
+    <Swipeable renderRightActions={() => renderRightActions()}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={onPress}
+        style={styles.notificationContainer}
+      >
+        <View style={styles.imgContainer}>
+          <Image
+            source={image}
+            resizeMode="contain"
+            style={{
+              height: 25,
+              width: 25,
+            }}
+          />
         </View>
-        <AppText numberOfLines={2}>{body}</AppText>
-      </View>
-    </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <NormalText>{title}</NormalText>
+            {status === "interviewing" && (
+              <>
+                <View style={styles.separator} />
+                <NormalText style={{ flex: 1 }} numberOfLines={1}>
+                  {job}
+                </NormalText>
+              </>
+            )}
+          </View>
+          <AppText numberOfLines={2}>{body}</AppText>
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   );
 };
 
@@ -94,14 +125,14 @@ function NotificationsScreen({ navigation }) {
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
 
-  // const {
-  //   data,
-  //   error,
-  //   networkError,
-  //   loading,
-  //   request: loadApplications,
-  // } = useApi(applicationApi.getApplications);
+  const { request: markSeenNotifications } = useApi(
+    notificationApi.markSeenNotifications
+  );
 
+  const { res, request: deleteNotification } = useApi(
+    notificationApi.deleteNotification
+  );
+  console.log(res);
   const loadScreen = async () => {
     setNotificLoading(true);
     setLoading(true);
@@ -130,11 +161,12 @@ function NotificationsScreen({ navigation }) {
       }
     }
     // let application = [];
+    console.log(notificResponse);
 
     notificResponse.data.records.forEach((notific, index) => {
       const applicationId =
         notific.notification.notification_details.url.split("/")[2];
-      console.log(applicationId);
+      // console.log(applicationId);
 
       const application = applicationResponse.data.filter(
         (application) => application._id.$oid === applicationId
@@ -155,7 +187,7 @@ function NotificationsScreen({ navigation }) {
   };
 
   // if (applications) console.log(applications);
-
+  // console.log(notifications);
   useEffect(() => {
     loadScreen();
   }, [isFocused]);
@@ -180,7 +212,7 @@ function NotificationsScreen({ navigation }) {
                 itemData.item.job.job_location[0];
 
               const location = `${city}, ${state}, ${country}`;
-
+              const notificId = itemData.item.notification._id;
               return (
                 <>
                   <NotificationItem
@@ -198,6 +230,16 @@ function NotificationsScreen({ navigation }) {
                       itemData.item.notification.notification_details.title
                     }
                     body={itemData.item.notification.notification_details.body}
+                    onDelete={() => {
+                      setNotifications(
+                        notifications.filter((notific) => {
+                          console.log(notific.notification._id);
+                          console.log(notificId + "id");
+                          return notific.notification._id !== notificId;
+                        })
+                      );
+                      deleteNotification(notificId);
+                    }}
                   />
                   <View style={styles.line} />
                 </>
@@ -249,6 +291,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingRight: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 4,
+  },
+  rightActionContainer: {
+    backgroundColor: "#ffb3ad",
+    width: 50,
+    borderRadius: 25,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    // position: "absolute",
+    // marginHorizontal: 10,
+    // flex: 1,
   },
   separator: {
     height: 20,

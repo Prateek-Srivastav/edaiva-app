@@ -89,7 +89,7 @@ function AppPicker(props) {
             style={styles.button}
             onPress={() => setVisible(false)}
           >
-            <Feather name="x" size={24} color={Colors.black} />
+            <Feather name="x" size={18} color={Colors.primary} />
           </TouchableOpacity>
           {props.loading && <Loading />}
           <FlatList
@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
   button: {
     height: 20,
     width: 20,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "flex-end",
     top: -10,
+    borderWidth: 1,
+    borderColor: "#0AB4F14D",
+    borderRadius: 3,
+    alignSelf: "flex-end",
   },
   container: {
     // width: "100%",

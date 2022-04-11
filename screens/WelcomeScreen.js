@@ -11,6 +11,7 @@ import {
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { WebView } from "react-native-webview";
+import { Feather } from "@expo/vector-icons";
 
 import authApi from "../api/auth";
 import AuthContext from "../auth/context";
@@ -87,7 +88,7 @@ function WelcomeScreen({ navigation }) {
 
     redirectUrl = redirectUrl.split("&");
     redirectUrl.splice(2, 1);
-    const appRedirectUri = "https://auth.expo.io/@prateeksri/edaivajobsapp";
+    const appRedirectUri = "https://auth.expo.io/@prateeksri/edaivajobsApp";
     // appRedirectUri = appRedirectUri.slice(1);
     redirectUrl.push(`redirect_uri=${appRedirectUri}`);
     redirectUrl = redirectUrl.join("&");
@@ -102,64 +103,60 @@ function WelcomeScreen({ navigation }) {
     if (!url) {
       return;
     }
-    // console.log(url);
+    console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
-    const regex =
-      /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsapp?code=/g;
+    // const regex =
+    //   /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsApp?code/g;
 
-    const matches = url.match(regex);
-    console.log(matches);
-    if (matches && matches.length) {
-      // We have the correct URL, parse it out to get the token
+    // const matches = url.match(regex);
+    // if (matches && matches.length) {
+    // We have the correct URL, parse it out to get the token
 
-      const handleLinkedinAuth = async (token) => {
-        setLoading(true);
-        setVisible(false);
-        const result = await authApi.linkedinLogin(token);
-        if (!result.ok) {
-          setLoading(false);
-          console.log(result);
-          setErrorMessage(result.data.detail);
-          Toast.show({
-            type: "appError",
-            text1: result.data.detail
-              ? result.data.detail
-              : "Something went wrong!!!!",
-          });
-
-          setLdAuthStarted(false);
-          return setLoginFailed(true);
-        }
-        setLoading(false);
-        setLoginFailed(false);
-
-        const { access, refresh, email_verified, user } = result.data;
-
-        if (!email_verified) {
-          setLdAuthStarted(false);
-          return navigation.navigate("CodeVerification", { email: user.email });
-        }
-
-        authContext.setTokens({ access, refresh });
-        authStorage.storeToken(access, refresh);
-        await cache.store("user", user);
-        setLdAuthStarted(false);
-      };
-
-      const obj = url.split("=");
-      if (obj[1]) {
-        setLinkedInToken({ code: obj[1] });
-        setLdAuthStarted(false);
-        handleLinkedinAuth(obj[1]);
-      }
-    } else {
-      showToast({ type: "appError", message: "Something went wrong!" });
-      setLdAuthStarted(false);
+    const handleLinkedinAuth = async (token) => {
+      setLoading(true);
       setVisible(false);
-      return;
+      const result = await authApi.linkedinLogin(token);
+      console.log(result + "h");
+      if (!result.ok) {
+        setLoading(false);
+        console.log(result);
+        setErrorMessage(result.data.detail);
+        Toast.show({
+          type: "appError",
+          text1: result.data.detail
+            ? result.data.detail
+            : "Something went wrong!!!!",
+        });
+
+        setLdAuthStarted(false);
+        return setLoginFailed(true);
+      }
+      setLoading(false);
+      setLoginFailed(false);
+
+      const { access, refresh, email_verified, user } = result.data;
+
+      if (!email_verified) {
+        setLdAuthStarted(false);
+        return navigation.navigate("CodeVerification", { email: user.email });
+      }
+
+      authContext.setTokens({ access, refresh });
+      authStorage.storeToken(access, refresh);
+      await cache.store("user", user);
+      setLdAuthStarted(false);
+    };
+
+    const obj = url.split("=");
+    console.log(obj);
+    if (obj[1]) {
+      setLinkedInToken({ code: obj[1] });
+      setLdAuthStarted(false);
+      handleLinkedinAuth(obj[1]);
     }
+    // }
   };
 
   const LinkedinAuth = () => (
@@ -172,15 +169,27 @@ function WelcomeScreen({ navigation }) {
         width: "90%",
       }}
     >
+      <TouchableOpacity
+        onPress={() => {
+          setLdAuthStarted(false);
+          setVisible(false);
+        }}
+        style={{
+          borderWidth: 1,
+          margin: 3,
+          borderColor: "#0AB4F14D",
+          borderRadius: 3,
+          alignSelf: "flex-end",
+        }}
+      >
+        <Feather name="x" size={22} color={Colors.primary} />
+      </TouchableOpacity>
       <WebView
         style={styles.wv}
         source={{ uri: redirectUrl }}
         javaScriptEnabled
         domStorageEnabled
         onNavigationStateChange={loadStart}
-        cacheEnabled={false}
-        // onLoadStart={() => setIsLinkedinAuthLoading(true)}
-        // onLoadEnd={() => setIsLinkedinAuthLoading(false)}
       />
     </CustomAlert>
   );
@@ -190,10 +199,6 @@ function WelcomeScreen({ navigation }) {
       const { authentication } = response;
       handleGoogleAuth(authentication);
     }
-    // if (data) {
-    //   modifyRedirectUrl(data);
-    //   setVisible(true);
-    // }
 
     // const onBackPress = () => {
     //   if (visible) setVisible(false);
@@ -205,7 +210,7 @@ function WelcomeScreen({ navigation }) {
     console.log(response);
     // return () =>
     //   BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-  }, [response, data]);
+  }, [response]);
 
   useEffect(() => {
     getLinkedinLoginUrl();

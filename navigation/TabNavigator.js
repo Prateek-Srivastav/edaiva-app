@@ -216,6 +216,7 @@ function MainNavigator({ route }) {
               width: 18,
               borderRadius: 9,
             },
+            // lazy: false,
           })}
           listeners={{
             tabPress: (e) => {

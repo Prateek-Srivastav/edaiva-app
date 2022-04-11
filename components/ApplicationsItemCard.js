@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Feather, Entypo, Ionicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import AppText from "../components/AppText";

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import * as Yup from "yup";
 
 import AppPicker from "../components/AppPicker";
@@ -18,7 +19,6 @@ import AppText from "../components/AppText";
 import Colors from "../constants/Colors";
 import CustomHeader from "../components/CustomHeader";
 import jobsApi from "../api/jobs";
-import { Feather, AntDesign } from "@expo/vector-icons";
 import Loading from "../components/Loading";
 import showToast from "../components/ShowToast";
 import CustomButton from "../components/CustomButton";
