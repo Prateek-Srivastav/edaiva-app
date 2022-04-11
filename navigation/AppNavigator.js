@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import * as Notifications from "expo-notifications";
-import * as Linking from "expo-linking";
 
 import ProfileNavigator from "./ProfileNavigator";
 import TabNavigator from "./TabNavigator";
@@ -61,9 +60,6 @@ function AppNavigator() {
 
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          // Linking.openURL(
-          //   "https://143.110.241.27:6204/applications/6209ff95afab70a746bf4d76"
-          // );
           navigation.navigate("NotificationsStack");
           console.log(response);
           console.log("response");

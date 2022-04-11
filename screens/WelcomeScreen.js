@@ -103,60 +103,60 @@ function WelcomeScreen({ navigation }) {
     if (!url) {
       return;
     }
-    console.log(url);
+    // console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
-    // const regex =
-    //   /https:[\/][\/]auth.expo.io[\/]@prateeksri[\/]edaivajobsApp?code/g;
+    const redirect = "https://auth.expo.io/@prateeksri/edaivajobsApp";
 
-    // const matches = url.match(regex);
-    // if (matches && matches.length) {
-    // We have the correct URL, parse it out to get the token
+    const urlSplit = url.split("?");
 
-    const handleLinkedinAuth = async (token) => {
-      setLoading(true);
-      setVisible(false);
-      const result = await authApi.linkedinLogin(token);
-      console.log(result + "h");
-      if (!result.ok) {
+    if (urlSplit[0] === redirect) {
+      // We have the correct URL, parse it out to get the token
+
+      const handleLinkedinAuth = async (token) => {
+        setLoading(true);
+        setVisible(false);
+        const result = await authApi.linkedinLogin(token);
+        console.log(result + "h");
+        if (!result.ok) {
+          setLoading(false);
+          console.log(result);
+          setErrorMessage(result.data.detail);
+          Toast.show({
+            type: "appError",
+            text1: result.data.detail
+              ? result.data.detail
+              : "Something went wrong!!!!",
+          });
+
+          setLdAuthStarted(false);
+          return setLoginFailed(true);
+        }
         setLoading(false);
-        console.log(result);
-        setErrorMessage(result.data.detail);
-        Toast.show({
-          type: "appError",
-          text1: result.data.detail
-            ? result.data.detail
-            : "Something went wrong!!!!",
-        });
+        setLoginFailed(false);
 
+        const { access, refresh, email_verified, user } = result.data;
+
+        if (!email_verified) {
+          setLdAuthStarted(false);
+          return navigation.navigate("CodeVerification", { email: user.email });
+        }
+
+        authContext.setTokens({ access, refresh });
+        authStorage.storeToken(access, refresh);
+        await cache.store("user", user);
         setLdAuthStarted(false);
-        return setLoginFailed(true);
-      }
-      setLoading(false);
-      setLoginFailed(false);
+      };
 
-      const { access, refresh, email_verified, user } = result.data;
-
-      if (!email_verified) {
+      const obj = url.split("=");
+      // console.log(obj);
+      if (obj[1]) {
+        setLinkedInToken({ code: obj[1] });
         setLdAuthStarted(false);
-        return navigation.navigate("CodeVerification", { email: user.email });
+        handleLinkedinAuth(obj[1]);
       }
-
-      authContext.setTokens({ access, refresh });
-      authStorage.storeToken(access, refresh);
-      await cache.store("user", user);
-      setLdAuthStarted(false);
-    };
-
-    const obj = url.split("=");
-    console.log(obj);
-    if (obj[1]) {
-      setLinkedInToken({ code: obj[1] });
-      setLdAuthStarted(false);
-      handleLinkedinAuth(obj[1]);
     }
-    // }
   };
 
   const LinkedinAuth = () => (

@@ -7,7 +7,6 @@ import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import * as Sentry from "sentry-expo";
-import * as Linking from "expo-linking";
 
 import AuthNavigator from "./navigation/AuthNavigator";
 import AppNavigator from "./navigation/AppNavigator";
@@ -35,12 +34,6 @@ const fetchFonts = () => {
   });
 };
 
-// const config = {
-//   screens: {
-//     AuthNavigator: "/",
-//   },
-// };
-
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [tokens, setTokens] = useState();
@@ -64,12 +57,6 @@ export default function App() {
       />
     );
   }
-
-  // const prefix = Linking.createURL("edaiva")
-
-  // const universal = Linking.createURL("https://*.edaiva.com");
-
-  // console.log(Linking.createURL("", { scheme: "https" }));
 
   return (
     <AuthContext.Provider value={{ tokens, setTokens }}>
