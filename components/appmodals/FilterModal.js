@@ -42,6 +42,7 @@ const SPRING_CONFIG = {
 };
 
 const experienceData = [
+  // { _id: 0, name: "None" },
   { _id: 1, name: "0-5 yrs" },
   { _id: 2, name: "5-10 yrs" },
   { _id: 3, name: "10-20 yrs" },
@@ -117,7 +118,7 @@ function FilterModal(props) {
     if (country) loadStates(country);
   }, []);
 
-  const filters = {
+  let filters = {
     country,
     state,
     city,
@@ -253,8 +254,11 @@ function FilterModal(props) {
                   <AppPicker
                     selectedItem={country}
                     onSelectItem={(item) => {
-                      setCountry(item.name);
-                      loadStates(item.name);
+                      if (country === item.name) setCountry(null);
+                      else {
+                        setCountry(item.name);
+                        loadStates(item.name);
+                      }
                       setState(null);
                     }}
                     name="country"
@@ -266,6 +270,7 @@ function FilterModal(props) {
                   <AppPicker
                     selectedItem={state}
                     onSelectItem={(item) => {
+                      if (state === item.name) return setState();
                       setState(item.name);
                     }}
                     name="state"
@@ -370,11 +375,13 @@ function FilterModal(props) {
                 <AppPicker
                   selectedItem={experience}
                   onSelectItem={(item) => {
+                    if (experience === item.name) return setExperience();
                     setExperience(item.name);
                   }}
                   name="experience"
                   title={experience ? experience : "Select"}
                   items={experienceData}
+                  disabled={selectedJobType === "internship"}
                 />
               </View>
             )}

@@ -11,6 +11,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import dummyData from "../dummyData.js/data";
 import Colors from "../constants/Colors";
 import cache from "../utilities/cache";
+import { useIsFocused } from "@react-navigation/native";
 
 const WishlistItemCard = (props) => (
   <TouchableOpacity
@@ -47,12 +48,16 @@ const WishlistItemCard = (props) => (
 function WishlistScreen({ navigation }) {
   const [wishlist, setWishlist] = useState();
 
+  const isFocused = useIsFocused();
+
   const wishlistStatus = async () => {
     const wl = await cache.get("wishlist");
 
     return setWishlist(wl);
   };
-  wishlistStatus();
+
+  useEffect(() => wishlistStatus(), [isFocused]);
+
   return (
     <View style={styles.container}>
       <FlatList

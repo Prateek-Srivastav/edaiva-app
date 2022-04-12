@@ -128,12 +128,13 @@ function ProfileScreen({ navigation }) {
     );
 
     const cUri = await FileSystem.getContentUriAsync(resume ? resume : uri);
-
-    await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
-      data: cUri,
-      flags: 1,
-      type: "application/pdf",
-    });
+    console.log(cUri);
+    if (cUri)
+      await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+        data: cUri,
+        flags: 1,
+        type: "application/pdf",
+      });
   };
 
   const SignOutAlert = () => {
@@ -269,26 +270,44 @@ function ProfileScreen({ navigation }) {
                   flexDirection: "column",
                   alignItems: "center",
                   width: "45%",
+                  paddingHorizontal: 0,
                   paddingVertical: 20,
                 }}
               >
-                <LargeText>{applications ? applications : 0}</LargeText>
-                <NormalText>Jobs Applied</NormalText>
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                  onPress={() => navigation.navigate("ApplicationNavigator")}
+                >
+                  <LargeText>{applications ? applications : 0}</LargeText>
+                  <NormalText>Jobs Applied</NormalText>
+                </TouchableOpacity>
               </Card>
               <Card
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
                   width: "45%",
+                  paddingHorizontal: 0,
                   paddingVertical: 20,
                 }}
               >
-                <LargeText>
-                  {data.interview_availability
-                    ? data.interview_availability.length
-                    : "-"}
-                </LargeText>
-                <NormalText>Interview</NormalText>
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                  onPress={() => navigation.navigate("InterviewsListing")}
+                >
+                  <LargeText>
+                    {data.interview_availability
+                      ? data.interview_availability.length
+                      : "-"}
+                  </LargeText>
+                  <NormalText>Interview</NormalText>
+                </TouchableOpacity>
               </Card>
             </View>
             <View

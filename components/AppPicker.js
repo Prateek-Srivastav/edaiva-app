@@ -13,6 +13,7 @@ import AppText from "./AppText";
 import CustomAlert from "./CustomAlert";
 import PickerItem from "./PickerItem";
 import Loading from "./Loading";
+import showToast from "./ShowToast";
 
 function AppPicker(props) {
   const [visible, setVisible] = useState(false);
@@ -47,6 +48,7 @@ function AppPicker(props) {
     <View
       style={{
         ...styles.container,
+        // opacity: disabled ? 0.8 : 1,
         ...props.style,
       }}
     >
@@ -62,13 +64,18 @@ function AppPicker(props) {
         </AppText>
       )}
       <TouchableOpacity
-        disabled={disabled}
+        // disabled={disabled}
         onPress={() => {
+          if (disabled)
+            return showToast({
+              type: "appInfo",
+              message: "Interns doesn't need experience!",
+            });
           if (onPress) onPress();
           setVisible(true);
         }}
-        activeOpacity={0.8}
-        style={styles.picker}
+        activeOpacity={disabled ? 1 : 0.8}
+        style={{ ...styles.picker }}
       >
         <Text style={{ ...styles.title, ...props.titleStyle }}>
           {props.title}
@@ -101,12 +108,13 @@ function AppPicker(props) {
               return (
                 <PickerItem
                   label={item.name}
-                  selected={multiSelect ? props.selectedItem : selectedItem}
+                  selected={
+                    multiSelect ? props.selectedItem : [props.selectedItem]
+                  }
                   onPress={() => {
                     if (multiSelect) {
                       // setSelectedItemArray([...selectedItemArray, item.name]);
                       setSelectedItemArray(props.selectedItem);
-                      console.log(props.selectedItem);
                       onSelectItem(item);
                     } else if (!multiSelect) {
                       setSelectedItem([item.name]);
@@ -139,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // borderWidth: 1,
     marginBottom: 10,
+    // backgroundColor: "white",
   },
   picker: {
     flexDirection: "row",

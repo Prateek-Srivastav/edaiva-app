@@ -93,7 +93,9 @@ function HomeScreen({ navigation }) {
           "Your are not a part of any institution !"
         ) {
           navigation.navigate("CampusStack");
-        } else BackHandler.exitApp();
+          return true;
+        }
+        BackHandler.exitApp();
         return true;
       };
 

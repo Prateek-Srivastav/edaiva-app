@@ -161,9 +161,8 @@ function NotificationsScreen({ navigation }) {
       }
     }
     // let application = [];
-    console.log(notificResponse);
 
-    notificResponse.data.records.forEach((notific, index) => {
+    notificResponse.data?.records.forEach((notific, index) => {
       const applicationId =
         notific.notification.notification_details.url.split("/")[2];
       // console.log(applicationId);
@@ -178,6 +177,7 @@ function NotificationsScreen({ navigation }) {
     // application.map((applic) => {
     //   applic._id.$oid ===
     // })
+    console.log(notificResponse);
 
     // console.log(notificResponse);
     setNotifications(notificResponse.data.records);
@@ -190,6 +190,7 @@ function NotificationsScreen({ navigation }) {
   // console.log(notifications);
   useEffect(() => {
     loadScreen();
+    markSeenNotifications();
   }, [isFocused]);
 
   return (
@@ -212,7 +213,7 @@ function NotificationsScreen({ navigation }) {
                 itemData.item.job.job_location[0];
 
               const location = `${city}, ${state}, ${country}`;
-              const notificId = itemData.item.notification._id;
+              const notificId = itemData.item._id;
               return (
                 <>
                   <NotificationItem
@@ -233,9 +234,9 @@ function NotificationsScreen({ navigation }) {
                     onDelete={() => {
                       setNotifications(
                         notifications.filter((notific) => {
-                          console.log(notific.notification._id);
+                          console.log(notific._id);
                           console.log(notificId + "id");
-                          return notific.notification._id !== notificId;
+                          return notific._id !== notificId;
                         })
                       );
                       deleteNotification(notificId);

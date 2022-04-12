@@ -14,6 +14,7 @@ import EditProfileScreen from "../screens/EditProfileScreens/EditProfileScreen";
 import ViewProfileScreen from "../screens/ViewProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import CampusEditProfileScreen from "../screens/campusScreens/CampusEditProfileScreen";
+import InterviewsListingScreen from "../screens/InterviewsListingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -95,6 +96,10 @@ const ProfileNavigator = () => (
       }}
     />
     <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+    <Stack.Screen
+      name="InterviewsListing"
+      component={InterviewsListingScreen}
+    />
   </Stack.Navigator>
 );
 

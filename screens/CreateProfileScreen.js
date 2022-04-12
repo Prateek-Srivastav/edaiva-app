@@ -16,6 +16,7 @@ import cache from "../utilities/cache";
 import { formattedDate, formattedNumericDate } from "../utilities/date";
 import CustomHeader from "../components/CustomHeader";
 import Colors from "../constants/Colors";
+import showToast from "../components/ShowToast";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -108,7 +109,11 @@ function CreateProfileScreen() {
 
   return (
     <>
-      <CustomHeader backDisabled screenName="Create Profile" />
+      <CustomHeader
+        navigation={navigation}
+        backScreen="Home"
+        screenName="Create Profile"
+      />
 
       <ScrollView
         contentContainerStyle={{ padding: 15 }}
@@ -144,10 +149,27 @@ function CreateProfileScreen() {
           <DatePicker
             label="DATE OF BIRTH"
             minDate={null}
+            maxDate={Date.now()}
+            initialDate={dob}
+            dobLimit
             onDateChange={(indFormat, usFormat, date) => {
-              console.log(usFormat);
-              setDob(usFormat);
-              setDobError(false);
+              const dob = new Date(usFormat);
+              const diff = Date.now() - dob.getTime();
+              const age = new Date(diff);
+              const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 18;
+
+              if (!isValid) {
+                setDob(null);
+                setDobError(false);
+
+                return showToast({
+                  type: "appError",
+                  message: "Your age must be greater than 18.",
+                });
+              } else {
+                setDob(usFormat);
+                setDobError(false);
+              }
             }}
             value={dob}
           />

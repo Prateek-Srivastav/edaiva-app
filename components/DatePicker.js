@@ -15,6 +15,8 @@ function DatePicker({
   titleStyle,
   initialDate,
   style,
+  maxDate,
+  dobLimit,
 }) {
   const [show, setShow] = useState(false);
   const [initDate, setInitDate] = useState(
@@ -32,8 +34,19 @@ function DatePicker({
     const indFormat = day + "/" + month + "/" + date?.getFullYear();
     const usFormat = date?.getFullYear() + "-" + month + "-" + day;
 
+    const diff = Date.now() - date?.getTime();
+    const age = new Date(diff);
+    const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 18;
+
+    if (!isValid && dobLimit) {
+      setShow(false);
+      onDateChange(indFormat, usFormat, date);
+
+      return setSelectedDate("Date");
+    }
+
     setShow(false);
-    setSelectedDate(indFormat);
+    setSelectedDate(usFormat);
     setInitDate(date);
     onDateChange(indFormat, usFormat, date);
   };
@@ -51,12 +64,13 @@ function DatePicker({
           if (!disabled) setShow(true);
         }}
         icon={<MaterialIcons name="date-range" size={17} color="#817E7E" />}
-        title={value ? value : selectedDate}
+        title={!initialDate ? selectedDate : value}
       />
       {show && (
         <DateTimePicker
           testID="timePicker"
           minimumDate={minDate !== undefined ? minDate : new Date()}
+          maximumDate={maxDate}
           value={initDate}
           mode="date"
           display="default"
