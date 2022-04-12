@@ -27,7 +27,20 @@ const get = async (key) => {
   }
 };
 
+const clear = async (key) => {
+  try {
+    const value = await AsyncStorage.clear();
+    const item = JSON.parse(value);
+    // if (!item) return null;
+    console.log(item);
+    // return item.value;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default {
   store,
   get,
+  clear,
 };

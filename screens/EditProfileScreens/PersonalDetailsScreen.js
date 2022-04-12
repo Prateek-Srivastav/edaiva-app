@@ -67,6 +67,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const [phone, setPhone] = useState(mobile);
   const [phoneCode, setPhoneCode] = useState();
   const [phoneError, setPhoneError] = useState();
+  const [pincodeError, setPincodeError] = useState(false);
   const [countryError, setCountryError] = useState();
   const [stateError, setStateError] = useState();
   const [dobError, setDobError] = useState();
@@ -122,7 +123,9 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     if (!state) return setStateError(true);
     else if (!country) return setCountryError(true);
     else if (!dob) return setDobError(true);
-    else if (phone === "" || phone.length < 10) return setPhoneError(true);
+    else if (phone === "" || phone.length < 10 || isNaN(phone))
+      return setPhoneError(true);
+    else if (isNaN(values.pincode)) return setPincodeError(true);
 
     await updateUser({
       firstname: values.firstname !== "" ? values.firstname : user.firstname,
@@ -267,6 +270,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
           name="pincode"
           placeholder="Pincode"
         />
+        <ErrorMessage error="Enter a valid pincode." visible={pincodeError} />
         <CardInput
           defaultValue={phoneCode ? phoneCode : phone}
           label="PHONE"

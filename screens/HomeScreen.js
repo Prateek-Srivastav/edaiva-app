@@ -10,18 +10,13 @@ import {
   Dimensions,
   StatusBar,
   BackHandler,
-  Alert,
 } from "react-native";
-import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 
-import AppModal from "../components/AppModal";
 import Colors from "../constants/Colors";
-import dummyData from "../dummyData.js/dataOriginal";
-import FilterModalContent from "../components/FilterModalContent";
 import jobsApi from "../api/jobs";
 import JobCard from "../components/JobCard";
 import AppText from "../components/AppText";
-import CustomButton from "../components/CustomButton";
 import CustomAlert from "../components/CustomAlert";
 import useApi from "../hooks/useApi";
 import { formattedDate } from "../utilities/date";
@@ -32,21 +27,20 @@ import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import interviewApi from "../api/interview";
 import candidateApi from "../api/candidate";
 import FilterModal from "../components/appmodals/FilterModal";
-import Card from "../components/Card";
-import formattedTime from "../utilities/time";
 import InterviewReminder from "../components/interview/InterviewReminder";
-import { RotateInUpLeft } from "react-native-reanimated";
 import campusCandidateApi from "../api/campusApis/candidate";
+import cache from "../utilities/cache";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 function HomeScreen({ navigation }) {
   const [isPressed, setIsPressed] = useState(false);
-  const [interviews, setInterviews] = useState([]);
+  // const [interviews, setInterviews] = useState([]);
   const [filters, setFilters] = useState({});
   const [keyword, setKeyword] = useState();
   const [showOptions, setShowOptions] = useState(false);
   const [sortBy, setSortBy] = useState("latest");
+  const [campusStudent, setCampusStudent] = useState(false);
 
   const isFocused = useIsFocused();
 
@@ -63,6 +57,14 @@ function HomeScreen({ navigation }) {
   } = useApi(jobsApi.getJobs);
 
   const {
+    data: jobTypesData,
+    error: jobTypesError,
+    networkError: jobTypesNetworkError,
+    loading: jobTypesLoading,
+    request: loadJobTypes,
+  } = useApi(jobsApi.getJobTypes);
+
+  const {
     data: interviewData,
     loading: interviewLoading,
     request: loadInterviews,
@@ -72,30 +74,42 @@ function HomeScreen({ navigation }) {
     candidateApi.getProfile
   );
 
-  let jobs;
+  // let jobs;
 
-  if (data) {
-    jobs = data.docs;
-  }
+  // if (data) {
+  //   jobs = data.docs;
+  // }
+
+  // const [data.docs, setJobs] = useState(data?.docs);
+
+  const isCampusStudent = async () => {
+    await cache.store("isCampusStudent", true);
+    const isCampus = await cache.get("isCampusStudent");
+    setCampusStudent(isCampus);
+  };
 
   useEffect(() => {
     loadCampusProfile();
-    loadJobs({ sort: sortBy });
+    loadJobTypes();
+    loadJobs({ sort: sortBy, ...filters });
     loadInterviews();
+    console.log("abcde");
+    // setJobs(data.docs);
     loadProfile();
   }, [isFocused, sortBy]);
+
+  if (campusProfileData?.detail !== "Your are not a part of any institution !")
+    isCampusStudent();
 
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        if (
-          campusProfileData?.detail !==
-          "Your are not a part of any institution !"
-        ) {
-          navigation.navigate("CampusStack");
+        if (!campusStudent) {
+          console.log("hilp");
+          BackHandler.exitApp();
           return true;
         }
-        BackHandler.exitApp();
+        navigation.navigate("CampusStack");
         return true;
       };
 
@@ -110,6 +124,7 @@ function HomeScreen({ navigation }) {
     if (appliedFilters) setFilters(appliedFilters);
     setIsPressed(false);
     loadJobs(appliedFilters);
+    // setJobs(data.docs);
   };
 
   const searchHandler = () => {
@@ -192,7 +207,7 @@ function HomeScreen({ navigation }) {
             <Feather name="filter" size={23} color={Colors.primary} />
           </TouchableOpacity>
         </View>
-        {loading || interviewLoading ? (
+        {loading || interviewLoading || jobTypesLoading || !data ? (
           <Loading />
         ) : (
           <>
@@ -275,13 +290,11 @@ function HomeScreen({ navigation }) {
                                 color: Colors.primary,
                               }}
                             >
-                              {itemData.item.job_type ===
-                              "6130bc87b8eb9a6797043297"
-                                ? "Internship"
-                                : itemData.item.job_type ===
-                                  "6130bc8cb8eb9a6797043298"
-                                ? "Full Time"
-                                : ""}
+                              {
+                                jobTypesData.filter(
+                                  (type) => itemData.item.job_type === type._id
+                                )[0].name
+                              }
                             </Text>
                           </View>
                         )}
@@ -323,7 +336,7 @@ function HomeScreen({ navigation }) {
                   marginStart: 2,
                 }}
               >
-                {jobs ? jobs.length : ""} Jobs found
+                {data.docs ? data.docs.length : ""} Jobs found
               </Text>
               <View
                 style={{
@@ -370,7 +383,7 @@ function HomeScreen({ navigation }) {
                   paddingHorizontal: 15,
                   paddingBottom: 20,
                 }}
-                data={jobs}
+                data={data.docs}
                 renderItem={(itemData) => {
                   // const { city, state, country } =
                   //   itemData.item.job_location[0];
@@ -407,6 +420,7 @@ function HomeScreen({ navigation }) {
         isPressed={isPressed}
         sendData={getFilters}
         sendIsPressed={() => setIsPressed(false)}
+        jobTypes={jobTypesData}
       />
     </View>
   );

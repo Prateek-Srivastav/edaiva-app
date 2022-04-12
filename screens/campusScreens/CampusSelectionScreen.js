@@ -13,6 +13,7 @@ import useApi from "../../hooks/useApi";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import AuthContext from "../../auth/context";
 import { ErrorMessage } from "../../components/forms";
+import cache from "../../utilities/cache";
 
 function CampusSelectionScreen({ navigation, route }) {
   const [visible, setVisible] = useState();
@@ -74,6 +75,7 @@ function CampusSelectionScreen({ navigation, route }) {
         refresh: route.params.refresh,
       });
       authStorage.storeToken(route.params.access, route.params.refresh);
+      await cache.store("isCampusStudent", true);
     }
   };
 

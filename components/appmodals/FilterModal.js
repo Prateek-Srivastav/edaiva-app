@@ -42,11 +42,12 @@ const SPRING_CONFIG = {
 };
 
 const experienceData = [
-  // { _id: 0, name: "None" },
-  { _id: 1, name: "0-5 yrs" },
-  { _id: 2, name: "5-10 yrs" },
-  { _id: 3, name: "10-20 yrs" },
-  { _id: 4, name: "20+ yrs" },
+  { _id: 0, name: "All" },
+  { _id: 1, name: "0-2 Years" },
+  { _id: 2, name: "3-5 Years" },
+  { _id: 3, name: "5-10 Years" },
+  { _id: 4, name: "10-15 Years" },
+  { _id: 5, name: "15+ Years" },
 ];
 
 function FilterModal(props) {
@@ -124,11 +125,13 @@ function FilterModal(props) {
     city,
     job_type:
       selectedJobType === "internship"
-        ? "6130bc87b8eb9a6797043297"
+        ? props.jobTypes.filter((type) => type.name === "Internship")[0]._id
         : selectedJobType === "ft"
-        ? "6130bc8cb8eb9a6797043298"
+        ? props.jobTypes.filter((type) => type.name === "Full Time")[0]._id
+        : selectedJobType === "pt"
+        ? props.jobTypes.filter((type) => type.name === "Part Time")[0]._id
         : null,
-    experience,
+    experience: experience === "All" ? null : experience,
     skills: skillsItemArray,
     keyword,
   };
@@ -188,7 +191,9 @@ function FilterModal(props) {
         onPress={() => {
           const index = skillsItemArray.indexOf(skillItem);
 
-          skillsItemArray.splice(index, 1);
+          setSkillsItemArray(
+            skillsItemArray.filter((item) => item !== skillItem)
+          );
         }}
         style={{
           borderWidth: 1,
@@ -375,7 +380,8 @@ function FilterModal(props) {
                 <AppPicker
                   selectedItem={experience}
                   onSelectItem={(item) => {
-                    if (experience === item.name) return setExperience();
+                    if (experience === item.name || item.name === "All")
+                      return setExperience("All");
                     setExperience(item.name);
                   }}
                   name="experience"

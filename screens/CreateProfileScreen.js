@@ -40,6 +40,7 @@ function CreateProfileScreen() {
   const [phone, setPhone] = useState();
   const [phoneCode, setPhoneCode] = useState();
   const [phoneError, setPhoneError] = useState();
+  const [pincodeError, setPincodeError] = useState();
   const [countryError, setCountryError] = useState();
   const [stateError, setStateError] = useState();
   const [dobError, setDobError] = useState();
@@ -89,7 +90,9 @@ function CreateProfileScreen() {
     if (!state) return setStateError(true);
     else if (!country) return setCountryError(true);
     else if (!dob) return setDobError(true);
-    else if (phone === "" || phone.length < 10) return setPhoneError(true);
+    else if (phone === "" || phone.length < 10 || isNaN(phone))
+      return setPhoneError(true);
+    else if (isNaN(values.pincode)) return setPincodeError(true);
 
     await updateUser({
       firstname: values.firstname !== "" ? values.firstname : user.firstname,
@@ -214,6 +217,7 @@ function CreateProfileScreen() {
 
           <AppFormCardInput name="city" placeholder="City" />
           <AppFormCardInput name="pincode" placeholder="Pincode" />
+          <ErrorMessage error="Enter a valid pincode." visible={pincodeError} />
           <CardInput
             defaultValue={phoneCode ? phoneCode : phone}
             label="PHONE"

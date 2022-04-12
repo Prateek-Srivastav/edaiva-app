@@ -89,6 +89,12 @@ function CustomDrawer(props) {
 
   const { firstname, lastname, email } = user;
 
+  const signOutHandler = async () => {
+    setTokens(null);
+    authStorage.removeToken();
+    await cache.clear();
+  };
+
   const SignOutAlert = () => {
     return (
       <CustomAlert visible={visible}>
@@ -121,10 +127,7 @@ function CustomDrawer(props) {
           }}
         >
           <CustomButton
-            onPress={() => {
-              setTokens(null);
-              authStorage.removeToken();
-            }}
+            onPress={signOutHandler}
             title="Yes"
             titleStyle={{ color: Colors.primary }}
             style={{ backgroundColor: "#FFFFFF", elevation: 3 }}

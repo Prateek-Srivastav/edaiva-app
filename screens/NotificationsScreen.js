@@ -1,5 +1,9 @@
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import {
+  NavigationContainer,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
@@ -14,6 +18,8 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import { Swipeable, TouchableOpacity } from "react-native-gesture-handler";
 import CustomHeader from "../components/CustomHeader";
+import cache from "../utilities/cache";
+import showToast from "../components/ShowToast";
 
 const NormalText = (props) => (
   <Text {...props} style={{ ...styles.normalText, ...props.style }}>
@@ -118,7 +124,6 @@ const NotificationItem = ({
 function NotificationsScreen({ navigation }) {
   const isFocused = useIsFocused();
 
-  const [applications, setApplications] = useState();
   const [notifications, setNotifications] = useState();
   const [loading, setLoading] = useState(false);
   const [notificLoading, setNotificLoading] = useState(false);
@@ -132,7 +137,7 @@ function NotificationsScreen({ navigation }) {
   const { res, request: deleteNotification } = useApi(
     notificationApi.deleteNotification
   );
-  console.log(res);
+  // console.log(res);
   const loadScreen = async () => {
     setNotificLoading(true);
     setLoading(true);
@@ -160,38 +165,49 @@ function NotificationsScreen({ navigation }) {
         return setError(true);
       }
     }
-    // let application = [];
 
     notificResponse.data?.records.forEach((notific, index) => {
       const applicationId =
         notific.notification.notification_details.url.split("/")[2];
-      // console.log(applicationId);
-
       const application = applicationResponse.data.filter(
         (application) => application._id.$oid === applicationId
       )[0];
 
-      notificResponse.data.records[index] = { ...notific, ...application };
+      notificResponse.data.records[index] = {
+        ...notific,
+        ...application,
+        notification_id: notific._id,
+      };
     });
 
-    // application.map((applic) => {
-    //   applic._id.$oid ===
-    // })
-    console.log(notificResponse);
-
     // console.log(notificResponse);
+
     setNotifications(notificResponse.data.records);
-    // setApplications(application);
     setNotificLoading(false);
     setLoading(false);
   };
 
-  // if (applications) console.log(applications);
-  // console.log(notifications);
   useEffect(() => {
     loadScreen();
-    markSeenNotifications();
   }, [isFocused]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const showNotificDeleteInfo = async () => {
+        const isFirstTime = await cache.get("notificOpened");
+        console.log(isFirstTime);
+        if (!isFirstTime) {
+          showToast({
+            type: "appInfo",
+            message: "You can swipe left on a notification to    delete it.",
+          });
+          await cache.store("notificOpened", true);
+        }
+      };
+      showNotificDeleteInfo();
+      markSeenNotifications("job");
+    }, [])
+  );
 
   return (
     <>
@@ -213,7 +229,7 @@ function NotificationsScreen({ navigation }) {
                 itemData.item.job.job_location[0];
 
               const location = `${city}, ${state}, ${country}`;
-              const notificId = itemData.item._id;
+              const notificId = itemData.item.notification_id;
               return (
                 <>
                   <NotificationItem
@@ -234,9 +250,9 @@ function NotificationsScreen({ navigation }) {
                     onDelete={() => {
                       setNotifications(
                         notifications.filter((notific) => {
-                          console.log(notific._id);
+                          console.log(notific.notification_id);
                           console.log(notificId + "id");
-                          return notific._id !== notificId;
+                          return notific.notification_id !== notificId;
                         })
                       );
                       deleteNotification(notificId);

@@ -117,17 +117,21 @@ function ProfileScreen({ navigation }) {
         text1: "Upload a resume first",
       });
 
-    Toast.show({
-      type: "appInfo",
-      text1: "Downloading your resume!",
-    });
+    let response;
 
-    const { uri } = await FileSystem.downloadAsync(
-      data.resume,
-      FileSystem.documentDirectory + "resume.pdf"
+    if (data.resume) {
+      Toast.show({
+        type: "appInfo",
+        text1: "Downloading your resume!",
+      });
+      response = await FileSystem.downloadAsync(
+        data.resume,
+        FileSystem.documentDirectory + "resume.pdf"
+      );
+    }
+    const cUri = await FileSystem.getContentUriAsync(
+      resume ? resume : response.uri
     );
-
-    const cUri = await FileSystem.getContentUriAsync(resume ? resume : uri);
     console.log(cUri);
     if (cUri)
       await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
@@ -135,6 +139,12 @@ function ProfileScreen({ navigation }) {
         flags: 1,
         type: "application/pdf",
       });
+  };
+
+  const signOutHandler = async () => {
+    setTokens(null);
+    authStorage.removeToken();
+    await cache.clear();
   };
 
   const SignOutAlert = () => {
@@ -169,10 +179,7 @@ function ProfileScreen({ navigation }) {
           }}
         >
           <CustomButton
-            onPress={() => {
-              setTokens(null);
-              authStorage.removeToken();
-            }}
+            onPress={signOutHandler}
             title="Yes"
             titleStyle={{ color: Colors.primary }}
             style={{ backgroundColor: "#FFFFFF", elevation: 3 }}

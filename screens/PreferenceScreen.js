@@ -23,7 +23,7 @@ import Loading from "../components/Loading";
 import showToast from "../components/ShowToast";
 import CustomButton from "../components/CustomButton";
 
-const SelectedInputs = (array) => {
+const selectedInputs = ({ array, updateArray }) => {
   return array.map((item) => (
     <View
       style={{
@@ -36,7 +36,7 @@ const SelectedInputs = (array) => {
         backgroundColor: "#B9ECFF4D",
         borderRadius: 3,
         marginLeft: 10,
-        marginTop: 10,
+        marginBottom: 10,
       }}
     >
       <AppText style={{ marginHorizontal: 5, color: Colors.primary }}>
@@ -44,8 +44,7 @@ const SelectedInputs = (array) => {
       </AppText>
       <TouchableOpacity
         onPress={() => {
-          const index = array.indexOf(item);
-          array.splice(index, 1);
+          updateArray(array.filter((ele) => ele !== item));
         }}
         style={{
           borderWidth: 1,
@@ -109,17 +108,17 @@ function PreferenceScreen() {
       response.data.job_preference ? response.data.job_preference.job_roles : []
     );
     setJobType(
-      response.data.job_preference.job_type
+      response.data.job_preference?.job_type
         ? response.data.job_preference.job_type
         : []
     );
     setKeywordArray(
       response.data.job_preference ? response.data.job_preference.keywords : []
     );
-    setExperience(response.data.job_preference.experience);
+    setExperience(response.data.job_preference?.experience);
 
     let typeName = [];
-    response.data.job_preference.job_type.forEach((e) => {
+    response.data.job_preference?.job_type.forEach((e) => {
       typeName.push(
         jobTypesResponse.data.filter((jobtype) => jobtype._id === e)[0]
       );
@@ -224,16 +223,20 @@ function PreferenceScreen() {
               setPrefJobRoleText("");
             }}
             value={prefJobRoleText}
+            // style={{ marginBottom: 0 }}
           />
 
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
-              marginBottom: 20,
+              // marginBottom: 20,
             }}
           >
-            {SelectedInputs(prefJobRoleArray)}
+            {selectedInputs({
+              array: prefJobRoleArray,
+              updateArray: setPrefJobRoleArray,
+            })}
           </View>
 
           <CardInput
@@ -255,7 +258,10 @@ function PreferenceScreen() {
               flexWrap: "wrap",
             }}
           >
-            {SelectedInputs(keywordArray)}
+            {selectedInputs({
+              array: keywordArray,
+              updateArray: setKeywordArray,
+            })}
           </View>
           <CustomButton title="Save" onPress={handleSubmit} />
         </ScrollView>

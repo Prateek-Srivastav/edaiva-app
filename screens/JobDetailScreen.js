@@ -229,7 +229,7 @@ function JobDetailScreen({ route, navigation }) {
   const removeFromWishlist = async () => {
     const wl = await cache.get("wishlist");
 
-    wl.find((job, index) => {
+    wl?.find((job, index) => {
       if (job.id === jobDetails._id) {
         wl.splice(index, 1);
         return true;
