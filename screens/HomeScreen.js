@@ -30,6 +30,7 @@ import FilterModal from "../components/appmodals/FilterModal";
 import InterviewReminder from "../components/interview/InterviewReminder";
 import campusCandidateApi from "../api/campusApis/candidate";
 import cache from "../utilities/cache";
+import NoData from "../components/NoData";
 
 const { width } = Dimensions.get("window");
 
@@ -96,7 +97,7 @@ function HomeScreen({ navigation }) {
     console.log("abcde");
     // setJobs(data.docs);
     loadProfile();
-  }, [isFocused, sortBy]);
+  }, [isFocused, sortBy, filters]);
 
   if (campusProfileData?.detail !== "Your are not a part of any institution !")
     isCampusStudent();
@@ -123,7 +124,7 @@ function HomeScreen({ navigation }) {
   const getFilters = (appliedFilters) => {
     if (appliedFilters) setFilters(appliedFilters);
     setIsPressed(false);
-    loadJobs(appliedFilters);
+    // loadJobs(appliedFilters);
     // setJobs(data.docs);
   };
 
@@ -377,40 +378,47 @@ function HomeScreen({ navigation }) {
                 flex: 1,
               }}
             >
-              <FlatList
-                keyExtractor={(item) => item._id}
-                contentContainerStyle={{
-                  paddingHorizontal: 15,
-                  paddingBottom: 20,
-                }}
-                data={data.docs}
-                renderItem={(itemData) => {
-                  // const { city, state, country } =
-                  //   itemData.item.job_location[0];
+              {!loading &&
+              !error &&
+              !networkError &&
+              data?.docs.length === 0 ? (
+                <NoData text="Sorry!! No jobs found." canNotRefresh />
+              ) : (
+                <FlatList
+                  keyExtractor={(item) => item._id}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                    paddingBottom: 20,
+                  }}
+                  data={data.docs}
+                  renderItem={(itemData) => {
+                    // const { city, state, country } =
+                    //   itemData.item.job_location[0];
 
-                  const location = `${itemData.item.job_location[0]?.city}, ${itemData.item.job_location[0]?.state}, ${itemData.item.job_location[0]?.country}`;
+                    const location = `${itemData.item.job_location[0]?.city}, ${itemData.item.job_location[0]?.state}, ${itemData.item.job_location[0]?.country}`;
 
-                  return (
-                    <JobCard
-                      onPress={() =>
-                        navigation.navigate("JobDetail", {
-                          jobId: itemData.item._id,
-                          isApplied: itemData.item.applied.length !== 0,
-                          applicationId: itemData.item.applied[0]?._id,
-                          location,
-                        })
-                      }
-                      heading={itemData.item.job_title}
-                      companyName={itemData.item.company.name}
-                      jobType={itemData.item.job_type.name}
-                      location={location}
-                      description={itemData.item.job_description}
-                      postedDate={formattedDate(itemData.item.created_on)}
-                      isApplied={itemData.item.applied}
-                    />
-                  );
-                }}
-              />
+                    return (
+                      <JobCard
+                        onPress={() =>
+                          navigation.navigate("JobDetail", {
+                            jobId: itemData.item._id,
+                            isApplied: itemData.item.applied.length !== 0,
+                            applicationId: itemData.item.applied[0]?._id,
+                            location,
+                          })
+                        }
+                        heading={itemData.item.job_title}
+                        companyName={itemData.item.company.name}
+                        jobType={itemData.item.job_type.name}
+                        location={location}
+                        description={itemData.item.job_description}
+                        postedDate={formattedDate(itemData.item.created_on)}
+                        isApplied={itemData.item.applied}
+                      />
+                    );
+                  }}
+                />
+              )}
             </View>
           </>
         )}

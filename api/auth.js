@@ -19,12 +19,13 @@ const googleLogin = (accessToken) =>
   });
 
 // const googleLogin = (accessToken) =>
-// client.get("user/callback/google", {
-//   code: accessToken,
-//   platform: "app",
-// });
+//   client.get("user/callback/google", {
+//     code: accessToken,
+//     platform: "app",
+//   });
 
 const getLinkedinLogin = () => client.get("/user/login/linkedin");
+
 const getGoogleLogin = () => client.get("/user/login/google");
 
 const linkedinLogin = (accessToken) =>

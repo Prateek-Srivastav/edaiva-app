@@ -150,7 +150,6 @@ function WelcomeScreen({ navigation }) {
       };
 
       const obj = url.split("=");
-      // console.log(obj);
       if (obj[1]) {
         setLinkedInToken({ code: obj[1] });
         setLdAuthStarted(false);

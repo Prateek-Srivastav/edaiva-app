@@ -8,6 +8,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as Yup from "yup";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { WebView } from "react-native-webview";
+import { Feather } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
 import {
@@ -21,6 +25,7 @@ import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import useApi from "../hooks/useApi";
+import CustomAlert from "../components/CustomAlert";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -34,12 +39,172 @@ const validationSchema = Yup.object().shape({
 });
 
 function LoginScreen({ navigation }) {
-  const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const [loginFailed, setLoginFailed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState();
+  const [linkedinToken, setLinkedInToken] = useState();
+  const [ldAuthStart, setLdAuthStarted] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const authContext = useContext(AuthContext);
+
+  WebBrowser.maybeCompleteAuthSession();
+
+  const {
+    data,
+    error,
+    request: getLinkedinLoginUrl,
+  } = useApi(authApi.getLinkedinLogin);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "652348070444-7hrspqv4j9l2k3fq0gunp7dvjfa87hd4.apps.googleusercontent.com",
+    expoClientId:
+      "652348070444-91kal7v5edkh5h1bq75t84qpetp1ko3u.apps.googleusercontent.com",
+  });
+
+  const handleGoogleAuth = async (authentication) => {
+    setLoading(true);
+    const result = await authApi.googleLogin(authentication.accessToken);
+    if (!result.ok) {
+      setLoading(false);
+
+      setErrorMessage(result.data.detail);
+      Toast.show({
+        type: "appError",
+        text1: result.data.detail
+          ? result.data.detail
+          : "Something went wrong!",
+      });
+
+      return setLoginFailed(true);
+    }
+    setLoading(false);
+    setLoginFailed(false);
+
+    const { access, refresh, email_verified, user } = result.data;
+
+    if (!email_verified)
+      return navigation.navigate("CodeVerification", { email: user.email });
+
+    authContext.setTokens({ access, refresh });
+    authStorage.storeToken(access, refresh);
+    await cache.store("user", user);
+  };
+
+  const modifyRedirectUrl = async (data) => {
+    setLoading(true);
+    let redirectUrl = data.redirect_url;
+
+    redirectUrl = redirectUrl.split("&");
+    redirectUrl.splice(2, 1);
+    const appRedirectUri = "https://auth.expo.io/@prateeksri/edaivajobsApp";
+    // appRedirectUri = appRedirectUri.slice(1);
+    redirectUrl.push(`redirect_uri=${appRedirectUri}`);
+    redirectUrl = redirectUrl.join("&");
+    setRedirectUrl(redirectUrl);
+    setVisible(true);
+    setLdAuthStarted(true);
+    // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
+    // console.log(result);
+  };
+
+  const loadStart = ({ url }) => {
+    if (!url) {
+      return;
+    }
+    // console.log(url);
+
+    // The browser has redirected to our url of choice, the url would look like:
+    // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
+    const redirect = "https://auth.expo.io/@prateeksri/edaivajobsApp";
+
+    const urlSplit = url.split("?");
+
+    if (urlSplit[0] === redirect) {
+      // We have the correct URL, parse it out to get the token
+
+      const handleLinkedinAuth = async (token) => {
+        setLoading(true);
+        setVisible(false);
+        const result = await authApi.linkedinLogin(token);
+        console.log(result + "h");
+        if (!result.ok) {
+          setLoading(false);
+          console.log(result);
+          setErrorMessage(result.data.detail);
+          Toast.show({
+            type: "appError",
+            text1: result.data.detail
+              ? result.data.detail
+              : "Something went wrong!!!!",
+          });
+
+          setLdAuthStarted(false);
+          return setLoginFailed(true);
+        }
+        setLoading(false);
+        setLoginFailed(false);
+
+        const { access, refresh, email_verified, user } = result.data;
+
+        if (!email_verified) {
+          setLdAuthStarted(false);
+          return navigation.navigate("CodeVerification", { email: user.email });
+        }
+
+        authContext.setTokens({ access, refresh });
+        authStorage.storeToken(access, refresh);
+        await cache.store("user", user);
+        setLdAuthStarted(false);
+      };
+
+      const obj = url.split("=");
+      if (obj[1]) {
+        setLinkedInToken({ code: obj[1] });
+        setLdAuthStarted(false);
+        handleLinkedinAuth(obj[1]);
+      }
+    }
+  };
+
+  const LinkedinAuth = () => (
+    <CustomAlert
+      visible={ldAuthStart && visible}
+      modalStyle={{
+        flex: 1,
+        paddingHorizontal: 4,
+        paddingVertical: 4,
+        width: "90%",
+      }}
+    >
+      <TouchableOpacity
+        onPress={() => {
+          setLdAuthStarted(false);
+          setVisible(false);
+          setLoading(false);
+        }}
+        style={{
+          borderWidth: 1,
+          margin: 3,
+          borderColor: "#0AB4F14D",
+          borderRadius: 3,
+          alignSelf: "flex-end",
+        }}
+      >
+        <Feather name="x" size={22} color={Colors.primary} />
+      </TouchableOpacity>
+      <WebView
+        style={styles.wv}
+        source={{ uri: redirectUrl }}
+        javaScriptEnabled
+        domStorageEnabled
+        onNavigationStateChange={loadStart}
+      />
+    </CustomAlert>
+  );
 
   const handleSubmit = async ({ email, password }) => {
     setLoading(true);
@@ -63,22 +228,16 @@ function LoginScreen({ navigation }) {
     await cache.store("user", user);
   };
 
-  // const {
-  //   data: googleLoginData,
-  //   error,
-  //   networkError,
-  //   loading: googleLoginLoading,
-  //   request: googleLogin,
-  // } = useApi(authApi.googleLogin);
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      handleGoogleAuth(authentication);
+    }
+  }, [response]);
 
-  // useEffect(() => googleLogin(), []);
-
-  const handleGoogleLogin = async () => {
-    // googleLogin();
-    // console.log(googleLoginData.redirect_url);
-    // const response = await fetch(googleLoginData.redirect_url);
-    // console.log(response);
-  };
+  useEffect(() => {
+    getLinkedinLoginUrl();
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -165,7 +324,8 @@ function LoginScreen({ navigation }) {
           <TouchableOpacity
             activeOpacity={0.5}
             style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
-            onPress={handleGoogleLogin}
+            onPress={() => promptAsync()}
+            disabled={!request}
           >
             <Image
               source={require("../assets/google.png")}
@@ -177,6 +337,7 @@ function LoginScreen({ navigation }) {
           <TouchableOpacity
             activeOpacity={0.5}
             style={styles.thirdPartyAuthContainer}
+            onPress={() => modifyRedirectUrl(data)}
           >
             <Image
               source={require("../assets/linkedin.png")}
@@ -187,6 +348,7 @@ function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <LinkedinAuth />
     </View>
   );
 }

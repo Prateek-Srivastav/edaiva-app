@@ -20,6 +20,7 @@ import { Swipeable, TouchableOpacity } from "react-native-gesture-handler";
 import CustomHeader from "../components/CustomHeader";
 import cache from "../utilities/cache";
 import showToast from "../components/ShowToast";
+import NoData from "../components/NoData";
 
 const NormalText = (props) => (
   <Text {...props} style={{ ...styles.normalText, ...props.style }}>
@@ -199,7 +200,7 @@ function NotificationsScreen({ navigation }) {
         if (!isFirstTime) {
           showToast({
             type: "appInfo",
-            message: "You can swipe left on a notification to    delete it.",
+            message: "Swipe left on a notification to delete it.",
           });
           await cache.store("notificOpened", true);
         }
@@ -220,49 +221,63 @@ function NotificationsScreen({ navigation }) {
         <Error onPress={() => loadApplications()} />
       ) : (
         <View style={styles.container}>
-          <FlatList
-            contentContainerStyle={{ width: "100%" }}
-            data={notifications}
-            keyExtractor={(index) => index + Math.random()}
-            renderItem={(itemData) => {
-              const { city, state, country } =
-                itemData.item.job.job_location[0];
+          {!loading &&
+          !error &&
+          !networkError &&
+          notifications?.length === 0 ? (
+            <NoData
+              onPress={() => {
+                loadScreen();
+              }}
+              text="No notifications for you."
+            />
+          ) : (
+            <FlatList
+              contentContainerStyle={{ width: "100%" }}
+              data={notifications}
+              keyExtractor={(index) => index + Math.random()}
+              renderItem={(itemData) => {
+                const { city, state, country } =
+                  itemData.item.job.job_location[0];
 
-              const location = `${city}, ${state}, ${country}`;
-              const notificId = itemData.item.notification_id;
-              return (
-                <>
-                  <NotificationItem
-                    onPress={() =>
-                      navigation.navigate("ApplicationStatus", {
-                        location,
-                        applicationStatus: itemData.item.status,
-                        applicationId: itemData.item._id.$oid,
-                      })
-                    }
-                    job={itemData.item.job.job_title}
-                    status={itemData.item.status}
-                    companyName={itemData.item.job.company[0].name}
-                    title={
-                      itemData.item.notification.notification_details.title
-                    }
-                    body={itemData.item.notification.notification_details.body}
-                    onDelete={() => {
-                      setNotifications(
-                        notifications.filter((notific) => {
-                          console.log(notific.notification_id);
-                          console.log(notificId + "id");
-                          return notific.notification_id !== notificId;
+                const location = `${city}, ${state}, ${country}`;
+                const notificId = itemData.item.notification_id;
+                return (
+                  <>
+                    <NotificationItem
+                      onPress={() =>
+                        navigation.navigate("ApplicationStatus", {
+                          location,
+                          applicationStatus: itemData.item.status,
+                          applicationId: itemData.item._id.$oid,
                         })
-                      );
-                      deleteNotification(notificId);
-                    }}
-                  />
-                  <View style={styles.line} />
-                </>
-              );
-            }}
-          />
+                      }
+                      job={itemData.item.job.job_title}
+                      status={itemData.item.status}
+                      companyName={itemData.item.job.company[0].name}
+                      title={
+                        itemData.item.notification.notification_details.title
+                      }
+                      body={
+                        itemData.item.notification.notification_details.body
+                      }
+                      onDelete={() => {
+                        setNotifications(
+                          notifications.filter((notific) => {
+                            console.log(notific.notification_id);
+                            console.log(notificId + "id");
+                            return notific.notification_id !== notificId;
+                          })
+                        );
+                        deleteNotification(notificId);
+                      }}
+                    />
+                    <View style={styles.line} />
+                  </>
+                );
+              }}
+            />
+          )}
         </View>
       )}
     </>

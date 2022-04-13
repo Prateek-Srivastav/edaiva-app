@@ -35,8 +35,9 @@ function AddSkillsScreen({ data, index }) {
       level,
     };
 
-    const skills = [...data.skills, val];
-
+    let skills;
+    if (Array.isArray(data.skills)) skills = [...data.skills, val];
+    else skills = [val];
     await updateProfile({ skills });
     navigation.goBack();
   };

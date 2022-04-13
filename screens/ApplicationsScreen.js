@@ -11,6 +11,7 @@ import NetworkError from "../components/NetworkError";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import cache from "../utilities/cache";
+import NoData from "../components/NoData";
 
 function ApplicationsScreen({ navigation }) {
   const isFocused = useIsFocused();
@@ -43,7 +44,7 @@ function ApplicationsScreen({ navigation }) {
     loadApplications();
     numOfApplications();
   }, [isFocused]);
-
+  console.log(data);
   if (loading) return <Loading />;
 
   if (networkError && !loading)
@@ -53,42 +54,57 @@ function ApplicationsScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        contentContainerStyle={{
-          paddingHorizontal: 15,
-          paddingBottom: 20,
-        }}
-        data={applications}
-        keyExtractor={(item, index) => item._id.$oid}
-        renderItem={(itemData) => {
-          const { city, state, country } = itemData.item.job.job_location[0];
+      {!loading && !error && !networkError && data?.length === 0 ? (
+        <NoData
+          onPress={() => {
+            loadApplications();
+            numOfApplications();
+          }}
+          text="You haven't applied for any job, start applying!"
+        />
+      ) : (
+        <FlatList
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+            paddingBottom: 20,
+          }}
+          data={applications}
+          keyExtractor={(item, index) => item._id.$oid}
+          renderItem={(itemData) => {
+            const { city, state, country } = itemData.item.job.job_location[0];
 
-          const location = `${city}, ${state}, ${country}`;
+            const location = `${city}, ${state}, ${country}`;
 
-          const { job_title, company, job_type, created_on, job_description } =
-            itemData.item.job;
+            const {
+              job_title,
+              company,
+              job_type,
+              created_on,
+              job_description,
+            } = itemData.item.job;
 
-          return (
-            <ApplicationItemCard
-              onPress={() =>
-                navigation.navigate("ApplicationStatus", {
-                  jobId: itemData.item.job._id.$oid,
-                  location,
-                  applicationStatus: itemData.item.status,
-                  applicationId: itemData.item._id.$oid,
-                })
-              }
-              applicationId={itemData.item._id.$oid}
-              heading={job_title}
-              companyName={company[0].name}
-              location={location}
-              appliedOn={formattedDate(itemData.item.date_applied.$date)}
-              applicationStatus={itemData.item.status}
-              isRevoked={getIsRevoked}
-            />
-          );
-        }}
-      />
+            return (
+              <ApplicationItemCard
+                onPress={() =>
+                  navigation.navigate("ApplicationStatus", {
+                    jobId: itemData.item.job._id.$oid,
+                    location,
+                    applicationStatus: itemData.item.status,
+                    applicationId: itemData.item._id.$oid,
+                  })
+                }
+                applicationId={itemData.item._id.$oid}
+                heading={job_title}
+                companyName={company[0].name}
+                location={location}
+                appliedOn={formattedDate(itemData.item.date_applied.$date)}
+                applicationStatus={itemData.item.status}
+                isRevoked={getIsRevoked}
+              />
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
