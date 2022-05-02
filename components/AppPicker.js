@@ -43,7 +43,7 @@ function AppPicker(props) {
     else setSelectedItem([props.selectedItem]);
   }, []);
 
-  // console.log(selectedItemArray);
+  // // console.log(selectedItemArray);
   return (
     <View
       style={{
@@ -85,9 +85,9 @@ function AppPicker(props) {
         ) : (
           <Ionicons
             name={props.isShown ? "chevron-up" : "chevron-down"}
-            size={17}
+            size={14}
             color={props.iconColor ? props.iconColor : Colors.grey}
-          />
+            />
         )}
       </TouchableOpacity>
       {dateTimePicker ? null : (
@@ -96,7 +96,11 @@ function AppPicker(props) {
             style={styles.button}
             onPress={() => setVisible(false)}
           >
-            <Feather name="x" size={18} color={Colors.primary} />
+            <Feather
+              name="x"
+              size={18}
+              color={Colors.primary}
+            />
           </TouchableOpacity>
           {props.loading && <Loading />}
           <FlatList
@@ -137,14 +141,15 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     top: -10,
-    borderWidth: 1,
+    // borderWidth: 1,
     borderColor: "#0AB4F14D",
     borderRadius: 3,
     alignSelf: "flex-end",
   },
   container: {
-    // width: "100%",
     flex: 1,
+    // width: "100%",
+    // borderWidth: 1,
     // borderWidth: 1,
     marginBottom: 10,
     // backgroundColor: "white",
@@ -156,8 +161,9 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: "white",
     borderRadius: 3,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    padding: 10,
+    // borderWidth: 1,
+    // paddingHorizontal: 10,
   },
   title: {
     color: "#817E7E",

@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
-  ActivityIndicator,
   Share,
+  BackHandler,
 } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import RenderHtml, { defaultSystemFonts } from "react-native-render-html";
@@ -35,6 +35,8 @@ import Loading from "../components/Loading";
 import Error from "../components/Error";
 import campusCandidateApi from "../api/campusApis/candidate";
 import showToast from "../components/ShowToast";
+import { useFocusEffect } from "@react-navigation/native";
+import candidateApi from "../api/candidate";
 
 const { width, height } = Dimensions.get("window");
 
@@ -51,10 +53,12 @@ const NormalText = ({ children }) => (
     {children}
   </Text>
 );
+var isVisible = false;
 
 function JobDetailScreen({ route, navigation }) {
   const [showDetail, setShowDetail] = useState(1);
   const [isPressed, setIsPressed] = useState(false);
+  const [closeModal, setCloseModal] = useState(false);
   const [position] = useState(new Animated.ValueXY());
   const [isApplied, setIsApplied] = useState(route.params.isApplied);
   const [applicationId, setApplicationId] = useState(
@@ -79,15 +83,20 @@ function JobDetailScreen({ route, navigation }) {
     request: loadCampusProfile,
   } = useApi(campusCandidateApi.getProfile);
 
+  const { data: profileData, request: loadProfile } = useApi(
+    candidateApi.getProfile
+  );
+
   useEffect(() => {
     loadCampusProfile();
+    loadProfile();
   }, []);
 
   const revokeHandler = async () => {
     const response = await applicationApi.deleteApplication(applicationId);
 
     setVisible(false);
-    console.log(response);
+    // console.log(response);
     if (!response.ok) {
       if (response.problem === "NETWORK_ERROR") {
         return Toast.show({
@@ -114,6 +123,27 @@ function JobDetailScreen({ route, navigation }) {
 
     setIsApplied(false);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (isVisible) {
+          setIsPressed(false);
+          isVisible = false;
+          setCloseModal(true);
+          return true;
+        }
+
+        navigation.goBack();
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   const RevokeApplication = () => {
     return (
@@ -199,7 +229,7 @@ function JobDetailScreen({ route, navigation }) {
 
   const wishlistStatus = async () => {
     const wishlist = await cache.get("wishlist");
-    const status = wishlist.find((job) => job.id === jobDetails._id);
+    const status = wishlist?.find((job) => job.id === jobDetails._id);
     if (status) return setInWishlist(true);
     else return setInWishlist(false);
   };
@@ -242,11 +272,14 @@ function JobDetailScreen({ route, navigation }) {
     setInWishlist(false);
   };
 
+  console.log(isPressed, " called");
   const getData = () => {
+    console.log(isPressed, "get data called");
     setIsPressed(false);
   };
 
   const getIsApplied = (val, applicationId) => {
+    console.log("get is applied called");
     setIsPressed(false);
     setIsApplied(val);
     setApplicationId(applicationId);
@@ -308,37 +341,51 @@ function JobDetailScreen({ route, navigation }) {
           />
         ) : (
           <>
-            <AppText>Minimum Qualification</AppText>
-            <RenderHtml
-              contentWidth={width}
-              source={{
-                html: jobDetails.minimum_qualification,
-              }}
-              systemFonts={systemFonts}
-              baseStyle={{
-                fontFamily: "OpenSans-Regular",
-                fontSize: 14.5,
-                color: Colors.black,
-              }}
-            />
+            {jobDetails.minimum_qualification !== null && (
+              <>
+                <AppText>Minimum Qualification</AppText>
+                <RenderHtml
+                  contentWidth={width}
+                  source={{
+                    html: jobDetails.minimum_qualification,
+                  }}
+                  systemFonts={systemFonts}
+                  baseStyle={{
+                    fontFamily: "OpenSans-Regular",
+                    fontSize: 14.5,
+                    color: Colors.black,
+                  }}
+                />
+              </>
+            )}
+            {jobDetails.preferred_qualification && (
+              <>
+                <AppText>Preferred Qualification</AppText>
+                <RenderHtml
+                  contentWidth={width}
+                  source={{
+                    html: jobDetails.preferred_qualification,
+                  }}
+                  systemFonts={systemFonts}
+                  baseStyle={{
+                    fontFamily: "OpenSans-Regular",
+                    fontSize: 14.5,
+                    color: Colors.black,
+                  }}
+                />
+              </>
+            )}
+
             <View>
-              <AppText>Preferred Qualification</AppText>
-              <RenderHtml
-                contentWidth={width}
-                source={{
-                  html: jobDetails.preferred_qualification,
-                }}
-                systemFonts={systemFonts}
-                baseStyle={{
-                  fontFamily: "OpenSans-Regular",
-                  fontSize: 14.5,
-                  color: Colors.black,
-                }}
-              />
-            </View>
-            <View>
-              <AppText>Job Supplements</AppText>
-              <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
+              {jobDetails.job_supplement_pay[0].name &&
+                jobDetails.job_supplement_pay[0].name !== "" && (
+                  <>
+                    <AppText>Job Supplements</AppText>
+                    <NormalText>
+                      {jobDetails.job_supplement_pay[0].name}
+                    </NormalText>
+                  </>
+                )}
               <AppText>Job Schedule</AppText>
               <NormalText>
                 {jobDetails.job_schedule[0]
@@ -441,10 +488,12 @@ function JobDetailScreen({ route, navigation }) {
                   <BuildingIcon color="#BDEEFF" />
                   <Text style={styles.text}>{jobDetails.company.name}</Text>
                 </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Location color="#BDEEFF" />
-                  <Text style={styles.text}>{route.params.location}</Text>
-                </View>
+                {route.params.location && (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Location color="#BDEEFF" />
+                    <Text style={styles.text}>{route.params.location}</Text>
+                  </View>
+                )}
                 <Card
                   style={{
                     marginTop: 20,
@@ -502,10 +551,11 @@ function JobDetailScreen({ route, navigation }) {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        marginBottom: 20,
+                        // marginBottom: 20,
+                        flexWrap: "wrap",
                       }}
                     >
-                      <View>
+                      <View style={{ marginBottom: 20 }}>
                         <AppText style={{ marginBottom: 6 }}>Degree</AppText>
                         {jobDetails.qualification.map((qual) => (
                           <AppText
@@ -516,7 +566,7 @@ function JobDetailScreen({ route, navigation }) {
                           </AppText>
                         ))}
                       </View>
-                      <View>
+                      <View style={{ marginBottom: 20 }}>
                         <AppText style={{ marginBottom: 6 }}>
                           Work Experience
                         </AppText>
@@ -527,24 +577,44 @@ function JobDetailScreen({ route, navigation }) {
                       </View>
                     </View>
                   )}
-                  <View>
-                    <AppText style={{ marginBottom: 6 }}>
-                      Required skills
-                    </AppText>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {jobDetails.skills.map((skill, index) => (
-                        <AppText style={styles.requirementText} key={index}>
-                          {skill.name}
-                        </AppText>
-                      ))}
+                  {jobDetails.skills.length !== 0 && (
+                    <View>
+                      <AppText style={{ marginBottom: 6 }}>
+                        Required skills
+                      </AppText>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          marginStart: 5,
+                        }}
+                      >
+                        {jobDetails.skills.map((skill, index) => (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <View
+                              style={{
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                height: 5,
+                                width: 5,
+                                backgroundColor: "black",
+                              }}
+                            />
+                            <AppText style={styles.requirementText} key={index}>
+                              {skill.name}
+                            </AppText>
+                          </View>
+                        ))}
+                      </View>
                     </View>
-                  </View>
+                  )}
                 </Card>
               </Card>
             </View>
@@ -643,6 +713,13 @@ function JobDetailScreen({ route, navigation }) {
             <CustomButton
               disabled={isApplied}
               onPress={() => {
+                if (profileData?.error === "Candidate Profile not found!!")
+                  return showToast({
+                    type: "appError",
+                    message: "Please complete your profile to apply for a job.",
+                  });
+                setCloseModal(false);
+                isVisible = true;
                 return setIsPressed(true);
               }}
               title={isApplied ? "Applied" : "Apply"}
@@ -653,6 +730,7 @@ function JobDetailScreen({ route, navigation }) {
           <ApplicationModal
             data={jobDetails}
             isPressed={isPressed}
+            closeModal={closeModal}
             sendData={getData}
             sendIsApplied={getIsApplied}
             isCampus={route.params.isCampus}

@@ -48,16 +48,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     color: Colors.black,
     fontFamily: "OpenSans-Regular",
+    padding: 6,
+    // borderWidth: 1,
+    // margin:0
+    // fontSize: 14
   },
   inputContainer: {
     // flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    padding: 5,
+    // borderWidth: 1,
+    // padding: 10,
     backgroundColor: "#FFFFFF",
     elevation: 3,
     // marginHorizontal: 10,
     borderRadius: 3,
+    // margin: 0,
     // width: "100%",
   },
 });

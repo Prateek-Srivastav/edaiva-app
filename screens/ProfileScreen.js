@@ -39,7 +39,6 @@ function ProfileScreen({ navigation }) {
   const [user, setUser] = useState({});
   const [resume, setResume] = useState();
   const [applications, setApplications] = useState();
-  const [visible, setVisible] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const isFocused = useIsFocused();
@@ -68,7 +67,6 @@ function ProfileScreen({ navigation }) {
     request: loadProfile,
   } = useApi(candidateApi.getProfile);
 
-  // console.log(data);
 
   const {
     error: resumeError,
@@ -107,7 +105,7 @@ function ProfileScreen({ navigation }) {
     }
     if (!resumeLoading && !resumeError) setResume(result.uri);
 
-    console.log(result);
+    // console.log(result);
   };
 
   const viewResume = async () => {
@@ -132,7 +130,7 @@ function ProfileScreen({ navigation }) {
     const cUri = await FileSystem.getContentUriAsync(
       resume ? resume : response.uri
     );
-    console.log(cUri);
+    // console.log(cUri);
     if (cUri)
       await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
         data: cUri,
@@ -145,59 +143,6 @@ function ProfileScreen({ navigation }) {
     setTokens(null);
     authStorage.removeToken();
     await cache.clear();
-  };
-
-  const SignOutAlert = () => {
-    return (
-      <CustomAlert visible={visible}>
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: 18,
-              color: Colors.black,
-              fontFamily: "OpenSans-Regular",
-            }}
-          >
-            Sure! You want to
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              color: Colors.black,
-              fontFamily: "OpenSans-SemiBold",
-            }}
-          >
-            Sign Out
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: -40,
-          }}
-        >
-          <CustomButton
-            onPress={signOutHandler}
-            title="Yes"
-            titleStyle={{ color: Colors.primary }}
-            style={{ backgroundColor: "#FFFFFF", elevation: 3 }}
-          />
-          <CustomButton
-            onPress={() => setVisible(false)}
-            title="Cancel"
-            titleStyle={{ color: Colors.primary }}
-            style={{
-              backgroundColor: "#FFFFFF",
-              borderColor: "#C1EFFF",
-              borderWidth: 1,
-              marginLeft: 10,
-            }}
-          />
-        </View>
-      </CustomAlert>
-    );
   };
 
   const { firstname, lastname, email } = user;
@@ -419,23 +364,7 @@ function ProfileScreen({ navigation }) {
                 <NormalText>View Resume</NormalText>
               </Card>
             )}
-            <View style={styles.line} />
-
-            <Card
-              style={{ alignItems: "center", width: "97%" }}
-              touchable
-              onPress={() => setVisible(true)}
-            >
-              <Ionicons
-                name="log-out-outline"
-                style={styles.icon}
-                size={22}
-                color={ICON_COLOR}
-              />
-              <NormalText>Sign Out</NormalText>
-            </Card>
           </View>
-          <SignOutAlert />
         </>
       )}
     </>

@@ -36,7 +36,7 @@ function ChangePasswordScreen({ navigation }) {
     const result = await userApi.changePassword(val);
     if (!result.ok) {
       setLoading(false);
-      console.log(result);
+      // console.log(result);
 
       return Toast.show({
         type: "appError",
@@ -45,7 +45,7 @@ function ChangePasswordScreen({ navigation }) {
     }
     setLoading(false);
 
-    console.log(data);
+    // console.log(data);
 
     setVisible(true);
     setTimeout(() => setVisible(false), 2000);

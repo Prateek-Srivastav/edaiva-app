@@ -8,7 +8,7 @@ const storeToken = async (accessToken, refreshToken) => {
     await SecureStore.setItemAsync(accessKey, accessToken);
     await SecureStore.setItemAsync(refreshKey, refreshToken);
   } catch (error) {
-    console.log("Error storing the auth token.", error);
+    // console.log("Error storing the auth token.", error);
   }
 };
 
@@ -28,7 +28,7 @@ const getToken = async () => {
       refreshToken: await SecureStore.getItemAsync(refreshKey),
     };
   } catch (error) {
-    console.log("Error getting the auth token", error);
+    // console.log("Error getting the auth token", error);
   }
 };
 
@@ -36,9 +36,9 @@ const removeToken = async () => {
   try {
     await SecureStore.deleteItemAsync(accessKey);
     await SecureStore.deleteItemAsync(refreshKey);
-    console.log("deleted");
+    // console.log("deleted");
   } catch (error) {
-    console.log("Error removing the auth token.", error);
+    // console.log("Error removing the auth token.", error);
   }
 };
 

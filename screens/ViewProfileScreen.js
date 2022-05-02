@@ -68,7 +68,7 @@ function ViewProfileScreen({ navigation, route }) {
   useEffect(async () => {
     loadProfile();
     if (!tokenValid) {
-      console.log(tokenValid);
+      // console.log(tokenValid);
       await refreshAccessToken();
       await loadProfile();
     }

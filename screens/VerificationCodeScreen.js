@@ -72,6 +72,8 @@ function VerificationCodeScreen({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [resendOtp, setResendOtpFailed] = useState(false);
   const [verifyOtp, setVerifyOtpFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
 
   const dig1_input = useRef();
   const dig2_input = useRef();
@@ -80,11 +82,13 @@ function VerificationCodeScreen({ navigation, route }) {
   const dig5_input = useRef();
   const dig6_input = useRef();
 
+  const authContext = useContext(AuthContext);
+
   const resendOtpHandler = async () => {
     setLoading(true);
     const result = await authApi.resendOtp(route.params.email);
     if (!result.ok) {
-      console.log(result.data);
+      // console.log(result.data);
       return setResendOtpFailed(true);
     }
     setResendOtpFailed(false);
@@ -92,7 +96,7 @@ function VerificationCodeScreen({ navigation, route }) {
       type: "appSuccess",
       text1: "Otp Sent!",
     });
-    console.log(result.data);
+    // console.log(result.data);
   };
 
   const verificationHandler = async (values) => {
@@ -122,30 +126,30 @@ function VerificationCodeScreen({ navigation, route }) {
     });
 
     if (navigation.getState().routes[0].name === "Welcome") {
-      // navigation.navigate("Login", {
-      //   email: route.params.email,
-      //   password: route.params.password,
-      // });
+      navigation.navigate("Login", {
+        email: route.params.email,
+        password: route.params.password,
+      });
       const loginResult = await authApi.login(
         route.params.email,
         route.params.password
       );
       if (!loginResult.ok) {
-        // setLoading(false);
+        setLoading(false);
 
-        // setErrorMessage(loginResult.data.detail);
+        setErrorMessage(loginResult.data.detail);
         // console.log(loginResult);
         return console.log("Login failed");
       }
-      // setLoading(false);
-      // setLoginFailed(false);
+      setLoading(false);
+      setLoginFailed(false);
       const { access, refresh, email_verified, user } = loginResult.data;
 
       console.log(loginResult.data);
       if (!email_verified)
         return navigation.navigate("CodeVerification", email);
 
-      // authContext.setTokens({ access, refresh });
+      authContext.setTokens({ access, refresh });
       authStorage.storeToken(access, refresh);
       await cache.store("user", user);
       return navigation.navigate("CampusSelection", { access, refresh });

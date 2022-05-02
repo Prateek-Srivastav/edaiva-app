@@ -19,28 +19,50 @@ import cache from "../utilities/cache";
 //   baseURL: "http://167.172.236.197:8008",
 // });
 
-export const placementClient = create({
-  baseURL: "http://167.172.236.197:8011/api/gateway/placement-service",
-});
+// export const placementClient = create({
+//   baseURL: "http://167.172.236.197:8011/api/gateway/placement-service",
+// });
 
 // export const frontEndClient = "http://143.110.241.27:6204";
 
-export const frontEndClient = "https://devjobs.edaiva.com";
+// export const frontEndClient = "https://devjobs.edaiva.com";
+
+// export const jobClient = create({
+//   baseURL: "https://devjobs.edaiva.com/node/api",
+// });
+
+// export const authClient = create({
+//   baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
+// });
+
+// const apiClient = create({
+//   baseURL: "https://godevgw.edaiva.com/api/gateway",
+// });
+
+// export const notificationClient = create({
+//   baseURL: "https://godevgw.edaiva.com:8007",
+// });
+
+export const frontEndClient = "https://jobs.edaiva.com";
+
+export const placementClient = create({
+  baseURL: "https://apigw-routing.edaiva.com/api/gateway/placement-service",
+});
 
 export const jobClient = create({
-  baseURL: "https://devjobs.edaiva.com/node/api",
+  baseURL: "https://jobs.edaiva.com/api",
 });
 
 export const authClient = create({
-  baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
+  baseURL: "https://apigw-routing.edaiva.com/api/gateway/core-service",
 });
 
 const apiClient = create({
-  baseURL: "https://godevgw.edaiva.com/api/gateway",
+  baseURL: "https://apigw-routing.edaiva.com/api/gateway",
 });
 
 export const notificationClient = create({
-  baseURL: "https://godevgw.edaiva.com:8007",
+  baseURL: "https://notifs.edaiva.com",
 });
 
 apiClient.addAsyncRequestTransform(async (request) => {

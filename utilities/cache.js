@@ -11,7 +11,7 @@ const store = async (key, value) => {
 
     await AsyncStorage.setItem(prefix + key, JSON.stringify(item));
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -23,7 +23,7 @@ const get = async (key) => {
 
     return item.value;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -32,10 +32,10 @@ const clear = async (key) => {
     const value = await AsyncStorage.clear();
     const item = JSON.parse(value);
     // if (!item) return null;
-    console.log(item);
+    // console.log(item);
     // return item.value;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 

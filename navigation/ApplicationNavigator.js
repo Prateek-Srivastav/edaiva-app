@@ -9,7 +9,7 @@ import ApplicationStatusIndicator from "../components/application/ApplicationSta
 const Stack = createNativeStackNavigator();
 
 function ApplicationNavigator() {
-  // console.log(route);
+  // // console.log(route);
   return (
     <Stack.Navigator
       screenOptions={{

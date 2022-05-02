@@ -5,6 +5,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
+  Dimensions
 } from "react-native";
 import {
   AntDesign,
@@ -13,6 +14,7 @@ import {
 } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
+const { width, height } = Dimensions.get("screen");
 
 function CustomHeader({
   backDisabled,
@@ -27,7 +29,13 @@ function CustomHeader({
   return (
     <>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           {!backDisabled && (
             <TouchableOpacity onPress={() => navigation.navigate(backScreen)}>
               <Ionicons
@@ -64,7 +72,6 @@ function CustomHeader({
           )}
         </View>
       </View>
-      <View style={styles.line} />
     </>
   );
 }
@@ -72,26 +79,19 @@ function CustomHeader({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginTop: StatusBar.currentHeight,
-    height: 50,
+    paddingTop: StatusBar.currentHeight,
+    height: StatusBar.currentHeight + (height < 160 ? 40 : 50),
     backgroundColor: Colors.white,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
     justifyContent: "space-between",
+    elevation: 4,
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-  },
-  line: {
-    width: "100%",
-    height: 1.6,
-    borderRadius: 10,
-    backgroundColor: "#0AB4F1",
-    elevation: 1,
-    opacity: 0.15,
   },
   titleStyle: {
     fontFamily: "OpenSans-SemiBold",

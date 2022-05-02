@@ -79,10 +79,23 @@ function CampusApplicationsScreen({ navigation }) {
               data={applications}
               keyExtractor={(item) => item._id}
               renderItem={(itemData) => {
-                const { city, state, country } =
-                  itemData.item.campus_job_details.details.job_location[0];
+                let location;
 
-                const location = `${city}, ${state}, ${country}`;
+                //  location = `${
+                //   itemData.item.campus_job_details.details.job_location[0]?.city
+                //     ? itemData.item.job_location[0]?.city + ","
+                //     : null
+                // } ${
+                //   itemData.item.campus_job_details.details.job_location[0]
+                //     ?.state
+                //     ? itemData.item.job_location[0]?.state + ","
+                //     : null
+                // }${
+                //   itemData.item.campus_job_details.details.job_location[0]
+                //     ?.country
+                //     ? itemData.item.job_location[0]?.country + ","
+                //     : null
+                // }`;
 
                 const { job_title, _id } =
                   itemData.item.campus_job_details.details;

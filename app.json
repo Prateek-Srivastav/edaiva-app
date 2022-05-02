@@ -6,9 +6,10 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/edaiva_logo_edit-03.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+      
     },
     "updates": {
       "fallbackToCacheTimeout": 0

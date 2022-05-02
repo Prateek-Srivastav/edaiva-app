@@ -67,10 +67,14 @@ function JobCard(props) {
           {props.companyName}
         </Text>
       </View>
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-        <Location />
-        <Text style={{ ...styles.text, marginStart: 3 }}>{props.location}</Text>
-      </View>
+      {props.location && (
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <Location />
+          <Text style={{ ...styles.text, marginStart: 3 }}>
+            {props.location}
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }

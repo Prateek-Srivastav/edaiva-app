@@ -111,34 +111,46 @@ function JobDetails({ data, jobId, isCampus }) {
           />
         ) : (
           <>
-            <AppText>Minimum Qualification</AppText>
-            <RenderHtml
-              contentWidth={width}
-              source={{
-                html: jobDetails.minimum_qualification,
-              }}
-              systemFonts={systemFonts}
-              baseStyle={{
-                fontFamily: "OpenSans-Regular",
-                fontSize: 14.5,
-                color: Colors.black,
-              }}
-            />
-            <AppText>Preferred Qualification</AppText>
-            <RenderHtml
-              contentWidth={width}
-              source={{
-                html: jobDetails.preferred_qualification,
-              }}
-              systemFonts={systemFonts}
-              baseStyle={{
-                fontFamily: "OpenSans-Regular",
-                fontSize: 14.5,
-                color: Colors.black,
-              }}
-            />
-            <AppText>Job Supplements</AppText>
-            <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
+            {jobDetails.minimum_qualification !== null && (
+              <>
+                <AppText>Minimum Qualification</AppText>
+                <RenderHtml
+                  contentWidth={width}
+                  source={{
+                    html: jobDetails.minimum_qualification,
+                  }}
+                  systemFonts={systemFonts}
+                  baseStyle={{
+                    fontFamily: "OpenSans-Regular",
+                    fontSize: 14.5,
+                    color: Colors.black,
+                  }}
+                />
+              </>
+            )}
+            {jobDetails.preferred_qualification && (
+              <>
+                <AppText>Preferred Qualification</AppText>
+                <RenderHtml
+                  contentWidth={width}
+                  source={{
+                    html: jobDetails.preferred_qualification,
+                  }}
+                  systemFonts={systemFonts}
+                  baseStyle={{
+                    fontFamily: "OpenSans-Regular",
+                    fontSize: 14.5,
+                    color: Colors.black,
+                  }}
+                />
+              </>
+            )}
+            {jobDetails.job_supplement_pay[0].name && (
+              <>
+                <AppText>Job Supplements</AppText>
+                <NormalText>{jobDetails.job_supplement_pay[0].name}</NormalText>
+              </>
+            )}
             <AppText>Job Schedule</AppText>
             <NormalText>{jobDetails.job_schedule[0].name}</NormalText>
             {isCampus

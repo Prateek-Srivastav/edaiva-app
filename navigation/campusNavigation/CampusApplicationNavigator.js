@@ -10,7 +10,7 @@ import CampusSelectionScreen from "../../screens/campusScreens/CampusSelectionSc
 const Stack = createNativeStackNavigator();
 
 function CampusApplicationNavigator() {
-  // console.log(route);
+  // // console.log(route);
   return (
     <Stack.Navigator
       screenOptions={{

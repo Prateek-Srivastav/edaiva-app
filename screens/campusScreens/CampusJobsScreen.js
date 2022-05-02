@@ -258,9 +258,6 @@ function CampusJobsScreen({ navigation }) {
                 }}
                 data={jobs}
                 renderItem={(itemData) => {
-                  // const { city, state, country } =
-                  //   itemData.item.job_location[0];
-
                   const location = `${itemData.item.campus_job_id.job_location[0]?.city}, ${itemData.item.campus_job_id.job_location[0]?.state}, ${itemData.item.campus_job_id.job_location[0]?.country}`;
 
                   return (

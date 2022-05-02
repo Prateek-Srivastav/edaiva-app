@@ -30,6 +30,7 @@ import AppPicker from "../AppPicker";
 import Card from "../Card";
 import CardInput from "../CardInput";
 import locationApi from "../../api/location";
+import ErrorMessage from "../forms/ErrorMessage";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -56,6 +57,7 @@ function FilterModal(props) {
   const [state, setState] = useState();
   const [country, setCountry] = useState();
   const [city, setCity] = useState();
+  const [isCityError, setIsCityError] = useState();
   const [experience, setExperience] = useState();
   const [keyword, setKeyword] = useState();
   const [isLocationShown, setIsLocationShown] = useState(false);
@@ -80,6 +82,10 @@ function FilterModal(props) {
   const sendIsPressed = () => {
     props.sendIsPressed();
   };
+
+  if (props.closeFilter) {
+    top.value = withSpring(dimensions.height + 50, SPRING_CONFIG);
+  }
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart(_, context) {
@@ -149,7 +155,7 @@ function FilterModal(props) {
       return sendFilters({});
 
     sendFilters(filters);
-    console.log(filters);
+    // console.log(filters);
   };
 
   const FilterItem = (props) => {
@@ -287,8 +293,18 @@ function FilterModal(props) {
                 </View>
                 <CardInput
                   placeholder="City"
-                  onChangeText={(text) => setCity(text)}
+                  onChangeText={(text) => {
+                    const onlyString = /^[a-zA-Z]+$/.test(text);
+                    setIsCityError(!onlyString);
+                    setCity(text);
+                  }}
                 />
+                <View style={{ alignSelf: "flex-start" }}>
+                  <ErrorMessage
+                    visible={isCityError}
+                    error="City can be alphabets only."
+                  />
+                </View>
               </View>
             )}
             <FilterItem

@@ -138,7 +138,7 @@ function NotificationsScreen({ navigation }) {
   const { res, request: deleteNotification } = useApi(
     notificationApi.deleteNotification
   );
-  // console.log(res);
+  // // console.log(res);
   const loadScreen = async () => {
     setNotificLoading(true);
     setLoading(true);
@@ -148,7 +148,7 @@ function NotificationsScreen({ navigation }) {
     let notificResponse = await notificationApi.getNotifications("job");
 
     if (!applicationResponse.ok) {
-      console.log(applicationResponse, "res !ok");
+      // console.log(applicationResponse, "res !ok");
       if (applicationResponse.problem === "NETWORK_ERROR") {
         setLoading(false);
         setNetworkError(true);
@@ -158,7 +158,7 @@ function NotificationsScreen({ navigation }) {
         });
       } else if (applicationResponse.data.code === "token_not_valid") {
         setLoading(false);
-        console.log("token not valid");
+        // console.log("token not valid");
         return setTokenValid(false);
       } else {
         setData(applicationResponse.data);
@@ -181,7 +181,7 @@ function NotificationsScreen({ navigation }) {
       };
     });
 
-    // console.log(notificResponse);
+    // // console.log(notificResponse);
 
     setNotifications(notificResponse.data.records);
     setNotificLoading(false);
@@ -196,7 +196,7 @@ function NotificationsScreen({ navigation }) {
     useCallback(() => {
       const showNotificDeleteInfo = async () => {
         const isFirstTime = await cache.get("notificOpened");
-        console.log(isFirstTime);
+        // console.log(isFirstTime);
         if (!isFirstTime) {
           showToast({
             type: "appInfo",
@@ -237,11 +237,25 @@ function NotificationsScreen({ navigation }) {
               data={notifications}
               keyExtractor={(index) => index + Math.random()}
               renderItem={(itemData) => {
-                const { city, state, country } =
-                  itemData.item.job.job_location[0];
+                let location;
 
-                const location = `${city}, ${state}, ${country}`;
+                if (itemData.item.job_location?.length !== 0)
+                  location = `${
+                    itemData.item.job_location[0]?.city
+                      ? itemData.item.job_location[0]?.city + ","
+                      : null
+                  } ${
+                    itemData.item.job_location[0]?.state
+                      ? itemData.item.job_location[0]?.state + ","
+                      : null
+                  } ${
+                    itemData.item.job_location[0]?.country
+                      ? itemData.item.job_location[0]?.country
+                      : null
+                  }`;
+
                 const notificId = itemData.item.notification_id;
+
                 return (
                   <>
                     <NotificationItem
@@ -264,8 +278,8 @@ function NotificationsScreen({ navigation }) {
                       onDelete={() => {
                         setNotifications(
                           notifications.filter((notific) => {
-                            console.log(notific.notification_id);
-                            console.log(notificId + "id");
+                            // console.log(notific.notification_id);
+                            // console.log(notificId + "id");
                             return notific.notification_id !== notificId;
                           })
                         );

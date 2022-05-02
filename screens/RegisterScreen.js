@@ -111,14 +111,14 @@ function RegisterScreen({ navigation }) {
     setVisible(true);
     setLdAuthStarted(true);
     // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
-    // console.log(result);
+    // // console.log(result);
   };
 
   const loadStart = ({ url }) => {
     if (!url) {
       return;
     }
-    // console.log(url);
+    // // console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
@@ -133,10 +133,10 @@ function RegisterScreen({ navigation }) {
         setLoading(true);
         setVisible(false);
         const result = await authApi.linkedinLogin(token);
-        console.log(result + "h");
+        // console.log(result + "h");
         if (!result.ok) {
           setLoading(false);
-          console.log(result);
+          // console.log(result);
           setErrorMessage(result.data.detail);
           Toast.show({
             type: "appError",
@@ -222,7 +222,7 @@ function RegisterScreen({ navigation }) {
 
     // BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-    console.log(response);
+    // console.log(response);
     // return () =>
     //   BackHandler.removeEventListener("hardwareBackPress", onBackPress);
   }, [response]);

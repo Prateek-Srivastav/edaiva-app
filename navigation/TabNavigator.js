@@ -60,7 +60,9 @@ function MainNavigator({ route }) {
     setAccessToken(token.accessToken);
     return accessToken;
   };
+
   getToken();
+
   const socket = io("https://godevgw.edaiva.com:8007/socket.io/", {
     query: { token: accessToken },
   });

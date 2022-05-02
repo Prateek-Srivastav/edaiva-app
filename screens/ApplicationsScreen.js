@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, View, StyleSheet, BackHandler } from "react-native";
 
 import ApplicationItemCard from "../components/ApplicationsItemCard";
 import applicationApi from "../api/application";
 import Colors from "../constants/Colors";
 import { formattedDate } from "../utilities/date";
 import useApi from "../hooks/useApi";
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import NetworkError from "../components/NetworkError";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
@@ -28,6 +28,7 @@ function ApplicationsScreen({ navigation }) {
 
   if (data) {
     applications = data;
+    console.log(data);
   }
   const numOfApplications = async () => {
     await cache.store("applications", applications?.length);
@@ -44,7 +45,22 @@ function ApplicationsScreen({ navigation }) {
     loadApplications();
     numOfApplications();
   }, [isFocused]);
-  console.log(data);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // console.log("abcdefgh")
+        navigation.navigate("Jobs");
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   if (loading) return <Loading />;
 
   if (networkError && !loading)
@@ -71,9 +87,22 @@ function ApplicationsScreen({ navigation }) {
           data={applications}
           keyExtractor={(item, index) => item._id.$oid}
           renderItem={(itemData) => {
-            const { city, state, country } = itemData.item.job.job_location[0];
+            let location;
 
-            const location = `${city}, ${state}, ${country}`;
+            if (itemData.item.job.job_location?.length !== 0)
+              location = `${
+                itemData.item.job.job_location[0]?.city
+                  ? itemData.item.job.job_location[0]?.city + ","
+                  : null
+              } ${
+                itemData.item.job.job_location[0]?.state
+                  ? itemData.item.job.job_location[0]?.state + ","
+                  : null
+              } ${
+                itemData.item.job.job_location[0]?.country
+                  ? itemData.item.job.job_location[0]?.country
+                  : null
+              }`;
 
             const {
               job_title,

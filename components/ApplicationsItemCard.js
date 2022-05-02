@@ -203,10 +203,14 @@ const ApplicationItemCard = (props) => {
             <BuildingIcon />
             <Text style={styles.text}>{props.companyName}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-            <Location />
-            <Text style={styles.text}>{props.location}</Text>
-          </View>
+          {props.location && (
+            <View
+              style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+            >
+              <Location />
+              <Text style={styles.text}>{props.location}</Text>
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",

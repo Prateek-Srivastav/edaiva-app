@@ -71,7 +71,7 @@ function InterviewsListingScreen({ navigation }) {
     loading,
     request: loadInterviews,
   } = useApi(interviewApi.getInterviews);
-  console.log(res);
+  // console.log(res);
 
   useEffect(() => {
     loadInterviews();

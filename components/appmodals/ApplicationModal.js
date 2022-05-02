@@ -102,6 +102,11 @@ function ApplicationModal(props) {
     top.value = withSpring(0, SPRING_CONFIG);
   }
 
+  if (props.closeModal) {
+    top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
+    // setIsPressed(false);
+  }
+  
   const handleApply = async () => {
     const user = await cache.get("user");
 
@@ -127,7 +132,7 @@ function ApplicationModal(props) {
     else response = await applicationApi.postApplication(application);
 
     setLoading(true);
-    console.log(response);
+    // // console.log(response);
     if (!response.ok) {
       setLoading(false);
       if (response.problem === "NETWORK_ERROR") {
@@ -158,7 +163,7 @@ function ApplicationModal(props) {
     top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
     if (props.isCampus) sendIsApplied(true, response.data._id);
     else sendIsApplied(true, response.data._id.$oid);
-    setIsPressed(true);
+    setIsPressed(false);
   };
 
   return (

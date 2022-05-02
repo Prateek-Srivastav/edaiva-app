@@ -108,14 +108,14 @@ function LoginScreen({ navigation }) {
     setVisible(true);
     setLdAuthStarted(true);
     // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
-    // console.log(result);
+    // // console.log(result);
   };
 
   const loadStart = ({ url }) => {
     if (!url) {
       return;
     }
-    // console.log(url);
+    // // console.log(url);
 
     // The browser has redirected to our url of choice, the url would look like:
     // http://your.redirect.url?code=<access_token>&state=<anyauthstate-this-is-optional>
@@ -130,10 +130,10 @@ function LoginScreen({ navigation }) {
         setLoading(true);
         setVisible(false);
         const result = await authApi.linkedinLogin(token);
-        console.log(result + "h");
+        // console.log(result + "h");
         if (!result.ok) {
           setLoading(false);
-          console.log(result);
+          // console.log(result);
           setErrorMessage(result.data.detail);
           Toast.show({
             type: "appError",
@@ -213,14 +213,14 @@ function LoginScreen({ navigation }) {
       setLoading(false);
 
       setErrorMessage(result.data.detail);
-      console.log(result);
+      // console.log(result);
       return setLoginFailed(true);
     }
     setLoading(false);
     setLoginFailed(false);
     const { access, refresh, email_verified, user } = result.data;
 
-    console.log(result.data);
+    // console.log(result.data);
     if (!email_verified) return navigation.navigate("CodeVerification", email);
 
     authContext.setTokens({ access, refresh });

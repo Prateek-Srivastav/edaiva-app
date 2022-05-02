@@ -53,7 +53,7 @@ export default function App() {
           await refreshAccessToken();
         }}
         onFinish={() => setIsReady(true)}
-        onError={(err) => console.log(err)}
+        onError={(err) =>  console.log(err)}
       />
     );
   }

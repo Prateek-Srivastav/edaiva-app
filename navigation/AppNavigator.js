@@ -61,8 +61,8 @@ function AppNavigator() {
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
           navigation.navigate("NotificationsStack");
-          console.log(response);
-          console.log("response");
+          // console.log(response);
+          // console.log("response");
         });
 
       return () => {
@@ -100,7 +100,7 @@ function AppNavigator() {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
+      // console.log(token);
       sendPushToken({ expo_token: token });
 
       // if (Platform.OS === "android") {
@@ -114,7 +114,7 @@ function AppNavigator() {
 
       return token;
     } catch (error) {
-      console.log("Error getting a push token", error);
+      // console.log("Error getting a push token", error);
     }
   };
 

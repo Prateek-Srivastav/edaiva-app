@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
   pincode: Yup.string().required().label("Pincode"),
 });
 
-function CreateProfileScreen() {
+function CreateProfileScreen({ route }) {
   const navigation = useNavigation();
 
   const getUser = async () => {
@@ -39,11 +39,11 @@ function CreateProfileScreen() {
   const [country, setCountry] = useState();
   const [phone, setPhone] = useState();
   const [phoneCode, setPhoneCode] = useState();
-  const [phoneError, setPhoneError] = useState();
-  const [pincodeError, setPincodeError] = useState();
+  const [dobError, setDobError] = useState();
   const [countryError, setCountryError] = useState();
   const [stateError, setStateError] = useState();
-  const [dobError, setDobError] = useState();
+  const [pincodeError, setPincodeError] = useState();
+  const [phoneError, setPhoneError] = useState();
   const [user, setUser] = useState();
 
   const {
@@ -78,6 +78,16 @@ function CreateProfileScreen() {
   }, []);
 
   const handleSubmit = async (values) => {
+    if (dobError || stateError || countryError || pincodeError || phoneError)
+      showToast({
+        type: "appWarning",
+        message: `${dobError ? "DOB " : ""} ${stateError ? "State " : ""} ${
+          countryError ? "Country " : ""
+        } ${pincodeError ? "Pincode " : ""} ${
+          phoneError ? "Phone " : ""
+        } - required.`,
+      });
+
     const val = {
       ...values,
       mobile: phone,
@@ -87,12 +97,41 @@ function CreateProfileScreen() {
       description: "",
     };
 
-    if (!state) return setStateError(true);
-    else if (!country) return setCountryError(true);
-    else if (!dob) return setDobError(true);
-    else if (phone === "" || phone.length < 10 || isNaN(phone))
+    if (!dob) {
+      showToast({
+        type: "appError",
+        message: `DOB is required.`,
+      });
+      return setDobError(true);
+    }
+    if (!country) {
+      showToast({
+        type: "appError",
+        message: `Country is required.`,
+      });
+      return setCountryError(true);
+    }
+    if (!state) {
+      showToast({
+        type: "appError",
+        message: `State is required.`,
+      });
+      return setStateError(true);
+    }
+    if (isNaN(values.pincode)) {
+      showToast({
+        type: "appError",
+        message: `Pincode is required.`,
+      });
+      return setPincodeError(true);
+    }
+    if (phone === "" || phone.length < 10 || isNaN(phone)) {
+      showToast({
+        type: "appError",
+        message: `Phone is required.`,
+      });
       return setPhoneError(true);
-    else if (isNaN(values.pincode)) return setPincodeError(true);
+    }
 
     await updateUser({
       firstname: values.firstname !== "" ? values.firstname : user.firstname,
@@ -107,8 +146,14 @@ function CreateProfileScreen() {
     });
 
     await createProfile(val);
-    return navigation.navigate("ProfileStack");
+    return navigation.navigate(route.params.screenName);
   };
+
+  if (route.params.screenName === "Preference")
+    showToast({
+      type: "appInfo",
+      message: `First create profile to set ${route.params.screenName}.`,
+    });
 
   return (
     <>
@@ -214,7 +259,6 @@ function CreateProfileScreen() {
             loading={statesLoading}
           />
           <ErrorMessage error="State is required" visible={stateError} />
-
           <AppFormCardInput name="city" placeholder="City" />
           <AppFormCardInput name="pincode" placeholder="Pincode" />
           <ErrorMessage error="Enter a valid pincode." visible={pincodeError} />
@@ -225,6 +269,7 @@ function CreateProfileScreen() {
               setPhone(text);
               setPhoneError(false);
             }}
+            placeholder="Phone"
           />
           <ErrorMessage
             error="Enter a valid phone number."

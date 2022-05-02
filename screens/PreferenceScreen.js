@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-import * as Yup from "yup";
 
 import AppPicker from "../components/AppPicker";
-import { AppForm, ErrorMessage, SubmitButton } from "../components/forms";
-import AppFormCardInput from "../components/forms/AppFormCardInput";
 import CardInput from "../components/CardInput";
-import DatePicker from "../components/DatePicker";
-import locationApi from "../api/location";
-import userApi from "../api/user";
 import candidateApi from "../api/candidate";
 import useApi from "../hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
-import cache from "../utilities/cache";
-import { formattedDate, formattedNumericDate } from "../utilities/date";
 import AppText from "../components/AppText";
 import Colors from "../constants/Colors";
 import CustomHeader from "../components/CustomHeader";
@@ -61,6 +54,7 @@ const selectedInputs = ({ array, updateArray }) => {
 
 function PreferenceScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(false);
   const [jobTypesLoading, setJobTypesLoading] = useState(false);
@@ -86,13 +80,13 @@ function PreferenceScreen() {
 
   useEffect(() => {
     loadScreen();
-  }, []);
+  }, [isFocused]);
 
   const loadScreen = async () => {
     setJobTypesLoading(true);
     setLoading(true);
     const response = await candidateApi.getProfile();
-
+    console.log(response);
     const jobTypesResponse = await jobsApi.getJobTypes();
 
     if (!response.ok) {
@@ -138,8 +132,6 @@ function PreferenceScreen() {
       experience: experience !== "All" ? experience : null,
     };
 
-    console.log(val);
-
     await updateProfile({ job_preference: val });
     return navigation.goBack();
   };
@@ -167,10 +159,10 @@ function PreferenceScreen() {
             selectedItem={jobTypeName}
             onSelectItem={(item) => {
               const index = jobType.indexOf(item._id);
-              console.log(index + "a");
+              // console.log(index + "a");
               if (index !== -1) {
                 let typeArr = jobType;
-                console.log("nbcde");
+                // console.log("nbcde");
                 typeArr.splice(index, 1);
 
                 setJobType(typeArr);
@@ -178,7 +170,7 @@ function PreferenceScreen() {
                   jobTypeName.filter((typeName) => typeName !== item.name)
                 );
               } else if (index === -1) {
-                console.log("wxyz");
+                // console.log("wxyz");
                 setJobType([...jobType, item._id]);
                 setJobTypeName([...jobTypeName, item.name]);
               }

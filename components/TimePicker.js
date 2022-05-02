@@ -6,7 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AppPicker from "./AppPicker";
 import Colors from "../constants/Colors";
 
-function TimePicker({ onTimeChange, value }) {
+function TimePicker({ onTimeChange, value, minTime }) {
   const [show, setShow] = useState(false);
   const [initialTime, setInitialTime] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState("--:-- --");
@@ -42,7 +42,8 @@ function TimePicker({ onTimeChange, value }) {
       {show && (
         <DateTimePicker
           testID="timePicker"
-          minimumDate={new Date()}
+          minimumDate={minTime !== undefined ? minTime : new Date()}
+          
           value={initialTime}
           mode="time"
           display="default"

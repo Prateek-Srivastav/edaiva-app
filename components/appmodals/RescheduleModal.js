@@ -125,7 +125,7 @@ function RescheduleModal(props) {
       reason,
       time_slots: inputs,
     };
-    console.log(requestReschedule);
+    // console.log(requestReschedule);
     // await apply(application);
     // if (error)
     //   return Toast.show({
@@ -191,7 +191,7 @@ function RescheduleModal(props) {
               Available Date and Time for the interview
             </AppText>
             {inputs.map((input, index) => {
-              console.log(input);
+              // console.log(input);
               return (
                 <>
                   <View

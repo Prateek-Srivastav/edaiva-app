@@ -95,7 +95,7 @@ function CampusNavigator({ route, navigation }) {
   };
 
   const getNotificationCount = (route) => {
-    console.log(route);
+    // console.log(route);
   };
 
   return (

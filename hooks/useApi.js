@@ -24,7 +24,7 @@ function useApi(apiFunc) {
         });
       } else if (response.data.code === "token_not_valid") {
         setLoading(false);
-        console.log("token not valid");
+        // console.log("token not valid");
         return setTokenValid(false);
       } else {
         setData(response.data);

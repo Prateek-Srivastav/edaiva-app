@@ -7,9 +7,23 @@ import { useNavigation } from "@react-navigation/native";
 
 function InterviewReminder({ interviewDetails }) {
   const navigation = useNavigation();
-  const { city, state, country } = interviewDetails.job[0].job_location[0];
+  let location;
 
-  const location = `${city}, ${state}, ${country}`;
+  if (itemData.item.job_location?.length !== 0)
+    location = `${
+      interviewDetails.job[0].job_location[0]?.city
+        ? interviewDetails.job[0].job_location[0]?.city + ","
+        : null
+    } ${
+      interviewDetails.job[0].job_location[0]?.state
+        ? interviewDetails.job[0].job_location[0]?.state + ","
+        : null
+    }${
+      interviewDetails.job[0].job_location[0]?.country
+        ? interviewDetails.job[0].job_location[0]?.country + ","
+        : null
+    }`;
+
   return (
     <TouchableOpacity
       style={styles.reminderContainer}

@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import * as WebBrowser from "expo-web-browser";
 
@@ -24,6 +30,8 @@ import CustomButton from "./CustomButton";
 import useApi from "../hooks/useApi";
 import campusCandidateApi from "../api/campusApis/candidate";
 import candidateApi from "../api/candidate";
+
+const { width, height } = Dimensions.get("screen");
 
 const NormalText = (props) => (
   <Text style={styles.normalText}>{props.children}</Text>
@@ -154,7 +162,7 @@ function CustomDrawer(props) {
       <LargeText>
         {firstname} {lastname}
       </LargeText>
-      <AppText>{email}</AppText>
+      <AppText style={{ fontSize: height < 160 ? 13 : 14 }}>{email}</AppText>
       <HorizontalLine marginTop={10} />
       <View style={styles.navigatorsContainer}>
         <View>
@@ -162,17 +170,24 @@ function CustomDrawer(props) {
             title="Profile"
             icon={<Profile />}
             onPress={() =>
-              props.navigation.navigate(
-                error && data?.error === "Candidate Profile not found!!"
-                  ? "CreateProfile"
-                  : "ProfileStack"
-              )
+              data?.error === "Candidate Profile not found!!"
+                ? props.navigation.navigate("CreateProfile", {
+                    screenName: "ProfileStack",
+                  })
+                : props.navigation.navigate("ProfileStack")
             }
           />
           <NavigatorButton
             title="Preference"
             icon={<Preference />}
-            onPress={() => props.navigation.navigate("Preference")}
+            error
+            onPress={() =>
+              data?.error === "Candidate Profile not found!!"
+                ? props.navigation.navigate("CreateProfile", {
+                    screenName: "Preference",
+                  })
+                : props.navigation.navigate("Preference")
+            }
           />
         </View>
         <View>
@@ -260,7 +275,7 @@ const styles = StyleSheet.create({
   },
   largeText: {
     fontFamily: "OpenSans-Bold",
-    fontSize: 22,
+    fontSize: height < 160 ? 16 : 22,
     color: Colors.primary,
   },
   navigatorButtonContainer: {
@@ -281,13 +296,14 @@ const styles = StyleSheet.create({
   },
   normalText: {
     fontFamily: "OpenSans-Medium",
-    fontSize: 17.5,
+    fontSize: height < 160 ? 14 : 17.5,
     color: Colors.black,
     marginLeft: 25,
   },
   signOutText: {
     fontFamily: "OpenSans-Medium",
-    fontSize: 19,
+    fontSize: height < 160 ? 15 : 19,
+    // fontSize: 19,
     color: Colors.black,
     marginLeft: 20,
   },
