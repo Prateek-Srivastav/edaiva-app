@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import * as Yup from "yup";
+import { Ionicons } from "@expo/vector-icons";
 
 import AppFormCardInput from "../../components/forms/AppFormCardInput";
 import { AppForm, ErrorMessage, SubmitButton } from "../../components/forms";
@@ -8,9 +9,7 @@ import candidateApi from "../../api/candidate";
 import DatePicker from "../../components/DatePicker";
 import AppPicker from "../../components/AppPicker";
 import AppText from "../../components/AppText";
-import CardInput from "../../components/CardInput";
 import Colors from "../../constants/Colors";
-import CustomButton from "../../components/CustomButton";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import useApi from "../../hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
@@ -122,11 +121,13 @@ function AddExperienceScreen({ data, index }) {
           defaultValue={company ? company : ""}
           name="company"
           label="Company"
+          placeholder="Company"
         />
         <AppPicker
           // defaultValue={designation !== "" ? designation : ""}
+          selectedItem={jobType}
           items={jobTypes}
-          title={jobType ? jobType : ""}
+          title={jobType ? jobType : "Job Type"}
           label="Job Type"
           onSelectItem={(item) => setJobType(item.name)}
         />
@@ -136,6 +137,7 @@ function AddExperienceScreen({ data, index }) {
           defaultValue={role ? role : ""}
           name="role"
           label="Role"
+          placeholder="Role"
         />
         <View
           style={{
@@ -153,7 +155,6 @@ function AddExperienceScreen({ data, index }) {
             }}
             value={startDate ? formattedNumericDate(startDate).usFormat : null}
           />
-
           <DatePicker
             initialDate={endDate}
             style={{ width: "49%" }}
@@ -176,17 +177,29 @@ function AddExperienceScreen({ data, index }) {
           }}
           onPress={() => setPresent(!present)}
         >
-          <View
-            style={{
-              borderWidth: 1,
-              borderRadius: 3,
-              borderColor: Colors.primary,
-              height: 15,
-              width: 15,
-              marginRight: 5,
-              backgroundColor: present ? Colors.primary : "transparent",
-            }}
-          />
+          {present ? (
+            <View
+              style={{
+                height: 16,
+                width: 16,
+                marginRight: 5,
+              }}
+            >
+              <Ionicons name="checkbox" size={17} color={Colors.primary} />
+            </View>
+          ) : (
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 3,
+                borderColor: Colors.primary,
+                height: 15,
+                width: 15,
+                marginRight: 5,
+                backgroundColor: "transparent",
+              }}
+            />
+          )}
           <AppText>Present</AppText>
         </TouchableOpacity>
         <AppFormCardInput

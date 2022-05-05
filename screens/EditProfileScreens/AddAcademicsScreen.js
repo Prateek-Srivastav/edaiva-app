@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import * as Yup from "yup";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import AppPicker from "../../components/AppPicker";
@@ -121,7 +121,7 @@ function AddAcademicsScreen({ data, index }) {
           name="institute"
           defaultValue={institute ? institute : ""}
           label="Institute/College/University"
-          placeholder="xyz"
+          placeholder="Institute"
         />
         <AppPicker
           label="Degree"
@@ -131,6 +131,7 @@ function AddAcademicsScreen({ data, index }) {
             setDegree(item.name);
             setDegreeError(false);
           }}
+          selectedItem={degree}
         />
         <ErrorMessage error="Degree is required" visible={degreeError} />
 
@@ -187,17 +188,29 @@ function AddAcademicsScreen({ data, index }) {
           style={styles.box}
           onPress={() => setPursuing(!pursuing)}
         >
-          <View
-            style={{
-              borderWidth: 1,
-              borderRadius: 3,
-              borderColor: Colors.primary,
-              height: 15,
-              width: 15,
-              marginRight: 5,
-              backgroundColor: pursuing ? Colors.primary : "transparent",
-            }}
-          />
+          {pursuing ? (
+            <View
+              style={{
+                height: 16,
+                width: 16,
+                marginRight: 5,
+              }}
+            >
+              <Ionicons name="checkbox" size={17} color={Colors.primary} />
+            </View>
+          ) : (
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 3,
+                borderColor: Colors.primary,
+                height: 15,
+                width: 15,
+                marginRight: 5,
+                backgroundColor: "transparent",
+              }}
+            />
+          )}
           <AppText>Pursuing</AppText>
         </TouchableOpacity>
 
@@ -210,7 +223,7 @@ function AddAcademicsScreen({ data, index }) {
 const styles = StyleSheet.create({
   box: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center",
     alignSelf: "flex-end",
     marginBottom: 5,

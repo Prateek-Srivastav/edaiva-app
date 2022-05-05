@@ -35,6 +35,7 @@ function AppPicker(props) {
     onPress,
     disabled,
     multiSelect,
+    internship,
   } = props;
 
   useEffect(() => {
@@ -66,7 +67,7 @@ function AppPicker(props) {
       <TouchableOpacity
         // disabled={disabled}
         onPress={() => {
-          if (disabled)
+          if (disabled && internship)
             return showToast({
               type: "appInfo",
               message: "Interns doesn't need experience!",
@@ -75,7 +76,10 @@ function AppPicker(props) {
           setVisible(true);
         }}
         activeOpacity={disabled ? 1 : 0.8}
-        style={{ ...styles.picker }}
+        style={{
+          ...styles.picker,
+          backgroundColor: disabled ? "#ededed" : "white",
+        }}
       >
         <Text style={{ ...styles.title, ...props.titleStyle }}>
           {props.title}
@@ -87,7 +91,7 @@ function AppPicker(props) {
             name={props.isShown ? "chevron-up" : "chevron-down"}
             size={14}
             color={props.iconColor ? props.iconColor : Colors.grey}
-            />
+          />
         )}
       </TouchableOpacity>
       {dateTimePicker ? null : (
@@ -96,11 +100,7 @@ function AppPicker(props) {
             style={styles.button}
             onPress={() => setVisible(false)}
           >
-            <Feather
-              name="x"
-              size={18}
-              color={Colors.primary}
-            />
+            <Feather name="x" size={18} color={Colors.primary} />
           </TouchableOpacity>
           {props.loading && <Loading />}
           <FlatList

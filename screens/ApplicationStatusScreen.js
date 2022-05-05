@@ -263,6 +263,7 @@ function ApplicationStatusScreen({ route }) {
             style={{
               flexDirection: "row",
               // width,
+              marginTop: 15,
 
               justifyContent: "center",
               // borderWidth: 1,
@@ -404,10 +405,12 @@ function ApplicationStatusScreen({ route }) {
               {applicationData[0].job.company[0].name}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Location color="#BDEEFF" />
-            <Text style={styles.text}>{route.params.location}</Text>
-          </View>
+          {route.params.location && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Location color="#BDEEFF" />
+              <Text style={styles.text}>{route.params.location}</Text>
+            </View>
+          )}
           {applicationData[0].offerletter.length > 0 ? (
             <Card
               style={{

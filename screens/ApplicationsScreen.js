@@ -28,7 +28,6 @@ function ApplicationsScreen({ navigation }) {
 
   if (data) {
     applications = data;
-    console.log(data);
   }
   const numOfApplications = async () => {
     await cache.store("applications", applications?.length);

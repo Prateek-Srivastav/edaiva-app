@@ -272,14 +272,11 @@ function JobDetailScreen({ route, navigation }) {
     setInWishlist(false);
   };
 
-  console.log(isPressed, " called");
   const getData = () => {
-    console.log(isPressed, "get data called");
     setIsPressed(false);
   };
 
   const getIsApplied = (val, applicationId) => {
-    console.log("get is applied called");
     setIsPressed(false);
     setIsApplied(val);
     setApplicationId(applicationId);
@@ -358,7 +355,7 @@ function JobDetailScreen({ route, navigation }) {
                 />
               </>
             )}
-            {jobDetails.preferred_qualification && (
+            {jobDetails.preferred_qualification !== null && (
               <>
                 <AppText>Preferred Qualification</AppText>
                 <RenderHtml

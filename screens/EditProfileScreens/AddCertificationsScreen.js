@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Yup from "yup";
+import { Ionicons } from "@expo/vector-icons";
 
-import AppPicker from "../../components/AppPicker";
 import {
   AppForm,
   AppFormCardInput,
@@ -104,7 +104,7 @@ function AddCertificationsScreen({ data, index }) {
           name="title"
           defaultValue={title ? title : ""}
           label="Title"
-          placeholder="xyz"
+          placeholder="Title"
         />
         <AppFormCardInput
           name="issued_by"
@@ -148,26 +148,36 @@ function AddCertificationsScreen({ data, index }) {
           style={styles.box}
           onPress={() => setLifetimeValidity(!lifetimeValidity)}
         >
-          <View
-            style={{
-              borderWidth: 1,
-              borderRadius: 3,
-              borderColor: Colors.primary,
-              height: 15,
-              width: 15,
-              marginRight: 5,
-              backgroundColor: lifetimeValidity
-                ? Colors.primary
-                : "transparent",
-            }}
-          />
+          {lifetimeValidity ? (
+            <View
+              style={{
+                height: 16,
+                width: 16,
+                marginRight: 5,
+              }}
+            >
+              <Ionicons name="checkbox" size={17} color={Colors.primary} />
+            </View>
+          ) : (
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 3,
+                borderColor: Colors.primary,
+                height: 15,
+                width: 15,
+                marginRight: 5,
+                backgroundColor: "transparent",
+              }}
+            />
+          )}
           <AppText>Lifetime</AppText>
         </TouchableOpacity>
         <AppFormCardInput
           name="certificate_id"
           defaultValue={certificate_id ? certificate_id : ""}
           label="Certficate ID"
-          placeholder="xyz"
+          placeholder="Certficate ID"
         />
         <AppFormCardInput
           name="link"

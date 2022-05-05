@@ -117,7 +117,7 @@ function AddPatentsScreen({ data, index }) {
           name="title"
           defaultValue={title ? title : ""}
           label="Patent Title"
-          placeholder="xyz"
+          placeholder="Title"
         />
         <AppPicker
           name="patent_office"
@@ -127,7 +127,7 @@ function AddPatentsScreen({ data, index }) {
           onSelectItem={(item) => {
             setPatentOffice(item.name);
           }}
-          title={patentOffice ? patentOffice : ""}
+          title={patentOffice ? patentOffice : "Patent Office"}
           items={countries}
           loading={countriesLoading}
         />
@@ -135,13 +135,14 @@ function AddPatentsScreen({ data, index }) {
           name="patent_no"
           defaultValue={patent_no ? patent_no : ""}
           label="Patent No. / Application No."
-          placeholder="xyz"
+          placeholder="Patent No."
         />
         <AppPicker
           label="Patent Status"
           title={status ? status : "Select"}
           items={issueStatus}
           onSelectItem={(item) => setStatus(item.name)}
+          selectedItem={status}
         />
         <DatePicker
           label="Issue Date"

@@ -1,8 +1,4 @@
-import {
-  NavigationContainer,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";

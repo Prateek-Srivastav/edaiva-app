@@ -123,7 +123,17 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
     if (!state) return setStateError(true);
     else if (!country) return setCountryError(true);
     else if (!dob) return setDobError(true);
-    else if (phone === "" || phone.length < 10 || isNaN(phone))
+    else if (phone === "") {
+      return showToast({
+        type: "appError",
+        message: `Phone is required.`,
+      });
+    } else if (
+      (country === "India" ? phone.length !== 13 : 0) ||
+      phone.includes(" ") ||
+      phone.includes("-") ||
+      phone.includes(",")
+    )
       return setPhoneError(true);
     else if (isNaN(values.pincode)) return setPincodeError(true);
 
@@ -267,6 +277,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
         />
         <AppFormCardInput
           defaultValue={pincode?.toString()}
+          keyboardType="numeric"
           name="pincode"
           placeholder="Pincode"
         />
@@ -274,6 +285,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
         <CardInput
           defaultValue={phoneCode ? phoneCode : phone}
           label="PHONE"
+          keyboardType="numeric"
           onChangeText={(text) => {
             setPhone(text);
             setPhoneError(false);

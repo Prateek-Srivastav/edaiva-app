@@ -99,7 +99,9 @@ function PreferenceScreen() {
     setJobTypes(jobTypesResponse.data);
 
     setPrefJobRoleArray(
-      response.data.job_preference ? response.data.job_preference.job_roles : []
+      response.data.job_preference?.job_roles
+        ? response.data.job_preference.job_roles
+        : []
     );
     setJobType(
       response.data.job_preference?.job_type
@@ -107,12 +109,14 @@ function PreferenceScreen() {
         : []
     );
     setKeywordArray(
-      response.data.job_preference ? response.data.job_preference.keywords : []
+      response.data.job_preference?.keywords
+        ? response.data.job_preference?.keywords
+        : []
     );
     setExperience(response.data.job_preference?.experience);
 
     let typeName = [];
-    response.data.job_preference?.job_type.forEach((e) => {
+    response.data.job_preference?.job_type?.forEach((e) => {
       typeName.push(
         jobTypesResponse.data.filter((jobtype) => jobtype._id === e)[0]
       );
@@ -178,7 +182,7 @@ function PreferenceScreen() {
             multiSelect
             name="jobType"
             title={
-              jobTypeName
+              jobTypeName.length !== 0
                 ? jobTypeName.map((jobtype) => jobtype + ", ")
                 : "Select"
             }

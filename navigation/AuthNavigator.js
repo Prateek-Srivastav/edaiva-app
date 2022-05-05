@@ -18,10 +18,12 @@ const Stack = createNativeStackNavigator();
 
 const leftHeader = () => {
   const navigation = useNavigation();
+
   let isBackShown = true;
+
   if (
-    navigation.getRootState() === undefined ||
-    navigation.getRootState().routes.length === 1
+    navigation?.getRootState === undefined ||
+    navigation?.getRootState().routes.length === 1
   )
     isBackShown = false;
   return (

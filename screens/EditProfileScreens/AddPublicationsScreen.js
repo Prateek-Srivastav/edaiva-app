@@ -84,13 +84,14 @@ function AddPublicationsScreen({ data, index }) {
           name="title"
           defaultValue={title ? title : ""}
           label="Title"
-          placeholder="xyz"
+          placeholder="Title"
         />
         <AppFormCardInput
           name="publisher"
           defaultValue={publisher ? publisher : ""}
           label="Publisher"
           title="Select"
+          placeholder="Publisher"
         />
         <DatePicker
           label="Publication Date"

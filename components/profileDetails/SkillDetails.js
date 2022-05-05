@@ -10,6 +10,7 @@ import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
 import candidateApi from "../../api/candidate";
 import { NormalText } from "../textStyles";
+import AppText from "../AppText";
 
 function SkillDetails({ data, skill, index, viewing, isCampus }) {
   const navigation = useNavigation();
@@ -33,6 +34,9 @@ function SkillDetails({ data, skill, index, viewing, isCampus }) {
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <NormalText>{skill.skill_name}</NormalText>
+        {viewing && (
+          <NormalText color={Colors.primary}>{skill.level}/10</NormalText>
+        )}
         {!viewing && (
           <View
             style={{
@@ -59,7 +63,7 @@ function SkillDetails({ data, skill, index, viewing, isCampus }) {
           </View>
         )}
       </View>
-      <Slider
+      {/* <Slider
         style={{ width: "100%", marginTop: 10 }}
         minimumTrackTintColor={Colors.primary}
         maximumTrackTintColor={Colors.primary}
@@ -68,7 +72,7 @@ function SkillDetails({ data, skill, index, viewing, isCampus }) {
         maximumValue={10}
         value={parseInt(skill.level)}
         disabled
-      />
+      /> */}
     </View>
   );
 }

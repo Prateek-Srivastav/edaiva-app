@@ -125,13 +125,18 @@ function CreateProfileScreen({ route }) {
       });
       return setPincodeError(true);
     }
-    if (phone === "" || phone.length < 10 || isNaN(phone)) {
-      showToast({
+    if (phone === "") {
+      return showToast({
         type: "appError",
         message: `Phone is required.`,
       });
+    } else if (
+      (country === "India" ? phone.length !== 13 : 0) ||
+      phone.includes(" ") ||
+      phone.includes("-") ||
+      phone.includes(",")
+    )
       return setPhoneError(true);
-    }
 
     await updateUser({
       firstname: values.firstname !== "" ? values.firstname : user.firstname,

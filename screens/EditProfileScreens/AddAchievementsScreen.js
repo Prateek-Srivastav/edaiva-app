@@ -72,7 +72,7 @@ function AddAchievementsScreen({ data, index }) {
           name="title"
           defaultValue={title ? title : ""}
           label="Title"
-          placeholder="xyz"
+          placeholder="Title"
         />
         <DatePicker
           label="Date of achievement"

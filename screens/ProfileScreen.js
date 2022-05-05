@@ -67,7 +67,6 @@ function ProfileScreen({ navigation }) {
     request: loadProfile,
   } = useApi(candidateApi.getProfile);
 
-
   const {
     error: resumeError,
     networkError: resumeNetworkError,
@@ -374,7 +373,7 @@ function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
+    // justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: Colors.bg,
     paddingTop: 40,

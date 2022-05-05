@@ -21,6 +21,7 @@ import {
   Document,
   SignOut,
   Campus,
+  JobsIcon,
 } from "../assets/svg/icons";
 import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
@@ -198,7 +199,14 @@ function CustomDrawer(props) {
                 ? "Jobs"
                 : "Campus"
             }
-            icon={<Campus />}
+            icon={
+              campusProfileData?.detail !==
+              "Your are not a part of any institution !" ? (
+                <JobsIcon />
+              ) : (
+                <Campus />
+              )
+            }
             onPress={() =>
               props.navigation.navigate(
                 campusProfileData?.detail !==

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -63,6 +63,12 @@ function HomeScreen({ navigation }) {
     res,
   } = useApi(jobsApi.getJobs);
 
+  const numOfPages = data?.pageInfo.total;
+
+  let pageArray = [];
+
+  for (let i = 0; i < numOfPages; i++) pageArray[i] = i + 1;
+
   const {
     data: jobTypesData,
     error: jobTypesError,
@@ -92,8 +98,6 @@ function HomeScreen({ navigation }) {
     loadJobTypes();
     loadJobs({ sort: sortBy, ...filters });
     loadInterviews();
-    // console.log("abcde");
-    // setJobs(data.docs);
     loadProfile();
   }, [isFocused, sortBy, filters]);
 
@@ -223,6 +227,7 @@ function HomeScreen({ navigation }) {
   if (networkError && !loading) return <NetworkError onPress={loadJobs} />;
 
   if (error) return <Error onPress={loadJobs} />;
+  // const flatListRef = useRef();
 
   return (
     <>
@@ -454,41 +459,113 @@ function HomeScreen({ navigation }) {
                       paddingBottom: 20,
                     }}
                     data={data.docs}
-                    renderItem={(itemData) => {
+                    renderItem={({ item, index }) => {
                       let location;
-                      if (itemData.item.job_location?.length !== 0)
+                      if (item.job_location?.length !== 0)
                         location = `${
-                          itemData.item?.job_location[0]?.city
-                            ? itemData?.item?.job_location[0]?.city + ","
+                          item?.job_location[0]?.city
+                            ? item?.job_location[0]?.city + ","
                             : null
                         } ${
-                          itemData.item?.job_location[0]?.state
-                            ? itemData?.item?.job_location[0]?.state + ","
+                          item?.job_location[0]?.state
+                            ? item?.job_location[0]?.state + ","
                             : null
                         } ${
-                          itemData.item?.job_location[0]?.country
-                            ? itemData?.item?.job_location[0]?.country
+                          item?.job_location[0]?.country
+                            ? item?.job_location[0]?.country
                             : null
                         }`;
 
                       return (
-                        <JobCard
-                          onPress={() =>
-                            navigation.navigate("JobDetail", {
-                              jobId: itemData.item._id,
-                              isApplied: itemData.item.applied.length !== 0,
-                              applicationId: itemData.item.applied[0]?._id,
-                              location,
-                            })
-                          }
-                          heading={itemData.item.job_title}
-                          companyName={itemData.item.company.name}
-                          jobType={itemData.item.job_type.name}
-                          location={location}
-                          description={itemData.item.job_description}
-                          postedDate={formattedDate(itemData.item.created_on)}
-                          isApplied={itemData.item.applied}
-                        />
+                        <>
+                          <JobCard
+                            onPress={() =>
+                              navigation.navigate("JobDetail", {
+                                jobId: item._id,
+                                isApplied: item.applied.length !== 0,
+                                applicationId: item.applied[0]?._id,
+                                location,
+                              })
+                            }
+                            heading={item.job_title}
+                            companyName={item.company.name}
+                            jobType={item.job_type.name}
+                            location={location}
+                            description={item.job_description}
+                            postedDate={formattedDate(item.created_on)}
+                            isApplied={item.applied}
+                          />
+                          {index === data.docs.length - 1 && (
+                            <>
+                              <FlatList
+                                // ref={flatListRef}
+                                keyExtractor={(item) => item}
+                                style={{
+                                  width: "60%",
+                                  marginTop: 20,
+                                  borderWidth: 1,
+                                  borderColor: Colors.cardBlue,
+                                  borderRadius: 4,
+                                  alignSelf: "center",
+                                  elevation: 2,
+                                  backgroundColor: "white",
+                                }}
+                                horizontal
+                                data={pageArray}
+                                renderItem={({ item, index }) => {
+                                  return (
+                                    <View
+                                      style={{
+                                        // borderWidth: 1,
+                                        flexDirection: "row",
+                                        // borderRightWidth: 1,
+                                        // borderRadius: 4,
+                                        // paddingStart: 14,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      {index !== 0 && (
+                                        <View style={styles.separator} />
+                                      )}
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          loadJobs({
+                                            page: item,
+                                            sort: sortBy,
+                                            ...filters,
+                                          })
+                                        }
+                                        style={{
+                                          paddingHorizontal: 13,
+                                          paddingVertical: 8,
+                                          margin: 5,
+                                          borderRadius: 4,
+                                          backgroundColor:
+                                            data?.pageInfo.page === item
+                                              ? Colors.primary
+                                              : Colors.white,
+                                        }}
+                                      >
+                                        <AppText
+                                          style={{
+                                            color:
+                                              data?.pageInfo.page === item
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fontSize: 18,
+                                          }}
+                                        >
+                                          {item}
+                                        </AppText>
+                                      </TouchableOpacity>
+                                    </View>
+                                  );
+                                }}
+                              />
+                            </>
+                          )}
+                        </>
                       );
                     }}
                   />
@@ -600,6 +677,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#00000040",
   },
   panelHeader: { alignItems: "center" },
+  separator: {
+    height: 23,
+    width: 1.2,
+    borderRadius: 10,
+    // marginHorizontal: 5,
+    backgroundColor: "#D4D4D4",
+  },
 });
 
 export default HomeScreen;

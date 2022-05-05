@@ -108,31 +108,33 @@ function AddProjectsScreen({ data, index }) {
           name="title"
           defaultValue={title ? title : ""}
           label="Title"
-          placeholder="xyz"
+          placeholder="Title"
         />
         <AppFormCardInput
           name="role"
           defaultValue={role ? role : ""}
           label="Role"
-          placeholder="xyz"
+          placeholder="Role"
         />
         <AppPicker
           items={teamSizes}
           title={teamSize ? teamSize : "Select"}
           label="Team Size"
           onSelectItem={(item) => setTeamSize(item.name)}
+          selectedItem={teamSize}
         />
         <AppPicker
           items={durations}
           title={duration ? duration : "Select"}
           label="Duration"
           onSelectItem={(item) => setDuration(item.name)}
+          selectedItem={duration}
         />
         <AppFormCardInput
           name="link"
           defaultValue={link ? link : ""}
           label="Link"
-          placeholder="xyz"
+          placeholder="Link"
         />
         <AppFormCardInput
           name="description"

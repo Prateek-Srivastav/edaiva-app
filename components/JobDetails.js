@@ -128,7 +128,7 @@ function JobDetails({ data, jobId, isCampus }) {
                 />
               </>
             )}
-            {jobDetails.preferred_qualification && (
+            {jobDetails.preferred_qualification !== null && (
               <>
                 <AppText>Preferred Qualification</AppText>
                 <RenderHtml
@@ -276,22 +276,42 @@ function JobDetails({ data, jobId, isCampus }) {
                   </>
                 </View>
               )}
-              <View>
-                <AppText style={{ marginBottom: 6 }}>Required skills</AppText>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {jobDetails.skills.map((skill, index) => (
-                    <AppText style={styles.requirementText} key={index}>
-                      {skill.name}
-                    </AppText>
-                  ))}
+              {jobDetails.skills.length !== 0 && (
+                <View>
+                  <AppText style={{ marginBottom: 6 }}>Required skills</AppText>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      marginStart: 5,
+                    }}
+                  >
+                    {jobDetails.skills.map((skill, index) => (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View
+                          style={{
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            height: 5,
+                            width: 5,
+                            backgroundColor: "black",
+                          }}
+                        />
+                        <AppText style={styles.requirementText} key={index}>
+                          {skill.name}
+                        </AppText>
+                      </View>
+                    ))}
+                  </View>
                 </View>
-              </View>
+              )}
             </Card>
           </Card>
         </View>

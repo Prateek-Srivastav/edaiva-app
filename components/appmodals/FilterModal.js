@@ -133,9 +133,9 @@ function FilterModal(props) {
       selectedJobType === "internship"
         ? props.jobTypes.filter((type) => type.name === "Internship")[0]._id
         : selectedJobType === "ft"
-        ? props.jobTypes.filter((type) => type.name === "Full Time")[0]._id
+        ? props.jobTypes.filter((type) => type.name === "Full-time")[0]._id
         : selectedJobType === "pt"
-        ? props.jobTypes.filter((type) => type.name === "Part Time")[0]._id
+        ? props.jobTypes.filter((type) => type.name === "Part-time")[0]._id
         : null,
     experience: experience === "All" ? null : experience,
     skills: skillsItemArray,
@@ -150,12 +150,15 @@ function FilterModal(props) {
       state === undefined &&
       !selectedJobType &&
       skillsItemArray.length === 0 &&
-      !experience
-    )
+      (!experience || experience === "All") &&
+      (!keyword || keyword === "")
+    ) {
+      console.log("abcd");
       return sendFilters({});
+    }
 
     sendFilters(filters);
-    // console.log(filters);
+    console.log(filters);
   };
 
   const FilterItem = (props) => {
@@ -398,12 +401,15 @@ function FilterModal(props) {
                   onSelectItem={(item) => {
                     if (experience === item.name || item.name === "All")
                       return setExperience("All");
+                    else if (selectedJobType === "internship")
+                      return setExperience("All");
                     setExperience(item.name);
                   }}
                   name="experience"
                   title={experience ? experience : "Select"}
                   items={experienceData}
                   disabled={selectedJobType === "internship"}
+                  internship={selectedJobType === "internship"}
                 />
               </View>
             )}
@@ -471,7 +477,7 @@ function FilterModal(props) {
               onPress={() => {
                 handleApply();
                 top.value = withSpring(dimensions.height, SPRING_CONFIG);
-                sendFilters();
+                // sendFilters();
               }}
             />
           </View>

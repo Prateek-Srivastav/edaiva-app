@@ -8,11 +8,22 @@ import candidateApi from "../../api/candidate";
 import Colors from "../../constants/Colors";
 import CustomButton from "../../components/CustomButton";
 import useApi from "../../hooks/useApi";
+import * as Yup from "yup";
+import { ErrorMessage } from "../../components/forms";
+
+const validationSchema = Yup.object().shape({
+  link: Yup.string().url().label("Link"),
+  // github: Yup.string().url().label("Link"),
+  // instagram: Yup.string().url().label("Link"),
+  // linkedin: Yup.string().url().label("Link"),
+  // twitter: Yup.string().url().label("Link"),
+});
 
 function AddSocialLinksScreen({ data }) {
   const [selectedSocial, setSelectedSocial] = useState();
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [value, setValue] = useState("");
+  const [linkError, setLinkError] = useState();
   const [editValue, setEditValue] = useState("");
 
   const [fb, setFb] = useState(
@@ -129,9 +140,15 @@ function AddSocialLinksScreen({ data }) {
       <CardInput
         label="Link"
         placeholder="Paste Link here..."
-        onChangeText={(text) => setValue(text)}
+        onChangeText={(text) => {
+          validationSchema.isValid({ link: text }).then((val) => {
+            setLinkError(val);
+          });
+          setValue(text);
+        }}
         value={value}
       />
+      <ErrorMessage error="Please enter a valid link" visible={!linkError} />
       <CustomButton title="Add" onPress={handleSubmit} />
     </ScrollView>
   );

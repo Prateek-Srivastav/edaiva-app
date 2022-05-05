@@ -277,11 +277,12 @@ function EditProfileScreen() {
                 aboutUpdateLoading ? (
                   <Loading />
                 ) : (
-                  <ViewAbout data={about ? about : data?.description} />
+                  <ViewAbout data={about !== "" ? about : data?.description} />
                 )
               ) : (
                 <CardInput
                   // style={{ marginBottom: 10 }}
+                  returnkeyType="submit"
                   numberOfLines={6}
                   multiline
                   placeholder="Tell something about you..."
@@ -289,6 +290,7 @@ function EditProfileScreen() {
                   onBlur={handleAboutSubmit}
                   onChangeText={(text) => setAbout(text)}
                   onSubmitEditing={handleAboutSubmit}
+                  value={about}
                 />
               )}
             </View>
