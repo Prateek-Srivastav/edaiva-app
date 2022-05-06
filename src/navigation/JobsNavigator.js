@@ -15,61 +15,38 @@ import ApplicationStatusScreen from "../screens/ApplicationStatusScreen";
 
 const Stack = createNativeStackNavigator();
 
-const leftHeader = () => {
-  const navigation = useNavigation();
+// const rightShareHeader = () => {
+//   const navigation = useNavigation();
+//   const route = useRoute();
 
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {navigation.canGoBack() && (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={25}
-            color={Colors.primary}
-          />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
+//   // const jobId = navigation.getState().routes[1].state.routes[1].params.jobId;
+//   console.log("navigation");
 
-const rightShareHeader = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+//   // const onShare = async () => {
+//   //   try {
+//   //     const result = await Share.share({
+//   //       message: `${jobClient.getBaseURL()}/jobs/${jobId}`,
+//   //     });
+//   //     if (result.action === Share.sharedAction) {
+//   //       if (result.activityType) {
+//   //         // shared with activity type of result.activityType
+//   //       } else {
+//   //         // shared
+//   //       }
+//   //     } else if (result.action === Share.dismissedAction) {
+//   //       // dismissed
+//   //     }
+//   //   } catch (error) {
+//   //     alert(error.message);
+//   //   }
+//   // };
 
-  const jobId = navigation.getState().routes[1].state.routes[1].params.jobId;
-
-  const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message: `${jobClient.getBaseURL()}/jobs/${jobId}`,
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  return (
-    <TouchableOpacity style={{ marginRight: 5 }} onPress={onShare}>
-      <AntDesign name="sharealt" size={23} color={Colors.primary} />
-    </TouchableOpacity>
-  );
-};
+//   return (
+//     <TouchableOpacity style={{ marginRight: 5 }} onPress={onShare}>
+//       <AntDesign name="sharealt" size={23} color={Colors.primary} />
+//     </TouchableOpacity>
+//   );
+// };
 
 const JobsNavigator = () => (
   <Stack.Navigator
@@ -91,9 +68,11 @@ const JobsNavigator = () => (
     <Stack.Screen
       name="JobDetail"
       component={JobDetailScreen}
-      options={{
-        headerRight: () => rightShareHeader(),
-      }}
+      options={
+        {
+          // headerRight: () => rightShareHeader(),
+        }
+      }
     />
     <Stack.Screen
       name="ApplicationStatus"

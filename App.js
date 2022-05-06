@@ -8,13 +8,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import * as Sentry from "sentry-expo";
 
-import AuthNavigator from "./navigation/AuthNavigator";
-import AppNavigator from "./navigation/AppNavigator";
-import AuthContext from "./auth/context";
-import authStorage from "./auth/storage";
-import refreshAccessToken from "./utilities/refreshAccessToken";
-import { navigationRef } from "./navigation/rootNavigation";
-import toastConfig from "./utilities/toastConfig";
+import AuthNavigator from "./src/navigation/AuthNavigator";
+import AppNavigator from "./src/navigation/AppNavigator";
+import AuthContext from "./src/auth/context";
+import authStorage from "./src/auth/storage";
+import refreshAccessToken from "./src/utilities/refreshAccessToken";
+import { navigationRef } from "./src/navigation/rootNavigation";
+import toastConfig from "./src/utilities/toastConfig";
 
 enableScreens();
 
@@ -26,11 +26,11 @@ Sentry.init({
 
 const fetchFonts = () => {
   return Font.loadAsync({
-    "OpenSans-Medium": require("./assets/fonts/OpenSans-Medium.ttf"),
-    "OpenSans-Regular": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "OpenSans-SemiBold": require("./assets/fonts/OpenSans-SemiBold.ttf"),
-    "OpenSans-Bold": require("./assets/fonts/OpenSans-Bold.ttf"),
-    "OpenSans-Italic": require("./assets/fonts/OpenSans-Italic.ttf"),
+    "OpenSans-Medium": require("./src/assets/fonts/OpenSans-Medium.ttf"),
+    "OpenSans-Regular": require("./src/assets/fonts/OpenSans-Regular.ttf"),
+    "OpenSans-SemiBold": require("./src/assets/fonts/OpenSans-SemiBold.ttf"),
+    "OpenSans-Bold": require("./src/assets/fonts/OpenSans-Bold.ttf"),
+    "OpenSans-Italic": require("./src/assets/fonts/OpenSans-Italic.ttf"),
   });
 };
 
@@ -53,7 +53,7 @@ export default function App() {
           await refreshAccessToken();
         }}
         onFinish={() => setIsReady(true)}
-        onError={(err) =>  console.log(err)}
+        onError={(err) => console.log(err)}
       />
     );
   }

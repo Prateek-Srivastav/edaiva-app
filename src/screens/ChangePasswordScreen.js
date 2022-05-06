@@ -27,7 +27,9 @@ const validationSchema = Yup.object().shape({
 });
 
 function ChangePasswordScreen({ navigation }) {
-  const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isOldPasswordShown, setIsOldPasswordShown] = useState(false);
+  const [isNewPasswordShown, setIsNewPasswordShown] = useState(false);
+  const [isCnfPasswordShown, setIsCnfPasswordShown] = useState(false);
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -79,29 +81,29 @@ function ChangePasswordScreen({ navigation }) {
           <AppFormField
             placeholder="Old Password"
             name="oldPassword"
-            icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
+            icon={isOldPasswordShown ? "ios-eye-off" : "ios-eye"}
             keyboardType="default"
-            secureTextEntry={!isPasswordShown}
+            secureTextEntry={!isOldPasswordShown}
             autoCapitalize="none"
-            onIconPress={() => setIsPasswordShown(!isPasswordShown)}
+            onIconPress={() => setIsOldPasswordShown(!isOldPasswordShown)}
           />
           <AppFormField
             placeholder="New Password"
             name="newPassword"
-            icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
+            icon={isNewPasswordShown ? "ios-eye-off" : "ios-eye"}
             keyboardType="default"
-            secureTextEntry={!isPasswordShown}
+            secureTextEntry={!isNewPasswordShown}
             autoCapitalize="none"
-            onIconPress={() => setIsPasswordShown(!isPasswordShown)}
+            onIconPress={() => setIsNewPasswordShown(!isNewPasswordShown)}
           />
           <AppFormField
             placeholder="Confirm Password"
             name="confirmPassword"
-            icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
+            icon={isCnfPasswordShown ? "ios-eye-off" : "ios-eye"}
             keyboardType="default"
-            secureTextEntry={!isPasswordShown}
+            secureTextEntry={!isCnfPasswordShown}
             autoCapitalize="none"
-            onIconPress={() => setIsPasswordShown(!isPasswordShown)}
+            onIconPress={() => setIsCnfPasswordShown(!isCnfPasswordShown)}
           />
 
           <SubmitButton

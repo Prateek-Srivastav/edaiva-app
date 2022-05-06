@@ -126,7 +126,6 @@ function AddCertificationsScreen({ data, index }) {
               issuedDate ? formattedNumericDate(issuedDate).usFormat : null
             }
           />
-
           <DatePicker
             initialDate={endDate}
             style={{ width: "49%" }}

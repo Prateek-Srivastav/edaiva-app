@@ -76,6 +76,7 @@ function EditProfileScreen() {
   const {
     loading: dpLoading,
     error: dpError,
+    networkError: dpNetworkError,
     request: updateProfilePic,
   } = useApi(candidateApi.uploadProfilePicture);
 
@@ -114,7 +115,8 @@ function EditProfileScreen() {
 
       updateProfilePic(formData);
     }
-    if (!dpLoading && !dpError) setProfilePicture(result.uri);
+    if (!dpLoading && !dpError && !dpNetworkError)
+      setProfilePicture(result.uri);
   };
 
   if (galleryPermission === false)

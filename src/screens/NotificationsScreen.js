@@ -1,6 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, View, StyleSheet, Text } from "react-native";
+import {
+  FlatList,
+  Image,
+  View,
+  StyleSheet,
+  Text,
+  BackHandler,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import AppText from "../components/AppText";
@@ -203,6 +210,20 @@ function NotificationsScreen({ navigation }) {
       };
       showNotificDeleteInfo();
       markSeenNotifications("job");
+    }, [])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("Jobs");
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     }, [])
   );
 
