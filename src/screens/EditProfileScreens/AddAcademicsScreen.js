@@ -174,7 +174,7 @@ function AddAcademicsScreen({ data, index }) {
             initialDate={endDate}
             style={{ width: "49%" }}
             label="To"
-            minDate={null}
+            minDate={new Date(startDate)}
             onDateChange={(date, timestamp) => {
               setEndDate(timestamp);
             }}

@@ -5,7 +5,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import {
   AntDesign,

@@ -401,15 +401,12 @@ function FilterModal(props) {
                   onSelectItem={(item) => {
                     if (experience === item.name || item.name === "All")
                       return setExperience("All");
-                    else if (selectedJobType === "internship")
-                      return setExperience("All");
+
                     setExperience(item.name);
                   }}
                   name="experience"
                   title={experience ? experience : "Select"}
                   items={experienceData}
-                  disabled={selectedJobType === "internship"}
-                  internship={selectedJobType === "internship"}
                 />
               </View>
             )}

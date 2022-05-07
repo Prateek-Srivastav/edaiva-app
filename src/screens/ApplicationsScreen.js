@@ -48,7 +48,10 @@ function ApplicationsScreen({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        // console.log("abcdefgh")
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+          return true;
+        }
         navigation.navigate("Jobs");
         return true;
       };

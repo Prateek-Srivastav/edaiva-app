@@ -13,6 +13,7 @@ import Colors from "../../constants/Colors";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import useApi from "../../hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
+import showToast from "../../components/ShowToast";
 
 const validationSchema = Yup.object().shape({
   company: Yup.string().required().label("Company"),
@@ -49,9 +50,16 @@ function AddExperienceScreen({ data, index }) {
   const [startDate, setStartDate] = useState(
     start_date ? formattedDate(start_date) : null
   );
+  const [startDateTimeStamp, setStartDateTimeStamp] = useState(
+    start_date ? start_date : null
+  );
   const [endDate, setEndDate] = useState(
     end_date ? formattedDate(end_date) : null
   );
+  const [endDateTimeStamp, setEndDateTimeStamp] = useState(
+    end_date ? end_date : null
+  );
+  const [endDateError, setEndDateError] = useState(false);
 
   const {
     error,
@@ -150,7 +158,15 @@ function AddExperienceScreen({ data, index }) {
             style={{ width: "49%", marginRight: 7 }}
             label="From"
             minDate={null}
-            onDateChange={(date, timestamp) => {
+            onDateChange={(date, timestamp, utc) => {
+              if (endDateTimeStamp && endDateTimeStamp < utc) {
+                setEndDateError(true);
+                setEndDateTimeStamp(null);
+                setEndDate(null);
+                setStartDate(timestamp);
+              }
+              console.log(utc);
+              setStartDateTimeStamp(utc);
               setStartDate(timestamp);
             }}
             value={startDate ? formattedNumericDate(startDate).usFormat : null}
@@ -159,12 +175,23 @@ function AddExperienceScreen({ data, index }) {
             initialDate={endDate}
             style={{ width: "49%" }}
             label="To"
-            minDate={null}
-            onDateChange={(date, timestamp) => {
+            minDate={startDateTimeStamp}
+            onDateChange={(date, timestamp, utc) => {
+              if (utc < startDateTimeStamp) {
+                setEndDateError(true);
+                setEndDate(null);
+                setEndDateTimeStamp(utc);
+                return showToast({
+                  type: "appError",
+                  message: "Enter a valid date.",
+                });
+              }
+              setEndDateError(false);
               setEndDate(timestamp);
             }}
+            error={endDateError}
             disabled={present}
-            value={endDate ? formattedNumericDate(endDate).usFormat : null}
+            value={endDate}
           />
         </View>
         <ErrorMessage error="Start date is required" visible={startDateError} />

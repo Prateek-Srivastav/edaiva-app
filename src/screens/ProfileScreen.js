@@ -29,6 +29,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import CustomHeader from "../components/CustomHeader";
 import AppText from "../components/AppText";
 import { Share } from "../assets/svg/icons";
+import applicationApi from "../api/application";
 
 function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
@@ -74,12 +75,16 @@ function ProfileScreen({ navigation }) {
     request: uploadResume,
   } = useApi(candidateApi.uploadResume);
 
+  const { data: applicationData, request: loadApplications } = useApi(
+    applicationApi.getApplications
+  );
+
   useEffect(async () => {
     await loadProfile();
     loadCampusProfile();
+    loadApplications();
 
     const userDetail = await cache.get("user");
-    setApplications(await cache.get("applications"));
     setUser(userDetail);
   }, [isFocused]);
 
@@ -138,12 +143,6 @@ function ProfileScreen({ navigation }) {
       });
   };
 
-  const signOutHandler = async () => {
-    setTokens(null);
-    authStorage.removeToken();
-    await cache.clear();
-  };
-
   const { firstname, lastname, email } = user;
 
   if (networkError && !loading) return <NetworkError onPress={loadProfile} />;
@@ -180,7 +179,7 @@ function ProfileScreen({ navigation }) {
           </Card>
         )}
       </CustomHeader>
-      {loading || !data || !campusProfileData ? (
+      {loading || !data || !campusProfileData || !applicationData ? (
         <Loading />
       ) : (
         <>
@@ -230,9 +229,9 @@ function ProfileScreen({ navigation }) {
                     alignItems: "center",
                     width: "100%",
                   }}
-                  onPress={() => navigation.navigate("ApplicationNavigator")}
+                  onPress={() => navigation.navigate("Applications")}
                 >
-                  <LargeText>{applications ? applications : 0}</LargeText>
+                  <LargeText>{applicationData?.length}</LargeText>
                   <NormalText>Jobs Applied</NormalText>
                 </TouchableOpacity>
               </Card>

@@ -209,7 +209,7 @@ function CreateProfileScreen({ route }) {
               const dob = new Date(usFormat);
               const diff = Date.now() - dob.getTime();
               const age = new Date(diff);
-              const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 18;
+              const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 16;
 
               if (!isValid) {
                 setDob(null);
@@ -217,7 +217,7 @@ function CreateProfileScreen({ route }) {
 
                 return showToast({
                   type: "appError",
-                  message: "Your age must be greater than 18.",
+                  message: "Your age must be greater than 16.",
                 });
               } else {
                 setDob(usFormat);

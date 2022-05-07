@@ -42,6 +42,8 @@ function ApplicationStatusIndicator({ applicationStatus }) {
     text = "Shortlisted";
   }
 
+  if (!applicationStatus) return null;
+
   return (
     <View
       style={{

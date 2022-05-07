@@ -6,7 +6,7 @@ import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import * as Sentry from "sentry-expo";
+// import * as Sentry from "sentry-expo";
 
 import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -18,11 +18,11 @@ import toastConfig from "./src/utilities/toastConfig";
 
 enableScreens();
 
-Sentry.init({
-  dsn: "https://5e7f7ff3fa464559967c04663df5ed02@o1168372.ingest.sentry.io/6260247",
-  enableInExpoDevelopment: true,
-  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-});
+// Sentry.init({
+//   dsn: "https://5e7f7ff3fa464559967c04663df5ed02@o1168372.ingest.sentry.io/6260247",
+//   enableInExpoDevelopment: true,
+//   debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+// });
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -61,7 +61,17 @@ export default function App() {
   return (
     <AuthContext.Provider value={{ tokens, setTokens }}>
       <NavigationContainer ref={navigationRef}>
-        {tokens ? <AppNavigator /> : <AuthNavigator />}
+        {tokens ? (
+          <>
+            <AppNavigator />
+            <StatusBar style="dark" />
+          </>
+        ) : (
+          <>
+            <AuthNavigator />
+            <StatusBar style="dark" />
+          </>
+        )}
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
     </AuthContext.Provider>

@@ -159,7 +159,10 @@ function CustomDrawer(props) {
   };
 
   return (
-    <DrawerContentScrollView {...props} style={{ padding: 25 }}>
+    <DrawerContentScrollView
+      {...props}
+      style={{ paddingHorizontal: 25, paddingTop: 25, marginBottom: 15 }}
+    >
       <LargeText>
         {firstname} {lastname}
       </LargeText>

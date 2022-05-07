@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -17,12 +17,16 @@ function DatePicker({
   style,
   maxDate,
   dobLimit,
+  dateError,
 }) {
   const [show, setShow] = useState(false);
   const [initDate, setInitDate] = useState(
     initialDate ? new Date(initialDate) : new Date()
   );
   const [selectedDate, setSelectedDate] = useState("Date");
+  const [error, setError] = useState(dateError);
+
+  useEffect(() => setError(dateError), [dateError]);
 
   const onChange = (event, date) => {
     let day = date?.getDate();
@@ -36,12 +40,13 @@ function DatePicker({
 
     const diff = Date.now() - date?.getTime();
     const age = new Date(diff);
-    const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 18;
+    const isValid = Math.abs(age.getUTCFullYear() - 1970) >= 16;
 
-    if (!isValid && dobLimit) {
+    if ((!isValid && dobLimit) || error) {
       setShow(false);
+      console.log("abcdddddd");
       onDateChange(indFormat, usFormat, date);
-
+      setError(false);
       return setSelectedDate("Date");
     }
 

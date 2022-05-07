@@ -29,6 +29,7 @@ import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
 import cache from "../../utilities/cache";
 import campusApplicationApi from "../../api/campusApis/application";
+import showToast from "../ShowToast";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -60,8 +61,12 @@ function ApplicationModal(props) {
 
   const [joiningDate, setJoiningDate] = useState();
   const [availabilityDate, setAvailabilityDate] = useState();
+  const [availabilityDateTimeStamp, setAvailabilityDateTimeStamp] = useState();
   const [fromTime, setFromTime] = useState();
+  const [fromError, setFromError] = useState();
+  const [originalFromTime, setOriginalFromTime] = useState();
   const [toTime, setToTime] = useState();
+  const [toError, setToError] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
@@ -106,7 +111,7 @@ function ApplicationModal(props) {
     top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
     // setIsPressed(false);
   }
-  
+
   const handleApply = async () => {
     const user = await cache.get("user");
 
@@ -226,14 +231,15 @@ function ApplicationModal(props) {
                     setJoiningDate(usFormat);
                   }}
                 />
-
                 <AppText style={styles.text}>Availability</AppText>
                 <AppText style={{ color: "#A3A3A3", fontSize: 12.5 }}>
                   Specify date and time when you are available to take the call
                 </AppText>
                 <DatePicker
                   titleStyle={availabilityDate ? styles.dateTimeText : ""}
-                  onDateChange={(date, timestamp) => {
+                  onDateChange={(date, timestamp, utc) => {
+                    // console.log(dt);
+                    setAvailabilityDateTimeStamp(utc);
                     setAvailabilityDate(timestamp);
                   }}
                 />
@@ -241,20 +247,30 @@ function ApplicationModal(props) {
                   <View style={{ width: "48%", marginRight: 7, marginLeft: 3 }}>
                     <AppText style={styles.text}>From</AppText>
                     <TimePicker
+                      minTime={new Date()}
                       onTimeChange={(time) => {
+                        console.log(availabilityDate);
+                        if (time < availabilityDateTimeStamp) {
+                          setFromError(true);
+                          return showToast({
+                            type: "appError",
+                            message: "Enter a valid time!",
+                          });
+                        }
                         let hrs = time.getHours();
                         let mins = time.getMinutes();
-
                         if (hrs <= 9) hrs = "0" + hrs;
                         if (mins < 10) mins = "0" + mins;
-
+                        setOriginalFromTime(time);
                         setFromTime(hrs + ":" + mins);
                       }}
+                      error={fromError}
                     />
                   </View>
                   <View style={{ width: "48%" }}>
                     <AppText style={styles.text}>To</AppText>
                     <TimePicker
+                      minTime={fromTime ? fromTime : new Date()}
                       onTimeChange={(time) => {
                         let hrs = time.getHours();
                         let mins = time.getMinutes();
@@ -262,8 +278,18 @@ function ApplicationModal(props) {
                         if (hrs <= 9) hrs = "0" + hrs;
                         if (mins < 10) mins = "0" + mins;
 
+                        if (time < originalFromTime) {
+                          setToError(true);
+                          return showToast({
+                            type: "appError",
+                            message: "Enter a valid time!",
+                          });
+                        }
+                        setToError(false);
+
                         setToTime(hrs + ":" + mins);
                       }}
+                      error={toError}
                     />
                   </View>
                 </View>

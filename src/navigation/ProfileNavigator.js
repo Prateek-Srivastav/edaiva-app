@@ -15,6 +15,9 @@ import ViewProfileScreen from "../screens/ViewProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import CampusEditProfileScreen from "../screens/campusScreens/CampusEditProfileScreen";
 import InterviewsListingScreen from "../screens/InterviewsListingScreen";
+import ApplicationStatusScreen from "../screens/ApplicationStatusScreen";
+import ApplicationStatusIndicator from "../components/application/ApplicationStatusIndicator";
+import ApplicationsScreen from "../screens/ApplicationsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +30,21 @@ const ProfileNavigator = () => (
     }}
   >
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen
+      name="Applications"
+      component={ApplicationsScreen}
+      options={{
+        title: "Applications",
+        headerShown: true,
+        headerTitleStyle: {
+          fontFamily: "OpenSans-SemiBold",
+          color: Colors.primary,
+          fontSize: 20,
+        },
+
+        headerTintColor: Colors.primary,
+      }}
+    />
     <Stack.Screen
       name="ViewProfile"
       component={ViewProfileScreen}
@@ -99,6 +117,27 @@ const ProfileNavigator = () => (
     <Stack.Screen
       name="InterviewsListing"
       component={InterviewsListingScreen}
+    />
+    <Stack.Screen
+      name="ApplicationStatus"
+      component={ApplicationStatusScreen}
+      options={({ route }) => ({
+        title: "",
+        headerShown: true,
+        headerTitleStyle: {
+          fontFamily: "OpenSans-SemiBold",
+          color: Colors.primary,
+          fontSize: 20,
+        },
+        headerTintColor: Colors.primary,
+        headerRight: () => {
+          return (
+            <ApplicationStatusIndicator
+              applicationStatus={route.params.applicationStatus}
+            />
+          );
+        },
+      })}
     />
   </Stack.Navigator>
 );

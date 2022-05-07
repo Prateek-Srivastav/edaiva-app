@@ -79,7 +79,7 @@ function JobDetailScreen({ route, navigation }) {
     data: campusProfileData,
     // error,
     // networkError,
-    cgpaLoading,
+    loading: cgpaLoading,
     request: loadCampusProfile,
   } = useApi(campusCandidateApi.getProfile);
 

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
+import applicationApi from "../api/application";
 import interviewApi from "../api/interview";
 import AppText from "../components/AppText";
 import CustomHeader from "../components/CustomHeader";
@@ -32,7 +33,29 @@ const interviews = [
   },
 ];
 
-const NotificationItem = ({ job, onPress, companyName, round }) => {
+const NotificationItem = ({
+  job,
+  onPress,
+  companyName,
+  round,
+  applicationId,
+}) => {
+  const {
+    data: applicationData,
+    loading,
+    error: applicationError,
+    request: loadApplicationDetails,
+  } = useApi(applicationApi.getApplications);
+
+  useEffect(() => {
+    loadApplicationDetails(applicationId);
+    // loadInterviews(applicationId);
+  }, []);
+
+  // console.log(applicationData[0].job.job_title);
+
+  if (loading || !applicationData) return <Loading />;
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -40,10 +63,14 @@ const NotificationItem = ({ job, onPress, companyName, round }) => {
       style={styles.notificationContainer}
     >
       <View style={styles.imgContainer}>
-        <Text style={{ fontSize: 17 }}>{companyName[0]}</Text>
+        <Text style={{ fontSize: 17 }}>
+          {applicationData[0].job.company[0].name[0]}
+        </Text>
       </View>
-      <View>
-        <Text style={styles.normalText}>{job}</Text>
+      <View style={{ width: "100%" }}>
+        <Text style={styles.normalText} numberOfLines={1} ellipsizeMode="tail">
+          {job}
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -52,10 +79,14 @@ const NotificationItem = ({ job, onPress, companyName, round }) => {
           }}
         >
           <>
-            {/* <View style={styles.separator} /> */}
             <AppText numberOfLines={2}>Round {round}</AppText>
-            <Text style={{ ...styles.bodyText }} numberOfLines={1}>
-              {companyName}
+            <View style={styles.separator} />
+            <Text
+              style={{ ...styles.bodyText }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {applicationData[0].job.company[0].name}
             </Text>
           </>
         </View>
@@ -71,7 +102,7 @@ function InterviewsListingScreen({ navigation }) {
     loading,
     request: loadInterviews,
   } = useApi(interviewApi.getInterviews);
-  // console.log(res);
+  console.log(data);
 
   useEffect(() => {
     loadInterviews();
@@ -96,27 +127,42 @@ function InterviewsListingScreen({ navigation }) {
           ) : (
             <FlatList
               contentContainerStyle={{ width: "100%" }}
-              data={interviews}
+              data={data}
               keyExtractor={(index) => index + Math.random()}
               renderItem={(itemData) => {
-                // const { city, state, country } =
-                //   itemData.item.job.job_location[0];
+                let location;
+                if (itemData.item.job[0].job_location?.length !== 0)
+                  location = `${
+                    itemData.item?.job[0].job_location[0]?.city
+                      ? itemData.item?.job[0].job_location[0]?.city + ","
+                      : null
+                  } ${
+                    itemData.item?.job[0].job_location[0]?.state
+                      ? itemData.item?.job[0].job_location[0]?.state + ","
+                      : null
+                  } ${
+                    itemData.item?.job[0].job_location[0]?.country
+                      ? itemData.item?.job[0].job_location[0]?.country
+                      : null
+                  }`;
 
-                // const location = `${city}, ${state}, ${country}`;
-                // const notificId = itemData.item.notification_id;
+                // if (itemData.item.interview_completed) return;
+
                 return (
                   <>
                     <NotificationItem
                       onPress={() =>
                         navigation.navigate("ApplicationStatus", {
-                          // location,
-                          // applicationStatus: itemData.item.status,
-                          // applicationId: itemData.item._id.$oid,
+                          location,
+                          applicationStatus:
+                            itemData.item.application[0].status,
+                          applicationId: itemData.item.application[0]._id.$oid,
                         })
                       }
-                      job={itemData.item.job}
-                      companyName={itemData.item.companyName}
-                      round={itemData.item.round}
+                      applicationId={itemData.item.application[0]._id.$oid}
+                      job={itemData.item.job[0].job_title}
+                      companyName={itemData.item.job[0].company.name}
+                      round={itemData.item.interview_round}
                     />
                   </>
                 );
@@ -151,11 +197,13 @@ const styles = StyleSheet.create({
     fontFamily: "OpenSans-SemiBold",
     fontSize: 17,
     color: Colors.primary,
+    width: "70%",
   },
   bodyText: {
     fontFamily: "OpenSans-Medium",
     fontSize: 15,
     color: Colors.grey,
+    width: "50%",
   },
   notificationContainer: {
     paddingVertical: 12,
@@ -165,12 +213,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 4,
     // flex: 1,
+    width: "100%",
   },
   separator: {
     height: 20,
     width: 1.2,
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 8,
     backgroundColor: "#D4D4D4",
   },
 });

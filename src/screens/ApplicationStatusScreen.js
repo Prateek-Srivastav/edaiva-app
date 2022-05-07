@@ -26,6 +26,7 @@ import formattedTime from "../utilities/time";
 import applicationApi from "../api/application";
 import CustomHeader from "../components/CustomHeader";
 import { NormalText } from "../components/textStyles";
+import Error from "../components/Error";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -35,7 +36,7 @@ function ApplicationStatusScreen({ route }) {
 
   const [position] = useState(new Animated.ValueXY());
 
-  const { jobId, applicationId } = route.params;
+  const { applicationId } = route.params;
 
   const applicationStatus = route.params.applicationStatus;
 
@@ -53,9 +54,11 @@ function ApplicationStatusScreen({ route }) {
     request: loadInterviews,
   } = useApi(interviewApi.getApplicationInterviews);
 
-  const { data: applicationData, request: loadApplicationDetails } = useApi(
-    applicationApi.getApplications
-  );
+  const {
+    data: applicationData,
+    error: applicationError,
+    request: loadApplicationDetails,
+  } = useApi(applicationApi.getApplications);
 
   useEffect(() => {
     loadApplicationDetails(applicationId);
@@ -63,6 +66,8 @@ function ApplicationStatusScreen({ route }) {
   }, []);
 
   if (loading) return <Loading />;
+
+  if (applicationError) return <Error />;
 
   const getData = (val) => {
     setIsPressed(false);
@@ -84,7 +89,7 @@ function ApplicationStatusScreen({ route }) {
     if (
       applicationStatus === "hired" &&
       applicationData &&
-      applicationData[0]?.offerletter.length === 0
+      applicationData[0]?.offerletter?.length === 0
     ) {
       color = "#2D811F";
       message =
