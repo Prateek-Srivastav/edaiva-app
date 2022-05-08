@@ -249,8 +249,15 @@ function ApplicationModal(props) {
                     <TimePicker
                       minTime={new Date()}
                       onTimeChange={(time) => {
-                        console.log(availabilityDate);
-                        if (time < availabilityDateTimeStamp) {
+                        let d = availabilityDateTimeStamp?.toLocaleDateString();
+                        d = new Date(d);
+                        d = d.getTime();
+
+                        let today = new Date().toLocaleDateString();
+                        today = new Date(today);
+                        today = today.getTime();
+
+                        if (d === today && time < availabilityDateTimeStamp) {
                           setFromError(true);
                           return showToast({
                             type: "appError",
@@ -272,12 +279,6 @@ function ApplicationModal(props) {
                     <TimePicker
                       minTime={fromTime ? fromTime : new Date()}
                       onTimeChange={(time) => {
-                        let hrs = time.getHours();
-                        let mins = time.getMinutes();
-
-                        if (hrs <= 9) hrs = "0" + hrs;
-                        if (mins < 10) mins = "0" + mins;
-
                         if (time < originalFromTime) {
                           setToError(true);
                           return showToast({
@@ -285,6 +286,12 @@ function ApplicationModal(props) {
                             message: "Enter a valid time!",
                           });
                         }
+                        let hrs = time.getHours();
+                        let mins = time.getMinutes();
+
+                        if (hrs <= 9) hrs = "0" + hrs;
+                        if (mins < 10) mins = "0" + mins;
+
                         setToError(false);
 
                         setToTime(hrs + ":" + mins);
@@ -300,6 +307,7 @@ function ApplicationModal(props) {
               onPress={() => {
                 handleApply();
               }}
+              disabled={fromError || toError}
             />
           </ScrollView>
         </View>

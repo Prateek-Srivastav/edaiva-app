@@ -35,6 +35,7 @@ import PatentDetails from "../../components/profileDetails/PatentDetails";
 import SocialLinkDetails from "../../components/profileDetails/SocialLinkDetails";
 import Toast from "react-native-toast-message";
 import CustomHeader from "../../components/CustomHeader";
+import showToast from "../../components/ShowToast";
 
 const { width, height } = Dimensions.get("window");
 
@@ -74,6 +75,7 @@ function EditProfileScreen() {
   } = useApi(candidateApi.updateProfile);
 
   const {
+    data: dpData,
     loading: dpLoading,
     error: dpError,
     networkError: dpNetworkError,
@@ -100,7 +102,7 @@ function EditProfileScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0,
+      quality: 0.5,
     });
 
     if (!result.cancelled) {
@@ -115,8 +117,10 @@ function EditProfileScreen() {
 
       updateProfilePic(formData);
     }
-    if (!dpLoading && !dpError && !dpNetworkError)
+    if (!dpLoading && !dpError && !dpNetworkError && dpData)
       setProfilePicture(result.uri);
+    else if (!dpLoading && dpError)
+      showToast({ type: "appError", message: "Something went wrong!" });
   };
 
   if (galleryPermission === false)

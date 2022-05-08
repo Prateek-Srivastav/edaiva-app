@@ -29,7 +29,7 @@ function TimePicker({ onTimeChange, value, minTime, error: timeError }) {
       setShow(false);
       onTimeChange(time);
 
-      setSelectedTime("--:-- --");
+      // setSelectedTime("--:-- --");
       return setError(false);
     }
 

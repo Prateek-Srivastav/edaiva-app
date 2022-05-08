@@ -11,6 +11,7 @@ function CustomButton(props) {
       style={{
         ...styles.button,
         ...props.style,
+        backgroundColor: props.disabled ? "#ccc" : Colors.primary,
       }}
     >
       {props.icon}
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     borderRadius: 4,
     alignSelf: "center",
-    backgroundColor: Colors.primary,
+
     flexDirection: "row",
   },
   titleStyle: {

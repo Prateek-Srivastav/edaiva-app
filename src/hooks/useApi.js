@@ -14,7 +14,7 @@ function useApi(apiFunc) {
     const response = await apiFunc(...args);
 
     if (!response.ok) {
-      // console.log(response, "res !ok");
+      console.log(response, "res !ok");
       if (response.problem === "NETWORK_ERROR") {
         setLoading(false);
         setNetworkError(true);
