@@ -106,8 +106,8 @@ function JobDetailScreen({ route, navigation }) {
       } else {
         return Toast.show({
           type: "appError",
-          text1: response.data.details
-            ? response.data.details
+          text1: response.data.error
+            ? response.data.error
             : "Something went wrong",
         });
       }
@@ -710,11 +710,15 @@ function JobDetailScreen({ route, navigation }) {
             <CustomButton
               disabled={isApplied}
               onPress={() => {
-                if (profileData?.error === "Candidate Profile not found!!")
-                  return showToast({
+                if (profileData?.error === "Candidate Profile not found!!") {
+                  showToast({
                     type: "appError",
                     message: "Please complete your profile to apply for a job.",
                   });
+                  return navigation.navigate("CreateProfile", {
+                    screenName: "JobDetails",
+                  });
+                }
                 setCloseModal(false);
                 isVisible = true;
                 return setIsPressed(true);

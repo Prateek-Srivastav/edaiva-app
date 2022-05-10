@@ -233,7 +233,8 @@ function ApplicationModal(props) {
                 />
                 <AppText style={styles.text}>Availability</AppText>
                 <AppText style={{ color: "#A3A3A3", fontSize: 12.5 }}>
-                  Specify date and time when you are available to take the call
+                  Specify date and time when you are available to take the
+                  interview call
                 </AppText>
                 <DatePicker
                   titleStyle={availabilityDate ? styles.dateTimeText : ""}

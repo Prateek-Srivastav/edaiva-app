@@ -74,7 +74,7 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
         }}
       >
         <BuildingIcon />
-        <SmallText>{experience.company}</SmallText>
+        <SmallText style={{ marginLeft: 10 }}>{experience.company}</SmallText>
       </View>
       <View
         style={{
@@ -84,7 +84,12 @@ function ExperienceDetails({ data, experience, index, viewing, isCampus }) {
           marginVertical: 7,
         }}
       >
-        <MaterialIcons name="access-time" size={17} color="#817E7E" />
+        <MaterialIcons
+          style={{ left: -2 }}
+          name="access-time"
+          size={17}
+          color="#817E7E"
+        />
         <SmallText>
           {formattedDate(experience.start_date)} -{" "}
           {experience.present ? "Present" : formattedDate(experience.end_date)}
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
     marginStart: 7,
   },
   normalText: {
-    fontFamily: "OpenSans-Medium",
+    fontFamily: "OpenSans-SemiBold",
     fontSize: 16,
     color: Colors.grey,
   },

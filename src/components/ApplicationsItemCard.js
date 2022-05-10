@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import AppText from "../components/AppText";
+import Loading from "../components/Loading";
 import Colors from "../constants/Colors";
 import { BuildingIcon, Location } from "../assets/svg/icons";
 import CustomAlert from "./CustomAlert";
@@ -82,25 +83,30 @@ const ApplicationItemCard = (props) => {
 
   const revokeHandler = async () => {
     setVisible(false);
-    await revokeApplication(props.applicationId);
-    if (error)
-      return Toast.show({
-        type: "appError",
-        text1: "Something went wrong",
-      });
-    else if (networkError)
-      return Toast.show({
-        type: "appError",
-        text1: "Connection Lost!",
-      });
-    else if (loading)
-      return Toast.show({
-        type: "appWarning",
-        text1: "Revoking...",
-      });
+
+    const response = await applicationApi.deleteApplication(
+      props.applicationId
+    );
+
+    if (!response.ok) {
+      if (response.problem === "NETWORK_ERROR") {
+        return Toast.show({
+          type: "appError",
+          text1: "No internet connection!",
+        });
+      } else {
+        return Toast.show({
+          type: "appError",
+          text1: response.data.error
+            ? response.data.error
+            : "Something went wrong",
+        });
+      }
+    }
+
     Toast.show({
-      type: "appInfo",
-      text1: "Application revoked!",
+      type: "appSuccess",
+      text1: "Revoked successfully!",
     });
     sendRevoked(true);
   };

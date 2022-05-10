@@ -107,8 +107,8 @@ function AddProjectsScreen({ data, index }) {
         <AppFormCardInput
           name="title"
           defaultValue={title ? title : ""}
-          label="Title"
-          placeholder="Title"
+          label="Project Name"
+          placeholder="Project Name"
         />
         <AppFormCardInput
           name="role"

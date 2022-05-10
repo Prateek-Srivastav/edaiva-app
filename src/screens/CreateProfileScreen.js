@@ -151,6 +151,7 @@ function CreateProfileScreen({ route }) {
     });
 
     await createProfile(val);
+    if (route.params.screenName === "JobDetails") return navigation.goBack();
     return navigation.navigate(route.params.screenName);
   };
 

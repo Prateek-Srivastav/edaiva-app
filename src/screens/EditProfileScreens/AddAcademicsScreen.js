@@ -25,8 +25,25 @@ const validationSchema = Yup.object().shape({
 });
 
 const degrees = [
-  { _id: 1, name: "Graduate" },
-  { _id: 2, name: "Post Graduate" },
+  { _id: 1, name: "Bachelor of Arts" },
+  { _id: 2, name: "Bachelor of Commerce" },
+  { _id: 3, name: "Bachelor of Engg/Tech" },
+  { _id: 4, name: "Bachelor of Law" },
+  { _id: 5, name: "Bachelor of Medicine(MBBS)" },
+  { _id: 6, name: "Bachelor of Science" },
+  { _id: 7, name: "Bachelors (Other)" },
+  { _id: 8, name: "Diploma" },
+  { _id: 9, name: "Doctorate (PhD)" },
+  { _id: 10, name: "Master by Research (MPhil)" },
+  { _id: 11, name: "Master of Architecture (M.Arch)" },
+  { _id: 12, name: "Master of Arts" },
+  { _id: 13, name: "Master of Business Administration (MBA)" },
+  { _id: 14, name: "Master of Engineering (MEng)" },
+  { _id: 15, name: "Master of Laws (LLM)" },
+  { _id: 16, name: "Master of Science (MS / MSc)" },
+  { _id: 17, name: "Masters Degree (Other)" },
+  { _id: 18, name: "Others" },
+  { _id: 19, name: "Undergraduate" },
 ];
 
 function AddAcademicsScreen({ data, index }) {
@@ -163,6 +180,7 @@ function AddAcademicsScreen({ data, index }) {
             style={{ width: "49%", marginRight: 7 }}
             label="From"
             minDate={null}
+            maxDate={new Date()}
             onDateChange={(date, timestamp) => {
               setStartDate(timestamp);
               setStartDateError(false);
@@ -175,6 +193,7 @@ function AddAcademicsScreen({ data, index }) {
             style={{ width: "49%" }}
             label="To"
             minDate={new Date(startDate)}
+            maxDate={new Date()}
             onDateChange={(date, timestamp) => {
               setEndDate(timestamp);
             }}

@@ -53,9 +53,16 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
           </View>
         )}
       </View>
-      <View style={{ flexDirection: "row" }}>
-        <SmallText>{project.duration}</SmallText>
-        <SmallText>{project.team_size}</SmallText>
+      <View>
+        <SmallText>
+          <MediumText>Duration:</MediumText> {project.duration}
+        </SmallText>
+        <SmallText>
+          <MediumText>Team Size:</MediumText> {project.team_size}
+        </SmallText>
+
+        {/* <SmallText>{project.duration}</SmallText>
+        <SmallText>{project.team_size}</SmallText> */}
       </View>
       <View
         style={{
@@ -64,10 +71,16 @@ function ProjectDetails({ data, project, index, viewing, isCampus }) {
           alignItems: "center",
         }}
       >
-        <SmallText>Worked as {project.role}</SmallText>
+        <SmallText>
+          <MediumText>Role:</MediumText> {project.role}
+        </SmallText>
+        {/* <SmallText>Worked as {project.role}</SmallText> */}
       </View>
 
-      <SmallText style={{}}>{project.description}</SmallText>
+      <SmallText>
+        <MediumText>Description:</MediumText> {project.description}
+      </SmallText>
+      {/* <SmallText style={{}}>{project.description}</SmallText> */}
       {project.link !== "" && (
         <TouchableOpacity
           onPress={() => WebBrowser.openBrowserAsync(project.link)}

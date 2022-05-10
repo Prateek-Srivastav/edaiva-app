@@ -100,7 +100,7 @@ function PersonalDetails({ data, onPress, viewing, isCampus }) {
               marginBottom: 6,
             }}
           >
-            <AppText>DATE OF BIRTH:{"  "}</AppText>
+            <AppText>DOB:{"  "}</AppText>
             <AppText style={{ color: Colors.black }}>{usFormatDob} </AppText>
           </View>
         ) : null}

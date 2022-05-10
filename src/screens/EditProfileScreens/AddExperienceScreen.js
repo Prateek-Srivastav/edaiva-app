@@ -158,6 +158,7 @@ function AddExperienceScreen({ data, index }) {
             style={{ width: "49%", marginRight: 7 }}
             label="From"
             minDate={null}
+            maxDate={new Date()}
             onDateChange={(date, timestamp, utc) => {
               if (endDateTimeStamp && endDateTimeStamp < utc) {
                 setEndDateError(true);
@@ -176,6 +177,7 @@ function AddExperienceScreen({ data, index }) {
             style={{ width: "49%" }}
             label="To"
             minDate={startDateTimeStamp}
+            maxDate={new Date()}
             onDateChange={(date, timestamp, utc) => {
               if (utc < startDateTimeStamp) {
                 setEndDateError(true);

@@ -67,8 +67,9 @@ function AcademicDetails({ data, academic, index, viewing, isCampus }) {
           }}
         >
           <SmallText>
-            With specialization in{" "}
-            <MediumText>{academic.specialization}</MediumText>
+            {/* With specialization in{" "} */}
+            {/* <MediumText>{academic.specialization}</MediumText> */}
+            <MediumText>Specialization:</MediumText> {academic.specialization}
           </SmallText>
         </View>
       )}
@@ -79,13 +80,13 @@ function AcademicDetails({ data, academic, index, viewing, isCampus }) {
         }}
       >
         <SmallText>
-          {academic.institute} From {formattedDate(academic.start_date)} to{" "}
+          {academic.institute}
+          {"\n"}From {formattedDate(academic.start_date)} to{" "}
           {academic.pursuing ? "Present" : formattedDate(academic.end_date)}
         </SmallText>
       </View>
 
-      <SmallText style={{ marginStart: 0 }}>
-        {"  "}
+      <SmallText>
         <MediumText>Grade:</MediumText> {academic.grade}
       </SmallText>
     </View>

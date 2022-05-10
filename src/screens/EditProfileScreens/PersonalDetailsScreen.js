@@ -202,7 +202,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
         <DatePicker
           label="DATE OF BIRTH"
           minDate={null}
-          maxDate={Date.now()}
+          maxDate={new Date()}
           initialDate={dob}
           dobLimit
           onDateChange={(indFormat, usFormat, date) => {

@@ -15,6 +15,55 @@ import {
 } from "../../components/forms";
 import useApi from "../../hooks/useApi";
 
+const SkillsAdd = ({ onValueChange, value, level }) => {
+  return (
+    <>
+      <CardInput
+        name="skill_name"
+        label="Skill"
+        placeholder="xyz"
+        defaultValue={skill_name ? skill_name : ""}
+      />
+      <AppText style={{ marginTop: 15 }}>
+        How would you rate yourself in “That skill”.
+      </AppText>
+      <View style={{ paddingBottom: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            marginRight: 10,
+          }}
+        >
+          <AppText
+            style={{
+              textAlign: "right",
+              fontFamily: "OpenSans-Bold",
+              color: Colors.primary,
+              fontSize: 16,
+              marginBottom: 4,
+            }}
+          >
+            {level}
+          </AppText>
+          <AppText style={{ fontSize: 16 }}> /10</AppText>
+        </View>
+        <Slider
+          style={{ width: "100%", marginTop: 10 }}
+          minimumTrackTintColor={Colors.primary}
+          maximumTrackTintColor={Colors.primary}
+          thumbTintColor={Colors.primary}
+          minimumValue={0}
+          maximumValue={10}
+          value={value}
+          onValueChange={onValueChange}
+        />
+      </View>
+    </>
+  );
+};
+
 function AddSkillsScreen({ data, index }) {
   const navigation = useNavigation();
   if (index >= 0) {
@@ -61,49 +110,12 @@ function AddSkillsScreen({ data, index }) {
         initialValues={{ skill_name: skill_name ? skill_name : "" }}
         onSubmit={index >= 0 ? handleEditSubmit : handleAddSubmit}
       >
-        <AppFormCardInput
-          name="skill_name"
-          label="Skill"
-          placeholder="xyz"
-          defaultValue={skill_name ? skill_name : ""}
+        <SkillsAdd
+          level={level}
+          onValueChange={(value) => setLevel(parseInt(value))}
+          value={parseInt(level)}
         />
-        <AppText style={{ marginTop: 15 }}>
-          How would you rate yourself in “That skill”.
-        </AppText>
-        <View style={{ paddingBottom: 10 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              marginRight: 10,
-            }}
-          >
-            <AppText
-              style={{
-                textAlign: "right",
-                fontFamily: "OpenSans-Bold",
-                color: Colors.primary,
-                fontSize: 16,
-                marginBottom: 4,
-              }}
-            >
-              {level}
-            </AppText>
-            <AppText style={{ fontSize: 16 }}> /10</AppText>
-          </View>
-          <Slider
-            style={{ width: "100%", marginTop: 10 }}
-            minimumTrackTintColor={Colors.primary}
-            maximumTrackTintColor={Colors.primary}
-            thumbTintColor={Colors.primary}
-            minimumValue={0}
-            maximumValue={10}
-            value={parseInt(level)}
-            onValueChange={(value) => setLevel(parseInt(value))}
-          />
-        </View>
-        <SubmitButton title={index >= 0 ? "Save" : "Add"} />
+        <CustomButton title={index >= 0 ? "Save" : "Add"} />
       </AppForm>
     </View>
   );

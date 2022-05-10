@@ -78,6 +78,7 @@ function AddAchievementsScreen({ data, index }) {
           label="Date of achievement"
           initialDate={prevDate}
           minDate={null}
+          maxDate={new Date()}
           onDateChange={(date, timestamp) => {
             setDate(timestamp);
           }}
