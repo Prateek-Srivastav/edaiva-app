@@ -71,6 +71,8 @@ const NavigatorButton = ({ title, icon, ...otherProps }) => (
 function CustomDrawer(props) {
   const { setTokens } = useContext(AuthContext);
   const [user, setUser] = useState({});
+  const [isProfileComplete, setIsProfileComplete] = useState();
+  const [isCampusStudent, setIsCampusStudent] = useState();
   const [visible, setVisible] = useState(false);
 
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
@@ -87,6 +89,12 @@ function CustomDrawer(props) {
 
   const getUser = async () => {
     const data = await cache.get("user");
+    const isProfileCompleteBool = await cache.get("isProfileComplete");
+    const isCampusStudentBool = await cache.get("isCampusStudent");
+
+    setIsCampusStudent(isCampusStudentBool);
+    setIsProfileComplete(isProfileCompleteBool);
+
     setUser(data);
   };
 
@@ -174,7 +182,7 @@ function CustomDrawer(props) {
             title="Profile"
             icon={<Profile />}
             onPress={() =>
-              data?.error === "Candidate Profile not found!!"
+              !isProfileComplete
                 ? props.navigation.navigate("CreateProfile", {
                     screenName: "ProfileStack",
                   })
@@ -186,7 +194,7 @@ function CustomDrawer(props) {
             icon={<Preference />}
             error
             onPress={() =>
-              data?.error === "Candidate Profile not found!!"
+              !isProfileComplete
                 ? props.navigation.navigate("CreateProfile", {
                     screenName: "Preference",
                   })
@@ -196,27 +204,13 @@ function CustomDrawer(props) {
         </View>
         <View>
           <NavigatorButton
-            title={
-              campusProfileData?.detail !==
-              "Your are not a part of any institution !"
-                ? "Jobs"
-                : "Campus"
-            }
-            icon={
-              campusProfileData?.detail !==
-              "Your are not a part of any institution !" ? (
-                <JobsIcon />
-              ) : (
-                <Campus />
-              )
-            }
+            title={!isCampusStudent ? "Jobs" : "Campus"}
+            icon={!isCampusStudent ? <JobsIcon /> : <Campus />}
             onPress={() =>
               props.navigation.navigate(
-                campusProfileData?.detail !==
-                  "Your are not a part of any institution !"
+                !isCampusStudent
                   ? "Home"
-                  : campusProfileData?.detail ===
-                    "Your are not a part of any institution !"
+                  : !isCampusStudent
                   ? "CampusSelection"
                   : "CampusStack"
               )

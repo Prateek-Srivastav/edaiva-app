@@ -11,6 +11,7 @@ import { Lock } from "../../assets/svg/icons";
 import * as Yup from "yup";
 import useApi from "../../hooks/useApi";
 import authApi from "../../api/auth";
+import showToast from "../../components/ShowToast";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -24,8 +25,8 @@ function MainScreen({ navigation }) {
 
   const {
     data,
-    loading,
     error,
+    loading,
     networkError,
     request: sendOtp,
   } = useApi(authApi.forgotPassword);
@@ -33,6 +34,10 @@ function MainScreen({ navigation }) {
   const submitHandler = async ({ email }) => {
     setEmail(email);
     await sendOtp(email);
+    console.log(error);
+
+    if (error) return showToast({ type: "appError", message: data.detail });
+
     setVisible(true);
     setButtonTitle("Resend");
     setTimeout(() => {

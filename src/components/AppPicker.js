@@ -65,7 +65,7 @@ function AppPicker(props) {
         </AppText>
       )}
       <TouchableOpacity
-        // disabled={disabled}
+        disabled={disabled}
         onPress={() => {
           if (disabled && internship)
             return showToast({

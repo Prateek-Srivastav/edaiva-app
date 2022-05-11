@@ -19,7 +19,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
-
+import Slider from "@react-native-community/slider";
 import { Feather, AntDesign } from "@expo/vector-icons";
 
 import AppText from "../AppText";
@@ -31,6 +31,7 @@ import Card from "../Card";
 import CardInput from "../CardInput";
 import locationApi from "../../api/location";
 import ErrorMessage from "../forms/ErrorMessage";
+import Toggle from "../Toggle";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -54,10 +55,11 @@ const experienceData = [
 function FilterModal(props) {
   const dimensions = useWindowDimensions();
 
+  const [isAllIndiaOn, setIsAllIndiaOn] = useState(false);
+  const [isRemoteOn, setIsRemoteOn] = useState(false);
   const [state, setState] = useState();
   const [country, setCountry] = useState();
   const [city, setCity] = useState();
-  const [isCityError, setIsCityError] = useState();
   const [experience, setExperience] = useState();
   const [keyword, setKeyword] = useState();
   const [isLocationShown, setIsLocationShown] = useState(false);
@@ -122,13 +124,12 @@ function FilterModal(props) {
 
   useEffect(async () => {
     loadCountries();
-    if (country) loadStates(country);
+    loadStates("India");
   }, []);
 
   let filters = {
-    country,
+    country: isAllIndiaOn ? "India" : null,
     state,
-    city,
     job_type:
       selectedJobType === "internship"
         ? props.jobTypes.filter((type) => type.name === "Internship")[0]._id
@@ -138,8 +139,9 @@ function FilterModal(props) {
         ? props.jobTypes.filter((type) => type.name === "Part-time")[0]._id
         : null,
     experience: experience === "All" ? null : experience,
-    skills: skillsItemArray,
     keyword,
+    remote: isRemoteOn ? isRemoteOn : null,
+    skills: skillsItemArray,
   };
 
   const handleApply = async () => {
@@ -151,7 +153,9 @@ function FilterModal(props) {
       !selectedJobType &&
       skillsItemArray.length === 0 &&
       (!experience || experience === "All") &&
-      (!keyword || keyword === "")
+      (!keyword || keyword === "") &&
+      !isRemoteOn &&
+      !isAllIndiaOn
     ) {
       console.log("abcd");
       return sendFilters({});
@@ -257,57 +261,32 @@ function FilterModal(props) {
                   marginBottom: 10,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <AppPicker
-                    selectedItem={country}
-                    onSelectItem={(item) => {
-                      if (country === item.name) setCountry(null);
-                      else {
-                        setCountry(item.name);
-                        loadStates(item.name);
-                      }
-                      setState(null);
-                    }}
-                    name="country"
-                    title={country ? country : "Country"}
-                    items={countries}
-                    loading={countriesLoading}
-                    style={{ width: "49%", marginRight: 10 }}
-                  />
-                  <AppPicker
-                    selectedItem={state}
-                    onSelectItem={(item) => {
-                      if (state === item.name) return setState();
-                      setState(item.name);
-                    }}
-                    name="state"
-                    title={state ? state : "State"}
-                    items={states ? states[0].states : states}
-                    loading={statesLoading}
-                    style={{ width: "49%" }}
-                  />
-                </View>
-                <CardInput
-                  placeholder="City"
-                  onChangeText={(text) => {
-                    const onlyString = /^[a-zA-Z]+$/.test(text);
-                    setIsCityError(!onlyString);
-                    setCity(text);
+                <Toggle
+                  label="All India"
+                  isOn={isAllIndiaOn}
+                  onToggle={() => {
+                    setIsAllIndiaOn(!isAllIndiaOn);
+                    setState();
                   }}
                 />
-                <View style={{ alignSelf: "flex-start" }}>
-                  <ErrorMessage
-                    visible={isCityError}
-                    error="City can be alphabets only."
-                  />
-                </View>
+                <Toggle
+                  label="Remote Only"
+                  isOn={isRemoteOn}
+                  onToggle={() => setIsRemoteOn(!isRemoteOn)}
+                />
+                <AppPicker
+                  disabled={isAllIndiaOn}
+                  selectedItem={state}
+                  onSelectItem={(item) => {
+                    if (state === item.name) return setState();
+                    setState(item.name);
+                  }}
+                  name="state"
+                  title={state ? state : "State"}
+                  items={states ? states[0].states : states}
+                  loading={statesLoading}
+                  style={{ width: "100%" }}
+                />
               </View>
             )}
             <FilterItem
@@ -408,6 +387,16 @@ function FilterModal(props) {
                   title={experience ? experience : "Select"}
                   items={experienceData}
                 />
+                {/* <Slider
+                  // style={{ width: "100%", marginTop: 10 }}
+                  minimumTrackTintColor={Colors.primary}
+                  maximumTrackTintColor={Colors.primary}
+                  thumbTintColor={Colors.primary}
+                  // minimumValue={0}
+                  // maximumValue={10}
+                  // value={parseInt(experience)}
+                  // onValueChange={(val) => setExperience(parseInt(val))}
+                /> */}
               </View>
             )}
             <FilterItem
@@ -465,6 +454,8 @@ function FilterModal(props) {
                 setSelectedJobType();
                 setExperience();
                 setSkillsItemArray([]);
+                setIsAllIndiaOn();
+                setIsRemoteOn();
                 // sendFilters({});
               }}
             />

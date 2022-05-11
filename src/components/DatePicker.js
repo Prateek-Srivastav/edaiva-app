@@ -51,7 +51,7 @@ function DatePicker({
     }
 
     setShow(false);
-    setSelectedDate(usFormat);
+    setSelectedDate(indFormat);
     setInitDate(date);
     onDateChange(indFormat, usFormat, date);
   };

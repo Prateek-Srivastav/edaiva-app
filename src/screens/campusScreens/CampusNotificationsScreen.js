@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
 
 import AppText from "../../components/AppText";

@@ -15,6 +15,7 @@ import jobsApi from "../api/jobs";
 import Loading from "../components/Loading";
 import showToast from "../components/ShowToast";
 import CustomButton from "../components/CustomButton";
+import CreateProfileScreen from "./CreateProfileScreen";
 
 const selectedInputs = ({ array, updateArray }) => {
   return array.map((item) => (
@@ -69,6 +70,14 @@ function PreferenceScreen() {
 
   const { request: updateProfile, res } = useApi(candidateApi.updateProfile);
 
+  const {
+    data,
+    error,
+    networkError,
+    loading: profileLoading,
+    request: loadProfile,
+  } = useApi(candidateApi.getProfile);
+
   const experiences = [
     { _id: 1, name: "All" },
     { _id: 2, name: "0-2 Years" },
@@ -80,6 +89,7 @@ function PreferenceScreen() {
 
   useEffect(() => {
     loadScreen();
+    loadProfile();
   }, [isFocused]);
 
   const loadScreen = async () => {
@@ -139,6 +149,9 @@ function PreferenceScreen() {
     await updateProfile({ job_preference: val });
     return navigation.goBack();
   };
+
+  if (data?.error === "Candidate Profile not found!!")
+    return <CreateProfileScreen />;
 
   return (
     <>

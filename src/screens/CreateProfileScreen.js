@@ -77,6 +77,8 @@ function CreateProfileScreen({ route }) {
     if (country) loadStates(country);
   }, []);
 
+  const routes = navigation.getState().routes;
+
   const handleSubmit = async (values) => {
     if (dobError || stateError || countryError || pincodeError || phoneError)
       showToast({
@@ -151,21 +153,31 @@ function CreateProfileScreen({ route }) {
     });
 
     await createProfile(val);
-    if (route.params.screenName === "JobDetails") return navigation.goBack();
-    return navigation.navigate(route.params.screenName);
+
+    await cache.store("isProfileComplete", true);
+
+    if (route?.params.screenName === "JobDetails") return navigation.goBack();
+    else if (routes.length !== 1) return navigation.navigate("Preference");
+    else {
+      console.log("appppp");
+      return navigation.navigate("Profile");
+    }
   };
 
-  if (route.params.screenName === "Preference")
+  // console.log(navigation.canGoBack());
+
+  if (routes.length !== 1)
     showToast({
       type: "appInfo",
-      message: `First create profile to set ${route.params.screenName}.`,
+      message: `First create profile to set Preferences.`,
     });
 
   return (
     <>
       <CustomHeader
         navigation={navigation}
-        backScreen="Home"
+        // backScreen="Home"
+        goBack
         screenName="Create Profile"
       />
 

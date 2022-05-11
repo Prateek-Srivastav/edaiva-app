@@ -152,6 +152,8 @@ function VerificationCodeScreen({ navigation, route }) {
       authContext.setTokens({ access, refresh });
       authStorage.storeToken(access, refresh);
       await cache.store("user", user);
+      // await cache.store("isProfileComplete", true);
+      // await cache.store("isCampusStudent", false);
       return navigation.navigate("CampusSelection", { access, refresh });
     } else navigation.navigate("NewPassword");
   };

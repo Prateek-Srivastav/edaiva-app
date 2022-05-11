@@ -24,6 +24,7 @@ function CustomHeader({
   navigation,
   onRightIconPress,
   children,
+  goBack,
   screenName,
 }) {
   return (
@@ -36,8 +37,17 @@ function CustomHeader({
             alignItems: "center",
           }}
         >
-          {!backDisabled && (
+          {!backDisabled && backScreen && (
             <TouchableOpacity onPress={() => navigation.navigate(backScreen)}>
+              <Ionicons
+                name="arrow-back-outline"
+                size={25}
+                color={Colors.primary}
+              />
+            </TouchableOpacity>
+          )}
+          {!backDisabled && goBack && (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons
                 name="arrow-back-outline"
                 size={25}

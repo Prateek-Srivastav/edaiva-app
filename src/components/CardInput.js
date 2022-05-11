@@ -26,7 +26,6 @@ function CardInput(props) {
       <View style={{ ...props.inputStyle, ...styles.inputContainer }}>
         <TextInput
           {...props}
-          // returnKeyType="done"
           style={{
             ...styles.input,
             textAlignVertical: props.multiline ? "top" : null,

@@ -30,7 +30,10 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{facebook}</AppText>
             </TouchableOpacity>
           </View>
-          <View style={styles.line} />
+          {(github !== "" ||
+            linkedin !== "" ||
+            instagram !== "" ||
+            twitter !== "") && <View style={styles.line} />}
         </>
       )}
       {github !== "" && (
@@ -48,7 +51,9 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{github}</AppText>
             </TouchableOpacity>
           </View>
-          <View style={styles.line} />
+          {(linkedin !== "" || instagram !== "" || twitter !== "") && (
+            <View style={styles.line} />
+          )}
         </>
       )}
       {linkedin !== "" && (
@@ -66,7 +71,7 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{linkedin}</AppText>
             </TouchableOpacity>
           </View>
-          {instagram !== "" && <View style={styles.line} />}
+          {(instagram !== "" || twitter !== "") && <View style={styles.line} />}
         </>
       )}
       {instagram !== "" && (
@@ -84,7 +89,7 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{instagram}</AppText>
             </TouchableOpacity>
           </View>
-          <View style={styles.line} />
+          {twitter !== "" && <View style={styles.line} />}
         </>
       )}
       {twitter !== "" && (
@@ -102,7 +107,7 @@ function SocialLinkDetails({ sociallinks }) {
               <AppText style={{ color: Colors.primary }}>{twitter}</AppText>
             </TouchableOpacity>
           </View>
-          <View style={styles.line} />
+          {/* <View style={styles.line} /> */}
         </>
       )}
     </View>

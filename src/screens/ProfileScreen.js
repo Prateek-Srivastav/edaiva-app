@@ -30,6 +30,7 @@ import CustomHeader from "../components/CustomHeader";
 import AppText from "../components/AppText";
 import { Share } from "../assets/svg/icons";
 import applicationApi from "../api/application";
+import CreateProfileScreen from "./CreateProfileScreen";
 
 function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
@@ -147,7 +148,10 @@ function ProfileScreen({ navigation }) {
 
   if (networkError && !loading) return <NetworkError onPress={loadProfile} />;
 
-  if (error) return <Error onPress={loadProfile} />;
+  // if (error) return <Error onPress={loadProfile} />;
+
+  if (data?.error === "Candidate Profile not found!!")
+    return <CreateProfileScreen />;
 
   return (
     <>

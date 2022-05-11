@@ -10,20 +10,17 @@ import CustomButton from "../../components/CustomButton";
 import useApi from "../../hooks/useApi";
 import * as Yup from "yup";
 import { ErrorMessage } from "../../components/forms";
+import showToast from "../../components/ShowToast";
 
 const validationSchema = Yup.object().shape({
   link: Yup.string().url().label("Link"),
-  // github: Yup.string().url().label("Link"),
-  // instagram: Yup.string().url().label("Link"),
-  // linkedin: Yup.string().url().label("Link"),
-  // twitter: Yup.string().url().label("Link"),
 });
 
 function AddSocialLinksScreen({ data }) {
   const [selectedSocial, setSelectedSocial] = useState();
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [value, setValue] = useState("");
-  const [linkError, setLinkError] = useState();
+  const [linkError, setLinkError] = useState(false);
   const [editValue, setEditValue] = useState("");
 
   const [fb, setFb] = useState(
@@ -39,14 +36,6 @@ function AddSocialLinksScreen({ data }) {
   const [twt, setTwt] = useState(
     data.sociallinks ? data.sociallinks.twitter : ""
   );
-
-  // const socialMedia = [
-  //   { _id: 1, name: !fb || fb === "" ? "Facebook" : null },
-  //   { _id: 2, name: !gh || gh === "" ? "Github" : null },
-  //   { _id: 3, name: !li || li === "" ? "Linkedin" : null },
-  //   { _id: 4, name: !insta || insta === "" ? "Instagram" : null },
-  //   { _id: 5, name: !twt || twt === "" ? "Twitter" : null },
-  // ];
 
   const socialMedia = [
     { _id: 1, name: "Facebook" },
@@ -87,8 +76,15 @@ function AddSocialLinksScreen({ data }) {
       twitter: selectedSocial === "Twitter" ? value : twt,
     };
 
+    if (linkError)
+      return showToast({
+        type: "appError",
+        message: "Please enter a valid link!",
+      });
+
     await updateProfile({ sociallinks: val });
     setValue("");
+    setLinkError(false);
     setSelectedSocial(null);
   };
 
@@ -142,13 +138,13 @@ function AddSocialLinksScreen({ data }) {
         placeholder="Paste Link here..."
         onChangeText={(text) => {
           validationSchema.isValid({ link: text }).then((val) => {
-            setLinkError(val);
+            return setLinkError(!val);
           });
           setValue(text);
         }}
         value={value}
       />
-      <ErrorMessage error="Please enter a valid link" visible={!linkError} />
+      <ErrorMessage error="Please enter a valid link" visible={linkError} />
       <CustomButton title="Add" onPress={handleSubmit} />
     </ScrollView>
   );

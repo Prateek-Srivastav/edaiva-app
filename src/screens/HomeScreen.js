@@ -87,6 +87,10 @@ function HomeScreen({ navigation }) {
     candidateApi.getProfile
   );
 
+  const isProfileComplete = async () => {
+    return await cache.store("isProfileComplete", true);
+  };
+
   const isCampusStudent = async () => {
     await cache.store("isCampusStudent", true);
     const isCampus = await cache.get("isCampusStudent");
@@ -103,6 +107,11 @@ function HomeScreen({ navigation }) {
 
   if (campusProfileData?.detail !== "Your are not a part of any institution !")
     isCampusStudent();
+  // console.log(profileData);
+  if (profileData?.error !== "Candidate Profile not found!!") {
+    console.log("aaaaaaaaaaaaaa");
+    isProfileComplete();
+  }
 
   const ExitApp = () => {
     return (
@@ -382,6 +391,18 @@ function HomeScreen({ navigation }) {
                                 </View>
                               );
                             })}
+                          {itemData.item.remote && (
+                            <View style={styles.filterTextContainer}>
+                              <Text
+                                style={{
+                                  ...styles.greyText,
+                                  color: Colors.primary,
+                                }}
+                              >
+                                Remote
+                              </Text>
+                            </View>
+                          )}
                         </>
                       );
                     }}
