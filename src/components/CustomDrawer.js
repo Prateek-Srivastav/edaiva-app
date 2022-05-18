@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -28,9 +28,7 @@ import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import CustomAlert from "./CustomAlert";
 import CustomButton from "./CustomButton";
-import useApi from "../hooks/useApi";
-import campusCandidateApi from "../api/campusApis/candidate";
-import candidateApi from "../api/candidate";
+import { UserContext } from "../auth/context";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -70,41 +68,10 @@ const NavigatorButton = ({ title, icon, ...otherProps }) => (
 
 function CustomDrawer(props) {
   const { setTokens } = useContext(AuthContext);
-  const [user, setUser] = useState({});
-  const [isProfileComplete, setIsProfileComplete] = useState();
-  const [isCampusStudent, setIsCampusStudent] = useState();
   const [visible, setVisible] = useState(false);
 
-  const { data: campusProfileData, request: loadCampusProfile } = useApi(
-    campusCandidateApi.getProfile
-  );
-
-  const {
-    data,
-    error,
-    networkError,
-    loading,
-    request: loadProfile,
-  } = useApi(candidateApi.getProfile);
-
-  const getUser = async () => {
-    const data = await cache.get("user");
-    const isProfileCompleteBool = await cache.get("isProfileComplete");
-    const isCampusStudentBool = await cache.get("isCampusStudent");
-
-    setIsCampusStudent(isCampusStudentBool);
-    setIsProfileComplete(isProfileCompleteBool);
-
-    setUser(data);
-  };
-
-  useEffect(() => {
-    getUser();
-    loadCampusProfile();
-    loadProfile();
-  }, []);
-
-  const { firstname, lastname, email } = user;
+  const { isProfileComplete, isCampusStudent, fullName, email } =
+    useContext(UserContext);
 
   const signOutHandler = async () => {
     setTokens(null);
@@ -171,9 +138,7 @@ function CustomDrawer(props) {
       {...props}
       style={{ paddingHorizontal: 25, paddingTop: 25, marginBottom: 15 }}
     >
-      <LargeText>
-        {firstname} {lastname}
-      </LargeText>
+      <LargeText>{fullName}</LargeText>
       <AppText style={{ fontSize: height < 160 ? 13 : 14 }}>{email}</AppText>
       <HorizontalLine marginTop={10} />
       <View style={styles.navigatorsContainer}>
@@ -204,11 +169,11 @@ function CustomDrawer(props) {
         </View>
         <View>
           <NavigatorButton
-            title={!isCampusStudent ? "Jobs" : "Campus"}
-            icon={!isCampusStudent ? <JobsIcon /> : <Campus />}
+            title={!isCampusStudent ? "Campus" : "Jobs"}
+            icon={!isCampusStudent ? <Campus /> : <JobsIcon />}
             onPress={() =>
               props.navigation.navigate(
-                !isCampusStudent
+                isCampusStudent
                   ? "Home"
                   : !isCampusStudent
                   ? "CampusSelection"

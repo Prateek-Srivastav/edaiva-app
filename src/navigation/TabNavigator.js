@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Animated, Dimensions, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
@@ -21,12 +21,15 @@ import applicationApi from "../api/application";
 import notificationApi from "../api/notifications";
 import useApi from "../hooks/useApi";
 import authStorage from "../auth/storage";
+import AuthContext from "../auth/context";
 
 const Tab = createBottomTabNavigator();
 
 function MainNavigator({ route }) {
   const isFocused = useIsFocused();
   const [accessToken, setAccessToken] = useState();
+
+  const { isTabBarShown } = useContext(AuthContext);
 
   const {
     data,
@@ -104,7 +107,11 @@ function MainNavigator({ route }) {
   const getTabBarVisibility = (route) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? "Jobs";
 
-    if (routeName === "JobDetail" || routeName === "ApplicationStatus")
+    if (
+      routeName === "JobDetail" ||
+      routeName === "ApplicationStatus" ||
+      !isTabBarShown
+    )
       return "none";
 
     return "flex";

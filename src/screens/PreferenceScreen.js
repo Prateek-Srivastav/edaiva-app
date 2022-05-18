@@ -150,9 +150,6 @@ function PreferenceScreen() {
     return navigation.goBack();
   };
 
-  if (data?.error === "Candidate Profile not found!!")
-    return <CreateProfileScreen />;
-
   return (
     <>
       <CustomHeader

@@ -10,11 +10,16 @@ import Toast from "react-native-toast-message";
 
 import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
-import AuthContext from "./src/auth/context";
+import AuthContext, { UserContext } from "./src/auth/context";
 import authStorage from "./src/auth/storage";
 import refreshAccessToken from "./src/utilities/refreshAccessToken";
 import { navigationRef } from "./src/navigation/rootNavigation";
 import toastConfig from "./src/utilities/toastConfig";
+import candidateApi from "./src/api/candidate";
+import campusCandidateApi from "./src/api/campusApis/candidate";
+import useApi from "./src/hooks/useApi";
+import cache from "./src/utilities/cache";
+import userDetails from "./src/utilities/userDetails";
 
 enableScreens();
 
@@ -37,11 +42,48 @@ const fetchFonts = () => {
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const [tokens, setTokens] = useState();
+  const [fullName, setFullName] = useState();
+  const [email, setEmail] = useState();
+  const [isCampusStudent, setIsCampusStudent] = useState();
+  const [isProfileComplete, setIsProfileComplete] = useState();
+  const [isTabBarShown, setIsTabBarShown] = useState(true);
+
+  const { data: campusProfileData, request: loadCampusProfile } = useApi(
+    campusCandidateApi.getProfile
+  );
+
+  const { data: profileData, request: loadProfile } = useApi(
+    candidateApi.getProfile
+  );
+
+  useEffect(() => {
+    if (profileData?.error === "Candidate Profile not found!!") {
+      console.log(profileData);
+      setIsProfileComplete(false);
+    } else setIsProfileComplete(true);
+
+    if (
+      campusProfileData?.detail === "Your are not a part of any institution !"
+    )
+      setIsCampusStudent(false);
+    else setIsCampusStudent(true);
+  }, [profileData, campusProfileData]);
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
     if (!storedTokens.refreshToken) return;
     setTokens(storedTokens);
+  };
+
+  const restoreUser = async () => {
+    const data = await cache.get("user");
+    // const { firstname, lastname, email } = data;
+    // const { isProfileComplete } = userDetails();
+    // console.log(details, "abcdefgh");
+
+    // console.log(data);
+    setFullName(data?.firstname + " " + data?.lastname);
+    setEmail(data?.email);
   };
 
   if (!isReady) {
@@ -50,7 +92,11 @@ export default function App() {
         startAsync={async () => {
           await fetchFonts();
           restoreToken();
+          restoreUser();
+          loadProfile();
+          loadCampusProfile();
           await refreshAccessToken();
+          // await userDetails()
         }}
         onFinish={() => setIsReady(true)}
         onError={(err) => console.log(err)}
@@ -59,21 +105,34 @@ export default function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ tokens, setTokens }}>
+    <AuthContext.Provider
+      value={{ tokens, isTabBarShown, setTokens, setIsTabBarShown }}
+    >
       <NavigationContainer ref={navigationRef}>
         {tokens ? (
-          <>
+          <UserContext.Provider
+            value={{
+              fullName,
+              email,
+              isCampusStudent,
+              isProfileComplete,
+              setFullName,
+              setEmail,
+              setIsCampusStudent,
+              setIsProfileComplete,
+            }}
+          >
             <AppNavigator />
-            <StatusBar style="dark" />
-          </>
+            {/* <StatusBar style="dark" /> */}
+          </UserContext.Provider>
         ) : (
           <>
             <AuthNavigator />
-            <StatusBar style="dark" />
           </>
         )}
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
+      <StatusBar style="dark" />
     </AuthContext.Provider>
   );
 }

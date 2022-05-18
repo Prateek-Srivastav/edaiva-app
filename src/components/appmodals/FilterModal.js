@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Text,
   View,
@@ -32,6 +32,7 @@ import CardInput from "../CardInput";
 import locationApi from "../../api/location";
 import ErrorMessage from "../forms/ErrorMessage";
 import Toggle from "../Toggle";
+import AuthContext from "../../auth/context";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -71,6 +72,8 @@ function FilterModal(props) {
   const [skillItemText, setSkillItemText] = useState();
   const top = useSharedValue(Dimensions.get("screen").height);
 
+  const { setIsTabBarShown } = useContext(AuthContext);
+
   const style = useAnimatedStyle(() => {
     return {
       top: top.value,
@@ -83,6 +86,7 @@ function FilterModal(props) {
 
   const sendIsPressed = () => {
     props.sendIsPressed();
+    setIsTabBarShown(true);
   };
 
   if (props.closeFilter) {
@@ -97,12 +101,12 @@ function FilterModal(props) {
       top.value = context.startTop + event.translationY;
     },
     onEnd(event) {
-      if (event.translationY > 50)
+      if (event.translationY > 50) {
         top.value = withSpring(dimensions.height + 50, SPRING_CONFIG);
-      else {
+        runOnJS(sendIsPressed)();
+      } else {
         top.value = withSpring(0, SPRING_CONFIG);
       }
-      runOnJS(sendIsPressed)();
     },
   });
 
@@ -158,8 +162,10 @@ function FilterModal(props) {
       !isAllIndiaOn
     ) {
       console.log("abcd");
+      setIsTabBarShown(true);
       return sendFilters({});
     }
+    setIsTabBarShown(true);
 
     sendFilters(filters);
     console.log(filters);
@@ -234,6 +240,7 @@ function FilterModal(props) {
                 onPress={() => {
                   top.value = withSpring(dimensions.height + 50, SPRING_CONFIG);
                   sendIsPressed();
+                  setIsTabBarShown(true);
                 }}
               >
                 <View style={styles.button}>
@@ -388,14 +395,14 @@ function FilterModal(props) {
                   items={experienceData}
                 />
                 {/* <Slider
-                  // style={{ width: "100%", marginTop: 10 }}
+                  style={{ width: "100%", marginTop: 10 }}
                   minimumTrackTintColor={Colors.primary}
                   maximumTrackTintColor={Colors.primary}
                   thumbTintColor={Colors.primary}
-                  // minimumValue={0}
-                  // maximumValue={10}
-                  // value={parseInt(experience)}
-                  // onValueChange={(val) => setExperience(parseInt(val))}
+                  minimumValue={0}
+                  maximumValue={10}
+                  value={(experience)}
+                  onValueChange={(val) => setExperience("0 - " + parseInt(val))}
                 /> */}
               </View>
             )}

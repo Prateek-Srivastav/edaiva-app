@@ -12,7 +12,7 @@ import * as FileSystem from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
 import { useIsFocused } from "@react-navigation/native";
 
-import AuthContext from "../auth/context";
+import AuthContext, { UserContext } from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import campusCandidateApi from "../api/campusApis/candidate";
@@ -36,7 +36,7 @@ function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
   const ICON_COLOR = Colors.primary;
 
-  const { setTokens } = useContext(AuthContext);
+  const { isCampusStudent, isProfileComplete } = useContext(UserContext);
 
   const [user, setUser] = useState({});
   const [resume, setResume] = useState();
@@ -148,21 +148,13 @@ function ProfileScreen({ navigation }) {
 
   if (networkError && !loading) return <NetworkError onPress={loadProfile} />;
 
-  // if (error) return <Error onPress={loadProfile} />;
-
-  if (data?.error === "Candidate Profile not found!!")
-    return <CreateProfileScreen />;
+  if (error) return <Error onPress={loadProfile} />;
 
   return (
     <>
       <CustomHeader
         navigation={navigation}
-        backScreen={
-          campusProfileData?.detail ===
-          "Your are not a part of any institution !"
-            ? "Jobs"
-            : "CampusJobs"
-        }
+        backScreen={!isCampusStudent ? "Jobs" : "CampusJobs"}
         screenName="Profile"
         isMenu
         onRightIconPress={() => setShowMenu(!showMenu)}
@@ -205,8 +197,7 @@ function ProfileScreen({ navigation }) {
               {firstname} {lastname}
             </LargeText>
             <NormalText>
-              {campusProfileData?.detail ===
-              "Your are not a part of any institution !"
+              {!isCampusStudent
                 ? data.designation
                 : campusProfileData[0]?.institution_details[0].institute_name}
             </NormalText>
@@ -281,10 +272,7 @@ function ProfileScreen({ navigation }) {
                 touchable
                 onPress={() =>
                   navigation.navigate(
-                    campusProfileData?.detail ===
-                      "Your are not a part of any institution !"
-                      ? "EditProfile"
-                      : "CampusEditProfile"
+                    !isCampusStudent ? "EditProfile" : "CampusEditProfile"
                   )
                 }
               >
@@ -304,11 +292,7 @@ function ProfileScreen({ navigation }) {
                 touchable
                 onPress={() =>
                   navigation.navigate("ViewProfile", {
-                    isCampus:
-                      campusProfileData?.detail ===
-                      "Your are not a part of any institution !"
-                        ? false
-                        : true,
+                    isCampus: isCampusStudent,
                     cgpa: campusProfileData[0]?.cgpa,
                     batchDetails: campusProfileData[0]?.batch_details[0],
                     instituteDetails:

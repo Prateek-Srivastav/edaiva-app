@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import {
   Text,
   View,
-  Button,
   StyleSheet,
   useWindowDimensions,
   TouchableNativeFeedback,
   Dimensions,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
   // Dimensions,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";

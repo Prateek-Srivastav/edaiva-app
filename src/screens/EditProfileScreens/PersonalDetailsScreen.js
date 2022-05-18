@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import * as Yup from "yup";
 
@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import cache from "../../utilities/cache";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import showToast from "../../components/ShowToast";
+import { UserContext } from "../../auth/context";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -72,6 +73,8 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const [stateError, setStateError] = useState();
   const [dobError, setDobError] = useState();
   const [user, setUser] = useState();
+
+  const { setFullName } = useContext(UserContext);
 
   const {
     data: countries,
@@ -148,6 +151,9 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
       email: user.email,
       id: user.id,
     });
+
+    if (values.firstname !== "")
+      setFullName(values.firstname + " " + values.lastname);
 
     if (
       (isCampus && !profileData.profile?.user) ||

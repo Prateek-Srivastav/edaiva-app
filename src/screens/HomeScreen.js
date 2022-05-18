@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -28,10 +28,9 @@ import interviewApi from "../api/interview";
 import candidateApi from "../api/candidate";
 import FilterModal from "../components/appmodals/FilterModal";
 import InterviewReminder from "../components/interview/InterviewReminder";
-import campusCandidateApi from "../api/campusApis/candidate";
-import cache from "../utilities/cache";
 import NoData from "../components/NoData";
 import CustomButton from "../components/CustomButton";
+import AuthContext, { UserContext } from "../auth/context";
 
 const { width } = Dimensions.get("window");
 
@@ -46,13 +45,10 @@ function HomeScreen({ navigation }) {
   const [keyword, setKeyword] = useState();
   const [showOptions, setShowOptions] = useState(false);
   const [sortBy, setSortBy] = useState("latest");
-  const [campusStudent, setCampusStudent] = useState(false);
 
   const isFocused = useIsFocused();
-
-  const { data: campusProfileData, request: loadCampusProfile } = useApi(
-    campusCandidateApi.getProfile
-  );
+  const { isCampusStudent } = useContext(UserContext);
+  const { setIsTabBarShown } = useContext(AuthContext);
 
   const {
     data,
@@ -87,31 +83,12 @@ function HomeScreen({ navigation }) {
     candidateApi.getProfile
   );
 
-  const isProfileComplete = async () => {
-    return await cache.store("isProfileComplete", true);
-  };
-
-  const isCampusStudent = async () => {
-    await cache.store("isCampusStudent", true);
-    const isCampus = await cache.get("isCampusStudent");
-    setCampusStudent(isCampus);
-  };
-
   useEffect(() => {
-    loadCampusProfile();
     loadJobTypes();
     loadJobs({ sort: sortBy, ...filters });
     loadInterviews();
     loadProfile();
   }, [isFocused, sortBy, filters]);
-
-  if (campusProfileData?.detail !== "Your are not a part of any institution !")
-    isCampusStudent();
-  // console.log(profileData);
-  if (profileData?.error !== "Candidate Profile not found!!") {
-    console.log("aaaaaaaaaaaaaa");
-    isProfileComplete();
-  }
 
   const ExitApp = () => {
     return (
@@ -177,7 +154,7 @@ function HomeScreen({ navigation }) {
           setCloseFilter(true);
           setIsPressed(false);
           return true;
-        } else if (!campusStudent) {
+        } else if (!isCampusStudent) {
           setVisible(true);
           return true;
         }
@@ -277,6 +254,7 @@ function HomeScreen({ navigation }) {
               style={styles.filterIconContainer}
               onPress={() => {
                 filterIsVisible = true;
+                setIsTabBarShown(false);
                 setCloseFilter(false);
                 setIsPressed(true);
               }}

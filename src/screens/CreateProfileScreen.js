@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import * as Yup from "yup";
 
@@ -17,6 +17,7 @@ import { formattedDate, formattedNumericDate } from "../utilities/date";
 import CustomHeader from "../components/CustomHeader";
 import Colors from "../constants/Colors";
 import showToast from "../components/ShowToast";
+import { UserContext } from "../auth/context";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -46,6 +47,8 @@ function CreateProfileScreen({ route }) {
   const [phoneError, setPhoneError] = useState();
   const [user, setUser] = useState();
 
+  const { setIsProfileComplete, setFullName } = useContext(UserContext);
+
   const {
     data: countries,
     loading: countriesLoading,
@@ -65,19 +68,23 @@ function CreateProfileScreen({ route }) {
   } = useApi(userApi.updateUser);
 
   const {
-    // error,
+    error,
     loading,
+    networkError,
     request: createProfile,
   } = useApi(candidateApi.createProfile);
 
   useEffect(() => {
     loadCountries();
     getUser();
+    if (route.params.screenName === "Preference")
+      showToast({
+        type: "appInfo",
+        message: `First create profile to set Preferences.`,
+      });
 
     if (country) loadStates(country);
   }, []);
-
-  const routes = navigation.getState().routes;
 
   const handleSubmit = async (values) => {
     if (dobError || stateError || countryError || pincodeError || phoneError)
@@ -154,23 +161,18 @@ function CreateProfileScreen({ route }) {
 
     await createProfile(val);
 
-    await cache.store("isProfileComplete", true);
+    if (!loading && !error && !networkError) setIsProfileComplete(true);
+
+    if (values.firstname !== "")
+      setFullName(values.firstname + " " + values.lastname);
 
     if (route?.params.screenName === "JobDetails") return navigation.goBack();
-    else if (routes.length !== 1) return navigation.navigate("Preference");
-    else {
-      console.log("appppp");
+    else if (route.params.screenName === "Preference")
+      return navigation.navigate("Preference");
+    else if (route.params.screenName === "ProfileStack") {
       return navigation.navigate("Profile");
-    }
+    } else navigation.goBack();
   };
-
-  // console.log(navigation.canGoBack());
-
-  if (routes.length !== 1)
-    showToast({
-      type: "appInfo",
-      message: `First create profile to set Preferences.`,
-    });
 
   return (
     <>
