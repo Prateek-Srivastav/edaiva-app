@@ -67,11 +67,7 @@ function Toggle({ onToggle, isOn, style, labelStyle, label }) {
     <View style={styles.container}>
       {!!label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
 
-      <TouchableOpacity
-        onPress={() => {
-          typeof onToggle === "function" && onToggle();
-        }}
-      >
+      <TouchableOpacity onPress={onToggle}>
         <View
           style={[styles.toggleContainer, style, { backgroundColor: color }]}
         >

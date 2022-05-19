@@ -649,7 +649,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-
   inputContainer: {
     flex: 1,
     flexDirection: "row",

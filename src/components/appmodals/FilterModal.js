@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   Text,
   View,
@@ -9,7 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  // Dimensions,
+  Switch,
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
@@ -19,7 +19,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
-import Slider from "@react-native-community/slider";
+import RangeSlider from "rn-range-slider";
 import { Feather, AntDesign } from "@expo/vector-icons";
 
 import AppText from "../AppText";
@@ -33,6 +33,11 @@ import locationApi from "../../api/location";
 import ErrorMessage from "../forms/ErrorMessage";
 import Toggle from "../Toggle";
 import AuthContext from "../../auth/context";
+import Thumb from "../slider/Thumb";
+import Rail from "../slider/Rail";
+import RailSelected from "../slider/RailSelected";
+import Label from "../slider/Label";
+import Notch from "../slider/Notch";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -61,6 +66,8 @@ function FilterModal(props) {
   const [state, setState] = useState();
   const [country, setCountry] = useState();
   const [city, setCity] = useState();
+  const [expTo, setExpTo] = useState(0);
+  const [expFrom, setExpFrom] = useState(0);
   const [experience, setExperience] = useState();
   const [keyword, setKeyword] = useState();
   const [isLocationShown, setIsLocationShown] = useState(false);
@@ -226,6 +233,22 @@ function FilterModal(props) {
     </View>
   ));
 
+  const renderThumb = useCallback(() => <Thumb />, []);
+  const renderRail = useCallback(() => <Rail />, []);
+  const renderRailSelected = useCallback(() => <RailSelected />, []);
+  const renderLabel = useCallback((value) => <Label text={value} />, []);
+  const renderNotch = useCallback(() => <Notch />, []);
+  const handleValueChange = useCallback((low, high) => {
+    setExpFrom(low);
+    setExpTo(high);
+  }, []);
+
+  const allIndiaToggle = useCallback(() => {
+    setIsAllIndiaOn(!isAllIndiaOn);
+  }, [isAllIndiaOn]);
+
+  const isRemoteToggle = () => setIsRemoteOn(!isRemoteOn);
+
   return (
     <PanGestureHandler
       activeOffsetX={[-10, 10]}
@@ -268,19 +291,45 @@ function FilterModal(props) {
                   marginBottom: 10,
                 }}
               >
-                <Toggle
-                  label="All India"
-                  isOn={isAllIndiaOn}
-                  onToggle={() => {
-                    setIsAllIndiaOn(!isAllIndiaOn);
-                    setState();
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    margin: -5,
                   }}
-                />
-                <Toggle
-                  label="Remote Only"
-                  isOn={isRemoteOn}
-                  onToggle={() => setIsRemoteOn(!isRemoteOn)}
-                />
+                >
+                  <AppText>All India</AppText>
+                  <Switch
+                    value={isAllIndiaOn}
+                    onChange={() => setIsAllIndiaOn(!isAllIndiaOn)}
+                    trackColor={{ true: Colors.primary, false: "#ecf0f1" }}
+                    thumbColor={Colors.white}
+                    style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    margin: -5,
+                    marginBottom: 5,
+                  }}
+                >
+                  <AppText>Remote Only</AppText>
+                  <Switch
+                    value={isRemoteOn}
+                    onChange={() => setIsRemoteOn(!isRemoteOn)}
+                    trackColor={{ true: Colors.primary, false: "#ecf0f1" }}
+                    thumbColor={Colors.white}
+                    style={{
+                      transform: [{ scaleX: 1 }, { scaleY: 1 }],
+                    }}
+                  />
+                </View>
                 <AppPicker
                   disabled={isAllIndiaOn}
                   selectedItem={state}
@@ -394,15 +443,34 @@ function FilterModal(props) {
                   title={experience ? experience : "Select"}
                   items={experienceData}
                 />
-                {/* <Slider
-                  style={{ width: "100%", marginTop: 10 }}
-                  minimumTrackTintColor={Colors.primary}
-                  maximumTrackTintColor={Colors.primary}
-                  thumbTintColor={Colors.primary}
-                  minimumValue={0}
-                  maximumValue={10}
-                  value={(experience)}
-                  onValueChange={(val) => setExperience("0 - " + parseInt(val))}
+
+                {/* <Text
+                  style={{
+                    color: Colors.primary,
+                    borderColor: "#0AB4F14D",
+                    borderWidth: 1,
+                    padding: 7,
+                    margin: 8,
+                    backgroundColor: "#B9ECFF4D",
+                    borderRadius: 4,
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  {expTo > 16 ? "16 +" : `${expFrom} - ${expTo}`}
+                </Text>
+                <RangeSlider
+                  high={expTo}
+                  low={expFrom}
+                  min={0}
+                  max={17}
+                  step={2}
+                  floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  renderLabel={renderLabel}
+                  renderNotch={renderNotch}
+                  onValueChanged={handleValueChange}
                 /> */}
               </View>
             )}
