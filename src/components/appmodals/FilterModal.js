@@ -63,15 +63,20 @@ function FilterModal(props) {
 
   const [isAllIndiaOn, setIsAllIndiaOn] = useState(false);
   const [isRemoteOn, setIsRemoteOn] = useState(false);
+  const [isFreshersJobs, setIsFreshersJobs] = useState(false);
   const [state, setState] = useState();
   const [country, setCountry] = useState();
   const [city, setCity] = useState();
   const [expTo, setExpTo] = useState(0);
   const [expFrom, setExpFrom] = useState(0);
   const [experience, setExperience] = useState();
+  const [salaryFrom, setSalaryFrom] = useState(0);
+  const [salaryTo, setSalaryTo] = useState(0);
+  const [salary, setSalary] = useState();
   const [keyword, setKeyword] = useState();
   const [isLocationShown, setIsLocationShown] = useState(false);
   const [isJobTypeShown, setIsJobTypeShown] = useState(false);
+  const [isSalaryShown, setIsSalaryShown] = useState(false);
   const [isExperienceShown, setIsExperienceShown] = useState(false);
   const [isSkillsShown, setIsSkillsShown] = useState(false);
   const [selectedJobType, setSelectedJobType] = useState("");
@@ -138,6 +143,17 @@ function FilterModal(props) {
     loadStates("India");
   }, []);
 
+  useEffect(() => {
+    if (isFreshersJobs) {
+      setExpFrom(0);
+      setExpTo(2);
+    }
+  }, [isFreshersJobs]);
+
+  useEffect(() => {
+    if (expTo !== 2 || expFrom !== 0) setIsFreshersJobs(false);
+  }, [expTo, expFrom]);
+
   let filters = {
     country: isAllIndiaOn ? "India" : null,
     state,
@@ -149,7 +165,19 @@ function FilterModal(props) {
         : selectedJobType === "pt"
         ? props.jobTypes.filter((type) => type.name === "Part-time")[0]._id
         : null,
-    experience: experience === "All" ? null : experience,
+    exp_from: isFreshersJobs
+      ? 0
+      : expTo > 16
+      ? 16
+      : expTo === 0
+      ? null
+      : expFrom,
+    exp_to: isFreshersJobs ? 2 : expTo > 16 || expTo === 0 ? null : expTo,
+    experience,
+    salary_from:
+      salaryTo > 80 ? 80000 : salaryTo === 0 ? null : salaryFrom * 1000,
+    salary_to: salaryTo > 80 || salaryTo === 0 ? null : salaryTo * 1000,
+    salary,
     keyword,
     remote: isRemoteOn ? isRemoteOn : null,
     skills: skillsItemArray,
@@ -163,10 +191,11 @@ function FilterModal(props) {
       state === undefined &&
       !selectedJobType &&
       skillsItemArray.length === 0 &&
-      (!experience || experience === "All") &&
+      (!experience || experience === "0 - 0") &&
       (!keyword || keyword === "") &&
       !isRemoteOn &&
-      !isAllIndiaOn
+      !isAllIndiaOn &&
+      (!salary || salary === "0k - 0k")
     ) {
       console.log("abcd");
       setIsTabBarShown(true);
@@ -236,18 +265,24 @@ function FilterModal(props) {
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
-  const renderLabel = useCallback((value) => <Label text={value} />, []);
-  const renderNotch = useCallback(() => <Notch />, []);
+  // const renderLabel = useCallback((value) => <Label text={value} />, []);
+  // const renderNotch = useCallback(() => <Notch />, []);
+
   const handleValueChange = useCallback((low, high) => {
     setExpFrom(low);
     setExpTo(high);
+    if (high !== 0 && high <= 16) setExperience(low + " - " + high);
+    else if (high === 0) setExperience();
+    else if (high > 16) setExperience("16+");
   }, []);
 
-  const allIndiaToggle = useCallback(() => {
-    setIsAllIndiaOn(!isAllIndiaOn);
-  }, [isAllIndiaOn]);
-
-  const isRemoteToggle = () => setIsRemoteOn(!isRemoteOn);
+  const handleSalaryFilterValueChange = useCallback((low, high) => {
+    setSalaryFrom(low);
+    setSalaryTo(high);
+    if (high !== 0 && high <= 80) setSalary(low + "k - " + high + "k");
+    else if (high === 0) setSalary();
+    else if (high > 80) setSalary("80k+");
+  }, []);
 
   return (
     <PanGestureHandler
@@ -430,21 +465,26 @@ function FilterModal(props) {
               onPress={() => setIsExperienceShown(!isExperienceShown)}
             />
             {isExperienceShown && (
-              <View style={{ paddingHorizontal: 10 }}>
-                <AppPicker
-                  selectedItem={experience}
-                  onSelectItem={(item) => {
-                    if (experience === item.name || item.name === "All")
-                      return setExperience("All");
-
-                    setExperience(item.name);
+              <View style={{ paddingHorizontal: 10, marginBottom: 10 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: -10,
                   }}
-                  name="experience"
-                  title={experience ? experience : "Select"}
-                  items={experienceData}
-                />
-
-                {/* <Text
+                >
+                  <AppText>Freshers Jobs Only</AppText>
+                  <Switch
+                    value={isFreshersJobs}
+                    onChange={() => setIsFreshersJobs(!isFreshersJobs)}
+                    trackColor={{ true: Colors.primary, false: "#ecf0f1" }}
+                    thumbColor={Colors.white}
+                    style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }}
+                  />
+                </View>
+                <Text
                   style={{
                     color: Colors.primary,
                     borderColor: "#0AB4F14D",
@@ -456,7 +496,7 @@ function FilterModal(props) {
                     alignSelf: "flex-start",
                   }}
                 >
-                  {expTo > 16 ? "16 +" : `${expFrom} - ${expTo}`}
+                  {expTo > 16 ? "16+" : `${expFrom} - ${expTo}`}
                 </Text>
                 <RangeSlider
                   high={expTo}
@@ -464,14 +504,51 @@ function FilterModal(props) {
                   min={0}
                   max={17}
                   step={2}
-                  floatingLabel
+                  // floatingLabel
                   renderThumb={renderThumb}
                   renderRail={renderRail}
                   renderRailSelected={renderRailSelected}
-                  renderLabel={renderLabel}
-                  renderNotch={renderNotch}
+                  // renderLabel={renderLabel}
+                  // renderNotch={renderNotch}
                   onValueChanged={handleValueChange}
-                /> */}
+                />
+              </View>
+            )}
+            <FilterItem
+              title="Salary"
+              isShown={isSalaryShown}
+              onPress={() => setIsSalaryShown(!isSalaryShown)}
+            />
+            {isSalaryShown && (
+              <View style={{ paddingHorizontal: 10, marginBottom: 10 }}>
+                <Text
+                  style={{
+                    color: Colors.primary,
+                    borderColor: "#0AB4F14D",
+                    borderWidth: 1,
+                    padding: 7,
+                    margin: 8,
+                    backgroundColor: "#B9ECFF4D",
+                    borderRadius: 4,
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  {salaryTo > 80 ? "80k+" : `${salaryFrom}k - ${salaryTo}k`}
+                </Text>
+                <RangeSlider
+                  high={salaryTo}
+                  low={salaryFrom}
+                  min={0}
+                  max={90}
+                  step={10}
+                  // floatingLabel
+                  renderThumb={renderThumb}
+                  renderRail={renderRail}
+                  renderRailSelected={renderRailSelected}
+                  // renderLabel={renderLabel}
+                  // renderNotch={renderNotch}
+                  onValueChanged={handleSalaryFilterValueChange}
+                />
               </View>
             )}
             <FilterItem
@@ -528,13 +605,17 @@ function FilterModal(props) {
                 setState();
                 setSelectedJobType();
                 setExperience();
+                setExpFrom(0);
+                setExpTo(0);
+                setSalaryFrom(0);
+                setSalaryTo(0);
+                setSalary(0);
                 setSkillsItemArray([]);
                 setIsAllIndiaOn();
                 setIsRemoteOn();
                 // sendFilters({});
               }}
             />
-
             <CustomButton
               title="Apply"
               onPress={() => {

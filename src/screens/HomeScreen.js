@@ -300,7 +300,18 @@ function HomeScreen({ navigation }) {
                               </Text>
                             </View>
                           )}
-
+                          {itemData.item.salary && (
+                            <View style={styles.filterTextContainer}>
+                              <Text
+                                style={{
+                                  ...styles.greyText,
+                                  color: Colors.primary,
+                                }}
+                              >
+                                {itemData.item.salary}
+                              </Text>
+                            </View>
+                          )}
                           {itemData.item.city && (
                             <View style={styles.filterTextContainer}>
                               <Text
