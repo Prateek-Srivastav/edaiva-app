@@ -94,6 +94,8 @@ function RegisterScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setFullName(user.firstname + " " + user.lastname);
+    authContext.setEmail(user.email);
     await cache.store("user", user);
   };
 
@@ -160,6 +162,8 @@ function RegisterScreen({ navigation }) {
 
         authContext.setTokens({ access, refresh });
         authStorage.storeToken(access, refresh);
+        authContext.setFullName(user.firstname + " " + user.lastname);
+        authContext.setEmail(user.email);
         await cache.store("user", user);
         setLdAuthStarted(false);
       };

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -28,7 +28,9 @@ import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import CustomAlert from "./CustomAlert";
 import CustomButton from "./CustomButton";
-import { UserContext } from "../auth/context";
+import campusCandidateApi from "../api/campusApis/candidate";
+import candidateApi from "../api/candidate";
+import useApi from "../hooks/useApi";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -70,13 +72,47 @@ function CustomDrawer(props) {
   const { setTokens } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
 
-  const { isProfileComplete, isCampusStudent, fullName, email } =
-    useContext(UserContext);
+  const {
+    fullName,
+    email,
+    setFullName,
+    isProfileComplete,
+    isCampusStudent,
+    setIsProfileComplete,
+    setIsCampusStudent,
+  } = useContext(AuthContext);
+
+  const { data: campusProfileData, request: loadCampusProfile } = useApi(
+    campusCandidateApi.getProfile
+  );
+
+  const { data: profileData, request: loadProfile } = useApi(
+    candidateApi.getProfile
+  );
+
+  useEffect(() => {
+    loadCampusProfile();
+    loadProfile();
+  }, []);
+
+  useEffect(() => {
+    if (profileData?.error === "Candidate Profile not found!!") {
+      console.log(profileData);
+      setIsProfileComplete(false);
+    } else setIsProfileComplete(true);
+
+    if (
+      campusProfileData?.detail === "Your are not a part of any institution !"
+    )
+      setIsCampusStudent(false);
+    else setIsCampusStudent(true);
+  }, [profileData, campusProfileData]);
 
   const signOutHandler = async () => {
-    setTokens(null);
-    authStorage.removeToken();
     await cache.clear();
+    authStorage.removeToken();
+    setFullName("fname lname");
+    setTokens(null);
   };
 
   const SignOutAlert = () => {

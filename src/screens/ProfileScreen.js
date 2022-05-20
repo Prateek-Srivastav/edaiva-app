@@ -12,7 +12,7 @@ import * as FileSystem from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
 import { useIsFocused } from "@react-navigation/native";
 
-import AuthContext, { UserContext } from "../auth/context";
+import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import campusCandidateApi from "../api/campusApis/candidate";
@@ -36,7 +36,7 @@ function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
   const ICON_COLOR = Colors.primary;
 
-  const { isCampusStudent, isProfileComplete } = useContext(UserContext);
+  const { isCampusStudent, isProfileComplete } = useContext(AuthContext);
 
   const [user, setUser] = useState({});
   const [resume, setResume] = useState();

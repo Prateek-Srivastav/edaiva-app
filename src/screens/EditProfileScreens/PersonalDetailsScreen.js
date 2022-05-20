@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import cache from "../../utilities/cache";
 import { formattedDate, formattedNumericDate } from "../../utilities/date";
 import showToast from "../../components/ShowToast";
-import { UserContext } from "../../auth/context";
+import AuthContext from "../../auth/context";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -74,7 +74,7 @@ function PersonalDetailsScreen({ data: profileData, isCampus }) {
   const [dobError, setDobError] = useState();
   const [user, setUser] = useState();
 
-  const { setFullName } = useContext(UserContext);
+  const { setFullName } = useContext(AuthContext);
 
   const {
     data: countries,

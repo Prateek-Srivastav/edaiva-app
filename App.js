@@ -10,7 +10,7 @@ import Toast from "react-native-toast-message";
 
 import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
-import AuthContext, { UserContext } from "./src/auth/context";
+import AuthContext from "./src/auth/context";
 import authStorage from "./src/auth/storage";
 import refreshAccessToken from "./src/utilities/refreshAccessToken";
 import { navigationRef } from "./src/navigation/rootNavigation";
@@ -19,7 +19,6 @@ import candidateApi from "./src/api/candidate";
 import campusCandidateApi from "./src/api/campusApis/candidate";
 import useApi from "./src/hooks/useApi";
 import cache from "./src/utilities/cache";
-import userDetails from "./src/utilities/userDetails";
 
 enableScreens();
 
@@ -106,25 +105,24 @@ export default function App() {
 
   return (
     <AuthContext.Provider
-      value={{ tokens, isTabBarShown, setTokens, setIsTabBarShown }}
+      value={{
+        tokens,
+        fullName,
+        email,
+        isTabBarShown,
+        isCampusStudent,
+        isProfileComplete,
+        setFullName,
+        setEmail,
+        setTokens,
+        setIsTabBarShown,
+        setIsCampusStudent,
+        setIsProfileComplete,
+      }}
     >
       <NavigationContainer ref={navigationRef}>
         {tokens ? (
-          <UserContext.Provider
-            value={{
-              fullName,
-              email,
-              isCampusStudent,
-              isProfileComplete,
-              setFullName,
-              setEmail,
-              setIsCampusStudent,
-              setIsProfileComplete,
-            }}
-          >
-            <AppNavigator />
-            {/* <StatusBar style="dark" /> */}
-          </UserContext.Provider>
+          <AppNavigator />
         ) : (
           <>
             <AuthNavigator />

@@ -23,8 +23,6 @@ import { carouselData } from "../dummyData.js/carouselData";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import useApi from "../hooks/useApi";
 import CustomAlert from "../components/CustomAlert";
-import Loading from "../components/Loading";
-import showToast from "../components/ShowToast";
 
 function WelcomeScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -79,6 +77,8 @@ function WelcomeScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setFullName(user.firstname + " " + user.lastname);
+    authContext.setEmail(user.email);
     await cache.store("user", user);
   };
 
@@ -145,6 +145,8 @@ function WelcomeScreen({ navigation }) {
 
         authContext.setTokens({ access, refresh });
         authStorage.storeToken(access, refresh);
+        authContext.setFullName(user.firstname + " " + user.lastname);
+        authContext.setEmail(user.email);
         await cache.store("user", user);
         setLdAuthStarted(false);
       };

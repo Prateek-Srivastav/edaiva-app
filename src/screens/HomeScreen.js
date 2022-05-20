@@ -30,7 +30,7 @@ import FilterModal from "../components/appmodals/FilterModal";
 import InterviewReminder from "../components/interview/InterviewReminder";
 import NoData from "../components/NoData";
 import CustomButton from "../components/CustomButton";
-import AuthContext, { UserContext } from "../auth/context";
+import AuthContext from "../auth/context";
 
 const { width } = Dimensions.get("window");
 
@@ -47,8 +47,7 @@ function HomeScreen({ navigation }) {
   const [sortBy, setSortBy] = useState("latest");
 
   const isFocused = useIsFocused();
-  const { isCampusStudent } = useContext(UserContext);
-  const { setIsTabBarShown } = useContext(AuthContext);
+  const { isCampusStudent, setIsTabBarShown } = useContext(AuthContext);
 
   const {
     data,
@@ -205,6 +204,15 @@ function HomeScreen({ navigation }) {
           }}
         >
           <AppText style={{ fontSize: 17 }}>Latest</AppText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginTop: 10 }}
+          onPress={() => {
+            setSortBy("acco_job_pref");
+            setShowOptions(false);
+          }}
+        >
+          <AppText style={{ fontSize: 17 }}>Job Preference</AppText>
         </TouchableOpacity>
       </CustomAlert>
     );
@@ -439,7 +447,11 @@ function HomeScreen({ navigation }) {
                         // marginStart: 20,
                       }}
                     >
-                      {sortBy === "latest" ? "Latest" : "Popular"}
+                      {sortBy === "latest"
+                        ? "Latest"
+                        : sortBy === "popular"
+                        ? "Popular"
+                        : "Job Preference"}
                     </Text>
                     <MaterialIcons
                       name="keyboard-arrow-down"

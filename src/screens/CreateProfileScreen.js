@@ -17,7 +17,7 @@ import { formattedDate, formattedNumericDate } from "../utilities/date";
 import CustomHeader from "../components/CustomHeader";
 import Colors from "../constants/Colors";
 import showToast from "../components/ShowToast";
-import { UserContext } from "../auth/context";
+import AuthContext from "../auth/context";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().label("First Name"),
@@ -47,7 +47,7 @@ function CreateProfileScreen({ route }) {
   const [phoneError, setPhoneError] = useState();
   const [user, setUser] = useState();
 
-  const { setIsProfileComplete, setFullName } = useContext(UserContext);
+  const { setIsProfileComplete, setFullName } = useContext(AuthContext);
 
   const {
     data: countries,

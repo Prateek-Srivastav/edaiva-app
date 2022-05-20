@@ -21,7 +21,7 @@ import {
   SubmitButton,
 } from "../components/forms";
 import authApi from "../api/auth";
-import AuthContext from "../auth/context";
+import AuthContext, { authContext } from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import useApi from "../hooks/useApi";
@@ -91,6 +91,8 @@ function LoginScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setFullName(user.firstname + " " + user.lastname);
+    authContext.setEmail(user.email);
     await cache.store("user", user);
   };
 
@@ -157,6 +159,8 @@ function LoginScreen({ navigation }) {
 
         authContext.setTokens({ access, refresh });
         authStorage.storeToken(access, refresh);
+        authContext.setFullName(user.firstname + " " + user.lastname);
+        authContext.setEmail(user.email);
         await cache.store("user", user);
         setLdAuthStarted(false);
       };
@@ -225,6 +229,8 @@ function LoginScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setFullName(user.firstname + " " + user.lastname);
+    authContext.setEmail(user.email);
     await cache.store("user", user);
   };
 

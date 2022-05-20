@@ -332,7 +332,8 @@ function FilterModal(props) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    margin: -5,
+                    // margin: -5,
+                    marginBottom: 5,
                   }}
                 >
                   <AppText>All India</AppText>
@@ -350,8 +351,8 @@ function FilterModal(props) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    margin: -5,
-                    marginBottom: 5,
+                    // margin: -5,
+                    marginBottom: 10,
                   }}
                 >
                   <AppText>Remote Only</AppText>
@@ -472,7 +473,6 @@ function FilterModal(props) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    marginTop: -10,
                   }}
                 >
                   <AppText>Freshers Jobs Only</AppText>
@@ -484,20 +484,22 @@ function FilterModal(props) {
                     style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }}
                   />
                 </View>
-                <Text
-                  style={{
-                    color: Colors.primary,
-                    borderColor: "#0AB4F14D",
-                    borderWidth: 1,
-                    padding: 7,
-                    margin: 8,
-                    backgroundColor: "#B9ECFF4D",
-                    borderRadius: 4,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {expTo > 16 ? "16+" : `${expFrom} - ${expTo}`}
-                </Text>
+                {expTo !== 0 && (
+                  <Text
+                    style={{
+                      color: Colors.primary,
+                      borderColor: "#0AB4F14D",
+                      borderWidth: 1,
+                      padding: 7,
+                      margin: 8,
+                      backgroundColor: "#B9ECFF4D",
+                      borderRadius: 4,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {expTo > 16 ? "16+" : `${expFrom} - ${expTo}`}
+                  </Text>
+                )}
                 <RangeSlider
                   high={expTo}
                   low={expFrom}
@@ -521,20 +523,22 @@ function FilterModal(props) {
             />
             {isSalaryShown && (
               <View style={{ paddingHorizontal: 10, marginBottom: 10 }}>
-                <Text
-                  style={{
-                    color: Colors.primary,
-                    borderColor: "#0AB4F14D",
-                    borderWidth: 1,
-                    padding: 7,
-                    margin: 8,
-                    backgroundColor: "#B9ECFF4D",
-                    borderRadius: 4,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {salaryTo > 80 ? "80k+" : `${salaryFrom}k - ${salaryTo}k`}
-                </Text>
+                {salaryTo !== 0 && (
+                  <Text
+                    style={{
+                      color: Colors.primary,
+                      borderColor: "#0AB4F14D",
+                      borderWidth: 1,
+                      padding: 7,
+                      margin: 8,
+                      backgroundColor: "#B9ECFF4D",
+                      borderRadius: 4,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {salaryTo > 80 ? "80k+" : `${salaryFrom}k - ${salaryTo}k`}
+                  </Text>
+                )}
                 <RangeSlider
                   high={salaryTo}
                   low={salaryFrom}
