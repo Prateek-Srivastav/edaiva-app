@@ -48,7 +48,11 @@ function JobCard(props) {
               flexDirection: "row",
             }}
           >
-            <MaterialCommunityIcons name="timer-sand" size={13} color="#888" />
+            <MaterialCommunityIcons
+              name={"timer-sand"}
+              size={13}
+              color="#888"
+            />
             <Text
               style={{
                 fontFamily: "OpenSans-Regular",

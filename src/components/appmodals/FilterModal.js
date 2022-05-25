@@ -482,6 +482,7 @@ function FilterModal(props) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
+                    marginBottom: 8,
                   }}
                 >
                   <AppText>Freshers Jobs Only</AppText>
@@ -501,6 +502,7 @@ function FilterModal(props) {
                       borderWidth: 1,
                       padding: 7,
                       margin: 8,
+                      marginTop: 0,
                       backgroundColor: "#B9ECFF4D",
                       borderRadius: 4,
                       alignSelf: "flex-start",
