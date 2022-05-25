@@ -170,7 +170,7 @@ function CreateProfileScreen({ route }) {
     else if (route.params.screenName === "Preference")
       return navigation.navigate("Preference");
     else if (route.params.screenName === "ProfileStack") {
-      return navigation.navigate("Profile");
+      return navigation.navigate("ProfileStack");
     } else navigation.goBack();
   };
 
