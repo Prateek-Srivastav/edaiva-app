@@ -55,7 +55,6 @@ function HomeScreen({ navigation }) {
     networkError,
     loading,
     request: loadJobs,
-    res,
   } = useApi(jobsApi.getJobs);
 
   const numOfPages = data?.pageInfo.total;
@@ -498,6 +497,14 @@ function HomeScreen({ navigation }) {
                             : null
                         }`;
 
+                      let deadline = new Date(item.job_deadline);
+
+                      let daysLeft = Math.round(
+                        (deadline - new Date()) / 86400000
+                      );
+
+                      if (!item.job_deadline) daysLeft = "";
+
                       return (
                         <>
                           <JobCard
@@ -514,7 +521,7 @@ function HomeScreen({ navigation }) {
                             jobType={item.job_type.name}
                             location={location}
                             description={item.job_description}
-                            postedDate={formattedDate(item.created_on)}
+                            postedDate={daysLeft}
                             isApplied={item.applied}
                           />
                           {index === data.docs.length - 1 && (

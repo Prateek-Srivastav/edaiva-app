@@ -506,7 +506,7 @@ function JobDetailScreen({ route, navigation }) {
                     </AppText>
                   </View>
 
-                  {!route.params.isApplied && (
+                  {!route.params.isApplied && jobDetails.job_deadline && (
                     <View
                       style={{
                         justifyContent: "center",

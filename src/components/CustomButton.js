@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: "center",
     backgroundColor: Colors.primary,
-
     flexDirection: "row",
   },
   titleStyle: {

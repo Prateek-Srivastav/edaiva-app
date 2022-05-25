@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { FontAwesome, Octicons, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
 import { BuildingIcon, Location } from "../assets/svg/icons";
@@ -39,17 +39,28 @@ function JobCard(props) {
             </Text>
           </View>
         )}
-        <View style={{ flex: 1, alignItems: "flex-end" }}>
-          <Text
+        {props.postedDate !== "" && (
+          <View
             style={{
-              fontFamily: "OpenSans-Regular",
-              color: "#C0C0C0",
-              fontSize: 11,
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "flex-end",
+              flexDirection: "row",
             }}
           >
-            Posted: {props.postedDate}
-          </Text>
-        </View>
+            <MaterialCommunityIcons name="timer-sand" size={13} color="#888" />
+            <Text
+              style={{
+                fontFamily: "OpenSans-Regular",
+                color: "#888",
+                fontSize: 11.5,
+                marginStart: 2,
+              }}
+            >
+              {props.postedDate > 0 ? props.postedDate + " days" : "Expired"}
+            </Text>
+          </View>
+        )}
       </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.heading}>{props.heading}</Text>

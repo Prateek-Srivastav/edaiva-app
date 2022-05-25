@@ -49,15 +49,6 @@ const SPRING_CONFIG = {
   stiffness: 600,
 };
 
-const experienceData = [
-  { _id: 0, name: "All" },
-  { _id: 1, name: "0-2 Years" },
-  { _id: 2, name: "3-5 Years" },
-  { _id: 3, name: "5-10 Years" },
-  { _id: 4, name: "10-15 Years" },
-  { _id: 5, name: "15+ Years" },
-];
-
 function FilterModal(props) {
   const dimensions = useWindowDimensions();
 
@@ -214,11 +205,18 @@ function FilterModal(props) {
         activeOpacity={0.5}
         style={styles.modalListItem}
       >
-        <Text style={styles.itemText}>{props.title}</Text>
+        <Text
+          style={{
+            ...styles.itemText,
+            color: props.textColor ? props.textColor : Colors.primary,
+          }}
+        >
+          {props.title}
+        </Text>
         <AntDesign
           name={props.isShown ? "minus" : "plus"}
           size={20}
-          color={Colors.primary}
+          color={props.textColor ? props.textColor : Colors.primary}
         />
       </TouchableOpacity>
     );
@@ -405,7 +403,14 @@ function FilterModal(props) {
                   onPress={() => {
                     if (selectedJobType === "internship")
                       setSelectedJobType("");
-                    else setSelectedJobType("internship");
+                    else {
+                      setSelectedJobType("internship");
+                      setIsExperienceShown(false);
+                      setExpFrom(0);
+                      setExpTo(0);
+                      setExperience();
+                      setIsFreshersJobs(false);
+                    }
                   }}
                 >
                   <View
@@ -464,6 +469,10 @@ function FilterModal(props) {
               title="Experience"
               isShown={isExperienceShown}
               onPress={() => setIsExperienceShown(!isExperienceShown)}
+              disabled={selectedJobType === "internship"}
+              textColor={
+                selectedJobType === "internship" ? "#ccc" : Colors.primary
+              }
             />
             {isExperienceShown && (
               <View style={{ paddingHorizontal: 10, marginBottom: 10 }}>
