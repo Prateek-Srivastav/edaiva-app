@@ -36,7 +36,8 @@ import TimePicker from "../TimePicker";
 import cache from "../../utilities/cache";
 import useApi from "../../hooks/useApi";
 import { useNavigation } from "@react-navigation/native";
-import { formattedNumericDate } from "../../utilities/date";
+import { formattedDate, formattedNumericDate } from "../../utilities/date";
+import interviewApi from "../../api/interview";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -109,38 +110,40 @@ function RescheduleModal(props) {
     loading,
     error,
     networkError,
-    request: apply,
-  } = useApi(applicationApi.postApplication);
+    request: reschedule,
+  } = useApi(interviewApi.rescheduleInterview);
 
   const handleSubmit = async () => {
-    // const user = await cache.get("user");
+    const user = await cache.get("user");
+    console.log(props);
     if (!reason)
       return Toast.show({
         type: "appError",
         text1: "Reason required",
       });
     const requestReschedule = {
-      // job: props.data._id,
+      // job: props.jobId,
       // candidate: user.id,
+      interview: props.interviewId,
       reason,
       time_slots: inputs,
     };
-    // console.log(requestReschedule);
-    // await apply(application);
-    // if (error)
-    //   return Toast.show({
-    //     type: "appError",
-    //     text1: "Something went wrong",
-    //   });
-    // else if (loading)
-    //   return Toast.show({
-    //     type: "appWarning",
-    //     text1: "Applying...",
-    //   });
+    console.log(requestReschedule);
+    await reschedule(requestReschedule);
+    if (error)
+      return Toast.show({
+        type: "appError",
+        text1: "Something went wrong",
+      });
+    else if (loading)
+      return Toast.show({
+        type: "appWarning",
+        text1: "Rescheduling...",
+      });
 
     Toast.show({
       type: "appSuccess",
-      text1: "Applied successfully!",
+      text1: "Reschedule requested successfully!",
     });
 
     top.value = withSpring(dimensions.height + 70, SPRING_CONFIG);
@@ -210,7 +213,7 @@ function RescheduleModal(props) {
                       }}
                       // value={input.date}
                       initialDate={input.date === "" ? null : input.date}
-                      value={formattedNumericDate(input.date)}
+                      value={formattedDate(input.date)}
                     />
                     {inputs.length > 1 && (
                       <CustomButton

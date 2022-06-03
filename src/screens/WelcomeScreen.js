@@ -221,7 +221,7 @@ function WelcomeScreen({ navigation }) {
     <ScrollView
       contentContainerStyle={{
         flex: 1,
-        justifyContent: "center",
+        // justifyContent: "center",
         alignItems: "center",
       }}
       style={styles.container}
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     // padding: 15,
     marginVertical: 30,
     marginHorizontal: 20,
-
+    marginTop: 50,
     borderRadius: 4,
     alignSelf: "center",
   },

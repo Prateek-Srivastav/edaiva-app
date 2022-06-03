@@ -149,7 +149,7 @@ function NotificationsScreen({ navigation }) {
     const applicationResponse = await applicationApi.getApplications();
 
     let notificResponse = await notificationApi.getNotifications("job");
-
+    // console.log(notificResponse);
     if (!applicationResponse.ok) {
       // console.log(applicationResponse, "res !ok");
       if (applicationResponse.problem === "NETWORK_ERROR") {

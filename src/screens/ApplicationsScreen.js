@@ -25,7 +25,7 @@ function ApplicationsScreen({ navigation }) {
   } = useApi(applicationApi.getApplications);
 
   let applications;
-
+  console.log(data);
   if (data) {
     applications = data;
   }

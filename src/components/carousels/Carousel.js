@@ -43,7 +43,7 @@ const Carousel = ({ data }) => {
 
   if (data && data.length) {
     return (
-      <View style={{ height: width }}>
+      <View style={{ height: width + 20 }}>
         <FlatList
           data={data}
           ref={(flatList) => {

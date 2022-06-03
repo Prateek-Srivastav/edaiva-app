@@ -33,6 +33,7 @@ const { width, height } = Dimensions.get("screen");
 function ApplicationStatusScreen({ route }) {
   const [showDetail, setShowDetail] = useState(1);
   const [isPressed, setIsPressed] = useState(false);
+  const [interviewId, setInterviewId] = useState();
 
   const [position] = useState(new Animated.ValueXY());
 
@@ -54,6 +55,8 @@ function ApplicationStatusScreen({ route }) {
     request: loadInterviews,
   } = useApi(interviewApi.getApplicationInterviews);
 
+  console.log(interviewData);
+
   const {
     data: applicationData,
     error: applicationError,
@@ -71,6 +74,8 @@ function ApplicationStatusScreen({ route }) {
 
   const getData = (val) => {
     setIsPressed(false);
+    loadApplicationDetails(applicationId);
+    loadInterviews(applicationId);
   };
 
   const animStyles = {
@@ -160,19 +165,50 @@ function ApplicationStatusScreen({ route }) {
                       : "physically"}{" "}
                     on
                   </AppText>
-                  <View style={{ flexDirection: "row" }}>
+                  <View>
                     <AppText
                       style={{
                         fontSize: 15,
                         color: Colors.primary,
-                        fontFamily: "OpenSans-Medium",
+                        fontFamily: "OpenSans-SemiBold",
                         marginBottom: 5,
                       }}
                     >
-                      {formattedDate(interview.scheduled_from)} from{" "}
-                      {formattedTime(interview.scheduled_from)} to{" "}
-                      {formattedTime(interview.scheduled_to)}
+                      {formattedDate(interview.scheduled_from)}
                     </AppText>
+                    <View style={{ flexDirection: "row" }}>
+                      <AppText
+                        style={{
+                          fontSize: 15,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-SemiBold",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {formattedTime(interview.scheduled_from)}
+                      </AppText>
+                      <AppText
+                        style={{
+                          fontSize: 14,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-Regular",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {" "}
+                        to{" "}
+                      </AppText>
+                      <AppText
+                        style={{
+                          fontSize: 15,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-SemiBold",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {formattedTime(interview.scheduled_to)}
+                      </AppText>
+                    </View>
                   </View>
                   {interview.reschedule_requests.length !== 0 &&
                   !interview.reschedule_requests[0]?.accepted ? (
@@ -213,6 +249,7 @@ function ApplicationStatusScreen({ route }) {
                         }}
                         onPress={() => {
                           setIsPressed(true);
+                          setInterviewId(interview._id.$oid);
                         }}
                       >
                         <Feather
@@ -468,7 +505,11 @@ function ApplicationStatusScreen({ route }) {
         <Description show={showDetail} />
       </View>
 
-      <RescheduleModal isPressed={isPressed} sendData={getData} />
+      <RescheduleModal
+        isPressed={isPressed}
+        sendData={getData}
+        interviewId={interviewId}
+      />
     </View>
   ) : (
     <Loading />
