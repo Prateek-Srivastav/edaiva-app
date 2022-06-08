@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Text,
   View,
@@ -37,6 +37,7 @@ import campusCandidateApi from "../api/campusApis/candidate";
 import showToast from "../components/ShowToast";
 import { useFocusEffect } from "@react-navigation/native";
 import candidateApi from "../api/candidate";
+import AuthContext from "../auth/context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -75,6 +76,8 @@ function JobDetailScreen({ route, navigation }) {
   const [visible, setVisible] = useState(false);
   const [placementCriteria, setPlacementCriteria] = useState();
 
+  const { isAuthSkipped } = useContext(AuthContext);
+
   const {
     data: campusProfileData,
     // error,
@@ -88,8 +91,10 @@ function JobDetailScreen({ route, navigation }) {
   );
 
   useEffect(() => {
-    loadCampusProfile();
-    loadProfile();
+    if (!isAuthSkipped) {
+      loadCampusProfile();
+      loadProfile();
+    }
   }, []);
 
   const revokeHandler = async () => {
@@ -444,7 +449,7 @@ function JobDetailScreen({ route, navigation }) {
         backScreen={navigation.getState().routeNames[0]}
         onRightIconPress={onShare}
       />
-      {loading || !campusProfileData ? (
+      {loading || (!campusProfileData && !isAuthSkipped) ? (
         <Loading />
       ) : networkError && !loading ? (
         <NetworkError onPress={() => loadJobDetails(jobId)} />
@@ -710,6 +715,13 @@ function JobDetailScreen({ route, navigation }) {
             <CustomButton
               disabled={isApplied}
               onPress={() => {
+                if (isAuthSkipped) {
+                  showToast({
+                    type: "appWarning",
+                    message: "You need to login to apply for the job.",
+                  });
+                  return navigation.navigate("AuthStack");
+                }
                 if (profileData?.error === "Candidate Profile not found!!") {
                   showToast({
                     type: "appError",
@@ -736,7 +748,7 @@ function JobDetailScreen({ route, navigation }) {
             sendIsApplied={getIsApplied}
             isCampus={route.params.isCampus}
             placementCriteria={placementCriteria}
-            cgpa={campusProfileData[0]?.cgpa}
+            cgpa={!isAuthSkipped ? campusProfileData[0]?.cgpa : null}
             jobId={jobId}
           />
           <RevokeApplication />

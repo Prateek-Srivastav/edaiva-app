@@ -22,6 +22,7 @@ import notificationApi from "../api/notifications";
 import useApi from "../hooks/useApi";
 import authStorage from "../auth/storage";
 import AuthContext from "../auth/context";
+import AuthNavigator from "./AuthNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +30,9 @@ function MainNavigator({ route }) {
   const isFocused = useIsFocused();
   const [accessToken, setAccessToken] = useState();
 
-  const { isTabBarShown } = useContext(AuthContext);
+  console.log("IN TABNAVIGATOR");
+
+  const { isTabBarShown, isAuthSkipped } = useContext(AuthContext);
 
   const {
     data,

@@ -77,8 +77,11 @@ function WelcomeScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setIsAuthSkipped(false);
+    await cache.store("isAuthSkipped", false);
     authContext.setFullName(user.firstname + " " + user.lastname);
     authContext.setEmail(user.email);
+    authContext.setIsAuthSkipped(false);
     await cache.store("user", user);
   };
 
@@ -145,6 +148,8 @@ function WelcomeScreen({ navigation }) {
 
         authContext.setTokens({ access, refresh });
         authStorage.storeToken(access, refresh);
+        authContext.setIsAuthSkipped(false);
+        await cache.store("isAuthSkipped", false);
         authContext.setFullName(user.firstname + " " + user.lastname);
         authContext.setEmail(user.email);
         await cache.store("user", user);
@@ -286,7 +291,6 @@ function WelcomeScreen({ navigation }) {
             activeOpacity={0.5}
             style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
             disabled={!request}
-            // onPress={() => promptAsync({ useProxy: true, redirectUri })}
             onPress={() => promptAsync()}
           >
             <Image
@@ -309,6 +313,36 @@ function WelcomeScreen({ navigation }) {
             <Text style={styles.thirdPartyAuthText}>LinkedIn</Text>
           </TouchableOpacity>
         </View>
+        {!authContext.isAuthSkipped && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 30,
+              paddingHorizontal: 20,
+            }}
+          >
+            <View style={styles.line} />
+            <TouchableOpacity
+              onPress={async () => {
+                authContext.setIsAuthSkipped(true);
+                await cache.store("isAuthSkipped", true);
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  textAlign: "center",
+                  fontFamily: "OpenSans-SemiBold",
+                  color: "#817E7E",
+                  marginHorizontal: 7,
+                }}
+              >
+                Skip
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </>
       <LinkedinAuth />
       {/* )} */}

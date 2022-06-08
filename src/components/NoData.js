@@ -6,7 +6,7 @@ import Colors from "../constants/Colors";
 import AppText from "./AppText";
 import CustomButton from "./CustomButton";
 
-function NoData({ onPress, text, size, canNotRefresh }) {
+function NoData({ onPress, text, size, canNotRefresh, buttonTitle }) {
   return (
     <View
       style={{
@@ -28,8 +28,8 @@ function NoData({ onPress, text, size, canNotRefresh }) {
         <Image
           source={require("../assets/noData.png")}
           style={{
-            width: size ? size : 200,
-            height: size ? size : 200,
+            width: size ? size : 180,
+            height: size ? size : 180,
             margin: 40,
             borderWidth: 1,
           }}
@@ -45,15 +45,17 @@ function NoData({ onPress, text, size, canNotRefresh }) {
       {!canNotRefresh && (
         <View style={{ flexDirection: "row", padding: 20, width: 300 }}>
           <CustomButton
-            title="Refresh"
+            title={buttonTitle ? buttonTitle : "Refresh"}
             onPress={onPress}
             style={{ height: 50 }}
           />
-          <CustomButton
-            icon={<Refresh />}
-            onPress={onPress}
-            style={{ height: 50, flex: 0.2, marginLeft: 10 }}
-          />
+          {!buttonTitle && (
+            <CustomButton
+              icon={<Refresh />}
+              onPress={onPress}
+              style={{ height: 50, flex: 0.2, marginLeft: 10 }}
+            />
+          )}
         </View>
       )}
     </View>

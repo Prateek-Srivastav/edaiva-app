@@ -150,8 +150,8 @@ function CampusNotificationsScreen({ navigation }) {
         });
       } else if (applicationResponse.data.code === "token_not_valid") {
         setLoading(false);
-        // console.log("token not valid");
-        return setTokenValid(false);
+        return console.log("token not valid");
+        // return setTokenValid(false);
       } else {
         setData(applicationResponse.data);
         setLoading(false);

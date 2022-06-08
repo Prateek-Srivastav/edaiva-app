@@ -38,7 +38,6 @@ var filterIsVisible = false;
 
 function HomeScreen({ navigation }) {
   const [isPressed, setIsPressed] = useState(false);
-  // const [interviews, setInterviews] = useState([]);
   const [filters, setFilters] = useState({});
   const [visible, setVisible] = useState(false);
   const [closeFilter, setCloseFilter] = useState(false);
@@ -47,7 +46,8 @@ function HomeScreen({ navigation }) {
   const [sortBy, setSortBy] = useState("latest");
 
   const isFocused = useIsFocused();
-  const { isCampusStudent, setIsTabBarShown } = useContext(AuthContext);
+  const { isCampusStudent, setIsTabBarShown, isAuthSkipped } =
+    useContext(AuthContext);
 
   const {
     data,
@@ -80,12 +80,15 @@ function HomeScreen({ navigation }) {
   const { data: profileData, request: loadProfile } = useApi(
     candidateApi.getProfile
   );
+  console.log("IN HOMESCREEN");
 
   useEffect(() => {
     loadJobTypes();
     loadJobs({ sort: sortBy, ...filters });
-    loadInterviews();
-    loadProfile();
+    if (!isAuthSkipped) {
+      loadInterviews();
+      loadProfile();
+    }
   }, [isFocused, sortBy, filters]);
 
   const ExitApp = () => {
@@ -170,8 +173,6 @@ function HomeScreen({ navigation }) {
   const getFilters = (appliedFilters) => {
     if (appliedFilters) setFilters(appliedFilters);
     setIsPressed(false);
-    // loadJobs(appliedFilters);
-    // setJobs(data.docs);
   };
 
   const searchHandler = () => {
@@ -220,7 +221,7 @@ function HomeScreen({ navigation }) {
   if (networkError && !loading) return <NetworkError onPress={loadJobs} />;
 
   if (error) return <Error onPress={loadJobs} />;
-  // const flatListRef = useRef();
+  6;
 
   return (
     <>

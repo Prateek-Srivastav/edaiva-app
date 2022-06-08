@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import * as WebBrowser from "expo-web-browser";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 import AppText from "./AppText";
 import Colors from "../constants/Colors";
@@ -69,7 +70,7 @@ const NavigatorButton = ({ title, icon, ...otherProps }) => (
 );
 
 function CustomDrawer(props) {
-  const { setTokens } = useContext(AuthContext);
+  const { setTokens, isAuthSkipped } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
 
   const {
@@ -82,6 +83,8 @@ function CustomDrawer(props) {
     setIsCampusStudent,
   } = useContext(AuthContext);
 
+  console.log(isAuthSkipped);
+
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
   );
@@ -91,8 +94,10 @@ function CustomDrawer(props) {
   );
 
   useEffect(() => {
-    loadCampusProfile();
-    loadProfile();
+    if (!isAuthSkipped) {
+      loadCampusProfile();
+      loadProfile();
+    }
   }, []);
 
   useEffect(() => {
@@ -174,49 +179,64 @@ function CustomDrawer(props) {
       {...props}
       style={{ paddingHorizontal: 25, paddingTop: 25, marginBottom: 15 }}
     >
-      <LargeText>{fullName}</LargeText>
-      <AppText style={{ fontSize: height < 160 ? 13 : 14 }}>{email}</AppText>
-      <HorizontalLine marginTop={10} />
-      <View style={styles.navigatorsContainer}>
+      {!isAuthSkipped && (
+        <>
+          <LargeText>{fullName}</LargeText>
+          <AppText style={{ fontSize: height < 160 ? 13 : 14 }}>
+            {email}
+          </AppText>
+          <HorizontalLine marginTop={10} />
+        </>
+      )}
+      <View
+        style={[
+          styles.navigatorsContainer,
+          { justifyContent: isAuthSkipped ? "flex-start" : "space-around" },
+        ]}
+      >
+        {!isAuthSkipped && (
+          <View>
+            <NavigatorButton
+              title="Profile"
+              icon={<Profile />}
+              onPress={() =>
+                !isProfileComplete
+                  ? props.navigation.navigate("CreateProfile", {
+                      screenName: "ProfileStack",
+                    })
+                  : props.navigation.navigate("ProfileStack")
+              }
+            />
+            <NavigatorButton
+              title="Preference"
+              icon={<Preference />}
+              error
+              onPress={() =>
+                !isProfileComplete
+                  ? props.navigation.navigate("CreateProfile", {
+                      screenName: "Preference",
+                    })
+                  : props.navigation.navigate("Preference")
+              }
+            />
+          </View>
+        )}
         <View>
-          <NavigatorButton
-            title="Profile"
-            icon={<Profile />}
-            onPress={() =>
-              !isProfileComplete
-                ? props.navigation.navigate("CreateProfile", {
-                    screenName: "ProfileStack",
-                  })
-                : props.navigation.navigate("ProfileStack")
-            }
-          />
-          <NavigatorButton
-            title="Preference"
-            icon={<Preference />}
-            error
-            onPress={() =>
-              !isProfileComplete
-                ? props.navigation.navigate("CreateProfile", {
-                    screenName: "Preference",
-                  })
-                : props.navigation.navigate("Preference")
-            }
-          />
-        </View>
-        <View>
-          <NavigatorButton
-            title={!isCampusStudent ? "Campus" : "Jobs"}
-            icon={!isCampusStudent ? <Campus /> : <JobsIcon />}
-            onPress={() =>
-              props.navigation.navigate(
-                isCampusStudent
-                  ? "Home"
-                  : !isCampusStudent
-                  ? "CampusSelection"
-                  : "CampusStack"
-              )
-            }
-          />
+          {!isAuthSkipped && (
+            <NavigatorButton
+              title={!isCampusStudent ? "Campus" : "Jobs"}
+              icon={!isCampusStudent ? <Campus /> : <JobsIcon />}
+              onPress={() =>
+                props.navigation.navigate(
+                  isCampusStudent
+                    ? "Home"
+                    : !isCampusStudent
+                    ? "CampusSelection"
+                    : "CampusStack"
+                )
+              }
+            />
+          )}
           <NavigatorButton
             title="Wishlist"
             icon={<Wishlist />}
@@ -252,19 +272,36 @@ function CustomDrawer(props) {
         icon={<Privacy />}
       />
       <HorizontalLine marginVertical={25} marginTop={15} />
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={() => setVisible(true)}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 20,
-          marginBottom: 10,
-        }}
-      >
-        <SignOut color={Colors.grey} />
-        <Text style={styles.signOutText}>Sign out</Text>
-      </TouchableOpacity>
+      {!isAuthSkipped && (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => setVisible(true)}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 20,
+            marginBottom: 10,
+          }}
+        >
+          <SignOut color={Colors.grey} />
+          <Text style={styles.signOutText}>Sign out</Text>
+        </TouchableOpacity>
+      )}
+      {isAuthSkipped && (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => props.navigation.navigate("AuthStack")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 20,
+            marginBottom: 10,
+          }}
+        >
+          <SimpleLineIcons name="login" size={24} color={Colors.primary} />
+          <Text style={styles.loginText}>Log in</Text>
+        </TouchableOpacity>
+      )}
       <SignOutAlert />
     </DrawerContentScrollView>
   );
@@ -291,7 +328,6 @@ const styles = StyleSheet.create({
   },
   navigatorsContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
     marginVertical: 25,
   },
   navigatorText: {
@@ -311,6 +347,13 @@ const styles = StyleSheet.create({
     fontSize: height < 160 ? 15 : 19,
     // fontSize: 19,
     color: Colors.black,
+    marginLeft: 20,
+  },
+  loginText: {
+    fontFamily: "OpenSans-SemiBold",
+    fontSize: height < 160 ? 15 : 19,
+    // fontSize: 19,
+    color: Colors.primary,
     marginLeft: 20,
   },
 });

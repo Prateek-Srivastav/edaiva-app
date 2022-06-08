@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -24,6 +24,7 @@ import CustomHeader from "../components/CustomHeader";
 import cache from "../utilities/cache";
 import showToast from "../components/ShowToast";
 import NoData from "../components/NoData";
+import AuthContext from "../auth/context";
 
 const NormalText = (props) => (
   <Text {...props} style={{ ...styles.normalText, ...props.style }}>
@@ -141,7 +142,9 @@ function NotificationsScreen({ navigation }) {
   const { res, request: deleteNotification } = useApi(
     notificationApi.deleteNotification
   );
-  // // console.log(res);
+
+  const { isAuthSkipped } = useContext(AuthContext);
+
   const loadScreen = async () => {
     setNotificLoading(true);
     setLoading(true);
@@ -161,7 +164,6 @@ function NotificationsScreen({ navigation }) {
         });
       } else if (applicationResponse.data.code === "token_not_valid") {
         setLoading(false);
-        // console.log("token not valid");
         return setTokenValid(false);
       } else {
         setData(applicationResponse.data);
@@ -184,15 +186,13 @@ function NotificationsScreen({ navigation }) {
       };
     });
 
-    // // console.log(notificResponse);
-
     setNotifications(notificResponse.data.records);
     setNotificLoading(false);
     setLoading(false);
   };
 
   useEffect(() => {
-    loadScreen();
+    if (!isAuthSkipped) loadScreen();
   }, [isFocused]);
 
   useFocusEffect(
@@ -236,6 +236,14 @@ function NotificationsScreen({ navigation }) {
         <NetworkError onPress={() => loadApplications()} />
       ) : error && !loading ? (
         <Error onPress={() => loadApplications()} />
+      ) : isFocused && isAuthSkipped ? (
+        <NoData
+          buttonTitle={"Login"}
+          onPress={() => {
+            navigation.navigate("AuthStack");
+          }}
+          text="Please login to check your notifications!"
+        />
       ) : (
         <View style={styles.container}>
           {!loading &&

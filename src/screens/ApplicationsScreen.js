@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { FlatList, View, StyleSheet, BackHandler } from "react-native";
 
 import ApplicationItemCard from "../components/ApplicationsItemCard";
@@ -12,9 +12,12 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import cache from "../utilities/cache";
 import NoData from "../components/NoData";
+import AuthContext from "../auth/context";
 
 function ApplicationsScreen({ navigation }) {
   const isFocused = useIsFocused();
+
+  const authContext = useContext(AuthContext);
 
   const {
     data,
@@ -25,7 +28,7 @@ function ApplicationsScreen({ navigation }) {
   } = useApi(applicationApi.getApplications);
 
   let applications;
-  console.log(data);
+
   if (data) {
     applications = data;
   }
@@ -41,14 +44,19 @@ function ApplicationsScreen({ navigation }) {
   };
 
   useEffect(() => {
-    loadApplications();
-    numOfApplications();
+    if (!authContext.isAuthSkipped) {
+      loadApplications();
+      numOfApplications();
+    }
   }, [isFocused]);
 
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        if (navigation.canGoBack()) {
+        if (isFocused && authContext.isAuthSkipped) {
+          navigation.navigate("Jobs");
+          return true;
+        } else if (navigation.canGoBack() && !authContext.isAuthSkipped) {
           navigation.goBack();
           return true;
         }
@@ -69,6 +77,17 @@ function ApplicationsScreen({ navigation }) {
     return <NetworkError onPress={() => loadApplications()} />;
 
   if (error) return <Error onPress={() => loadApplications()} />;
+
+  if (isFocused && authContext.isAuthSkipped)
+    return (
+      <NoData
+        buttonTitle={"Login"}
+        onPress={() => {
+          navigation.navigate("AuthStack");
+        }}
+        text="Please login to check your applications!"
+      />
+    );
 
   return (
     <View style={styles.container}>
@@ -106,13 +125,7 @@ function ApplicationsScreen({ navigation }) {
                   : null
               }`;
 
-            const {
-              job_title,
-              company,
-              job_type,
-              created_on,
-              job_description,
-            } = itemData.item.job;
+            const { job_title, company } = itemData.item.job;
 
             return (
               <ApplicationItemCard

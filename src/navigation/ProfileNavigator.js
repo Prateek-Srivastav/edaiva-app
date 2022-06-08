@@ -1,11 +1,6 @@
 import React from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { Text } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { TransitionPresets } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
-
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import EditProfileDetailScreen from "../screens/EditProfileScreens/EditProfileDetailScreen";
 import Colors from "../constants/Colors";

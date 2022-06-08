@@ -46,6 +46,7 @@ export default function App() {
   const [isCampusStudent, setIsCampusStudent] = useState();
   const [isProfileComplete, setIsProfileComplete] = useState();
   const [isTabBarShown, setIsTabBarShown] = useState(true);
+  const [isAuthSkipped, setIsAuthSkipped] = useState();
 
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
@@ -57,7 +58,6 @@ export default function App() {
 
   useEffect(() => {
     if (profileData?.error === "Candidate Profile not found!!") {
-      console.log(profileData);
       setIsProfileComplete(false);
     } else setIsProfileComplete(true);
 
@@ -76,29 +76,39 @@ export default function App() {
 
   const restoreUser = async () => {
     const data = await cache.get("user");
-    // const { firstname, lastname, email } = data;
-    // const { isProfileComplete } = userDetails();
-    // console.log(details, "abcdefgh");
-
-    // console.log(data);
     setFullName(data?.firstname + " " + data?.lastname);
     setEmail(data?.email);
+  };
+
+  const authSkippedFunc = async () => {
+    const authSkipped = await cache.get("isAuthSkipped");
+    if (authSkipped) {
+      setIsCampusStudent(false);
+      setIsProfileComplete(false);
+    }
+    setIsAuthSkipped(authSkipped);
+  };
+
+  const myStartup = async () => {
+    await fetchFonts();
+    await restoreToken();
+    await restoreUser();
+    await loadProfile();
+    await authSkippedFunc();
+    await loadCampusProfile();
+    await refreshAccessToken();
+  };
+
+  const myFinish = () => {
+    setIsReady(true);
   };
 
   if (!isReady) {
     return (
       <AppLoading
-        startAsync={async () => {
-          await fetchFonts();
-          restoreToken();
-          restoreUser();
-          loadProfile();
-          loadCampusProfile();
-          await refreshAccessToken();
-          // await userDetails()
-        }}
-        onFinish={() => setIsReady(true)}
-        onError={(err) => console.log(err)}
+        startAsync={myStartup}
+        onFinish={myFinish}
+        onError={(err) => console.warn("APPLOADING ERROR", err)}
       />
     );
   }
@@ -107,6 +117,7 @@ export default function App() {
     <AuthContext.Provider
       value={{
         tokens,
+        isAuthSkipped,
         fullName,
         email,
         isTabBarShown,
@@ -115,13 +126,14 @@ export default function App() {
         setFullName,
         setEmail,
         setTokens,
+        setIsAuthSkipped,
         setIsTabBarShown,
         setIsCampusStudent,
         setIsProfileComplete,
       }}
     >
       <NavigationContainer ref={navigationRef}>
-        {tokens ? (
+        {tokens || isAuthSkipped ? (
           <AppNavigator />
         ) : (
           <>

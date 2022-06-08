@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import * as Notifications from "expo-notifications";
@@ -17,6 +17,10 @@ import CampusSelectionScreen from "../screens/campusScreens/CampusSelectionScree
 import CreateProfileScreen from "../screens/CreateProfileScreen";
 import navigation from "./rootNavigation";
 import PreferenceScreen from "../screens/PreferenceScreen";
+import AuthNavigator from "./AuthNavigator";
+import AuthContext from "../auth/context";
+import { Text, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
 
@@ -35,9 +39,15 @@ function AppNavigator() {
   const responseListener = useRef();
   const [tokens, setTokens] = useState();
 
+  const isFocused = useIsFocused();
+
+  const { isAuthSkipped, setIsCampusStudent } = useContext(AuthContext);
+
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
   );
+
+  console.log("IN APPNAVIGATOR");
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
@@ -49,7 +59,7 @@ function AppNavigator() {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
     );
-    loadCampusProfile();
+    if (!isAuthSkipped) loadCampusProfile();
 
     restoreToken();
     if (tokens) {
@@ -72,7 +82,7 @@ function AppNavigator() {
         Notifications.removeNotificationSubscription(responseListener.current);
       };
     }
-  }, []);
+  }, [isFocused, isAuthSkipped]);
 
   // Notifications.addPushTokenListener;
 
@@ -101,7 +111,7 @@ function AppNavigator() {
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
       // console.log(token);
-      sendPushToken({ expo_token: token });
+      if (!isAuthSkipped) sendPushToken({ expo_token: token });
 
       // if (Platform.OS === "android") {
       //   Notifications.setNotificationChannelAsync("default", {
@@ -118,9 +128,18 @@ function AppNavigator() {
     }
   };
 
-  if (!campusProfileData) return <Loading />;
+  if (
+    campusProfileData?.detail !== "Your are not a part of any institution !" &&
+    !isAuthSkipped
+  )
+    setIsCampusStudent(true);
+  else setIsCampusStudent(false);
+  console.log(campusProfileData);
+  // if (!campusProfileData && !isAuthSkipped) return <Loading />;
+  if (!campusProfileData && !isAuthSkipped) return <Text>IN APPNAVIGATOR</Text>;
   else if (
-    campusProfileData?.detail !== "Your are not a part of any institution !"
+    campusProfileData?.detail !== "Your are not a part of any institution !" &&
+    !isAuthSkipped
   ) {
     return (
       <Drawer.Navigator
@@ -130,6 +149,7 @@ function AppNavigator() {
         <Drawer.Screen name="CampusStack" component={CampusNavigator} />
         <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
         <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
+        <Drawer.Screen name="AuthStack" component={AuthNavigator} />
         <Drawer.Screen name="Home" component={TabNavigator} />
         <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
         <Drawer.Screen name="Preference" component={PreferenceScreen} />
@@ -144,6 +164,7 @@ function AppNavigator() {
       <Drawer.Screen name="Home" component={TabNavigator} />
       <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
       <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
+      <Drawer.Screen name="AuthStack" component={AuthNavigator} />
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
       <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />
