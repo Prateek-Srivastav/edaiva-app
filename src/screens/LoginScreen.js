@@ -91,6 +91,8 @@ function LoginScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setIsAuthSkipped(false);
+    await cache.store("isAuthSkipped", false);
     authContext.setFullName(user.firstname + " " + user.lastname);
     authContext.setEmail(user.email);
     await cache.store("user", user);
@@ -159,6 +161,8 @@ function LoginScreen({ navigation }) {
 
         authContext.setTokens({ access, refresh });
         authStorage.storeToken(access, refresh);
+        authContext.setIsAuthSkipped(false);
+        await cache.store("isAuthSkipped", false);
         authContext.setFullName(user.firstname + " " + user.lastname);
         authContext.setEmail(user.email);
         await cache.store("user", user);
@@ -229,6 +233,8 @@ function LoginScreen({ navigation }) {
 
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
+    authContext.setIsAuthSkipped(false);
+    await cache.store("isAuthSkipped", false);
     authContext.setFullName(user.firstname + " " + user.lastname);
     authContext.setEmail(user.email);
     await cache.store("user", user);
