@@ -113,7 +113,7 @@ const ApplicationItemCard = (props) => {
 
   const RevokeApplication = () => {
     return (
-      <CustomAlert visible={visible}>
+      <CustomAlert visible={visible} setAlertVisible={setVisible}>
         <View style={{ alignItems: "center" }}>
           <Text
             style={{

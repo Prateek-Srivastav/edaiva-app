@@ -53,18 +53,29 @@ const CustomAlert = ({
         setShowModal(false);
       }}
     >
-      <View style={styles.modalBackGround}>
-        <Animated.View
-          style={[
-            styles.modalContainer,
-            { width: modalWidth ? modalWidth : "80%" },
-            { transform: [{ scale: scaleValue }] },
-            modalStyle,
-          ]}
-        >
-          {children}
-        </Animated.View>
-      </View>
+      <TouchableOpacity
+        style={{
+          height: "100%",
+          // backgroundColor: "white",
+        }}
+        onPress={() => {
+          setAlertVisible(false);
+          setShowModal(false);
+        }}
+      >
+        <View style={styles.modalBackGround}>
+          <Animated.View
+            style={[
+              styles.modalContainer,
+              { width: modalWidth ? modalWidth : "80%" },
+              { transform: [{ scale: scaleValue }] },
+              modalStyle,
+            ]}
+          >
+            {children}
+          </Animated.View>
+        </View>
+      </TouchableOpacity>
     </Modal>
   );
 };
