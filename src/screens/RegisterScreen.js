@@ -26,6 +26,7 @@ import CustomAlert from "../components/CustomAlert";
 import AuthContext from "../auth/context";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
+import CustomHeader from "../components/CustomHeader";
 
 const validationSchema = Yup.object().shape({
   firstname: Yup.string().required().min(2).label("First Name"),
@@ -256,147 +257,152 @@ function RegisterScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.authContainer}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 15,
-          }}
-        >
-          <Text style={styles.authText}>Welcome.</Text>
-        </View>
+    <>
+      {authContext.isAuthSkipped && (
+        <CustomHeader goBack navigation={navigation} isRegisterScreen />
+      )}
+      <View style={styles.screen}>
+        <ScrollView contentContainerStyle={styles.authContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+          >
+            <Text style={styles.authText}>Welcome.</Text>
+          </View>
 
-        <AppForm
-          initialValues={{
-            firstname: "",
-            lastname: "",
-            email: "",
-            password: "",
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          <ErrorMessage error={errorMessage} visible={registerFailed} />
-          <AppFormField
-            name="firstname"
-            label="First Name"
-            keyboardType="default"
-            autoCapitalize="words"
-          />
-          <AppFormField
-            name="lastname"
-            label="Last Name"
-            keyboardType="default"
-            autoCapitalize="words"
-          />
-          <AppFormField
-            name="email"
-            label="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <AppFormField
-            name="password"
-            label="Password"
-            icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
-            keyboardType="default"
-            secureTextEntry={!isPasswordShown}
-            autoCapitalize="none"
-            onIconPress={() => setIsPasswordShown(!isPasswordShown)}
-          />
-          <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
-            <Text style={styles.forgotPassText}>
-              By clicking Sign Up, you agree to our{" "}
-            </Text>
-            <TouchableOpacity>
+          <AppForm
+            initialValues={{
+              firstname: "",
+              lastname: "",
+              email: "",
+              password: "",
+            }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
+            <ErrorMessage error={errorMessage} visible={registerFailed} />
+            <AppFormField
+              name="firstname"
+              label="First Name"
+              keyboardType="default"
+              autoCapitalize="words"
+            />
+            <AppFormField
+              name="lastname"
+              label="Last Name"
+              keyboardType="default"
+              autoCapitalize="words"
+            />
+            <AppFormField
+              name="email"
+              label="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <AppFormField
+              name="password"
+              label="Password"
+              icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
+              keyboardType="default"
+              secureTextEntry={!isPasswordShown}
+              autoCapitalize="none"
+              onIconPress={() => setIsPasswordShown(!isPasswordShown)}
+            />
+            <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
+              <Text style={styles.forgotPassText}>
+                By clicking Sign Up, you agree to our{" "}
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    flex: 1,
+                    fontFamily: "OpenSans-Regular",
+                    color: Colors.primary,
+                    fontSize: 12.8,
+                  }}
+                >
+                  Terms of Use
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.forgotPassText}> and our </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    flex: 1,
+                    fontFamily: "OpenSans-Regular",
+                    color: Colors.primary,
+                    fontSize: 12.8,
+                  }}
+                >
+                  Privacy Policy.
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <SubmitButton title={loading ? "Loading..." : "Sign up"} />
+          </AppForm>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <View style={styles.line} />
+            <View>
               <Text
                 style={{
-                  flex: 1,
+                  fontSize: 14,
+                  textAlign: "center",
                   fontFamily: "OpenSans-Regular",
-                  color: Colors.primary,
-                  fontSize: 12.8,
+                  color: "#817E7E",
+                  marginHorizontal: 7,
                 }}
               >
-                Terms of Use
+                Sign up with
               </Text>
-            </TouchableOpacity>
-            <Text style={styles.forgotPassText}> and our </Text>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  flex: 1,
-                  fontFamily: "OpenSans-Regular",
-                  color: Colors.primary,
-                  fontSize: 12.8,
-                }}
-              >
-                Privacy Policy.
-              </Text>
-            </TouchableOpacity>
+            </View>
+            <View style={styles.line} />
           </View>
-          <SubmitButton title={loading ? "Loading..." : "Sign up"} />
-        </AppForm>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 30,
-          }}
-        >
-          <View style={styles.line} />
-          <View>
-            <Text
-              style={{
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "OpenSans-Regular",
-                color: "#817E7E",
-                marginHorizontal: 7,
-              }}
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
+              disabled={!request}
+              onPress={() => promptAsync()}
             >
-              Sign up with
-            </Text>
+              <Image
+                source={require("../assets/google.png")}
+                style={{ height: 22, width: 22 }}
+                resizeMode="contain"
+              />
+              <Text style={styles.thirdPartyAuthText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={styles.thirdPartyAuthContainer}
+              onPress={() => modifyRedirectUrl(data)}
+            >
+              <Image
+                source={require("../assets/linkedin.png")}
+                style={{ height: 22, width: 22 }}
+                resizeMode="contain"
+              />
+              <Text style={styles.thirdPartyAuthText}>LinkedIn</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.line} />
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
-            disabled={!request}
-            onPress={() => promptAsync()}
-          >
-            <Image
-              source={require("../assets/google.png")}
-              style={{ height: 22, width: 22 }}
-              resizeMode="contain"
-            />
-            <Text style={styles.thirdPartyAuthText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={styles.thirdPartyAuthContainer}
-            onPress={() => modifyRedirectUrl(data)}
-          >
-            <Image
-              source={require("../assets/linkedin.png")}
-              style={{ height: 22, width: 22 }}
-              resizeMode="contain"
-            />
-            <Text style={styles.thirdPartyAuthText}>LinkedIn</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-      <LinkedinAuth />
-    </View>
+        </ScrollView>
+        <LinkedinAuth />
+      </View>
+    </>
   );
 }
 

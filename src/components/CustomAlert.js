@@ -10,12 +10,21 @@ import {
   Animated,
 } from "react-native";
 
-const CustomAlert = ({ visible, children, modalWidth, modalStyle }) => {
+const CustomAlert = ({
+  visible,
+  children,
+  modalWidth,
+  modalStyle,
+  setAlertVisible,
+}) => {
   const [showModal, setShowModal] = useState(visible);
+
   const scaleValue = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     toggleModal();
   }, [visible]);
+
   const toggleModal = () => {
     if (visible) {
       setShowModal(true);
@@ -34,8 +43,16 @@ const CustomAlert = ({ visible, children, modalWidth, modalStyle }) => {
       }).start();
     }
   };
+
   return (
-    <Modal transparent visible={showModal}>
+    <Modal
+      transparent
+      visible={showModal}
+      onRequestClose={() => {
+        setAlertVisible(false);
+        setShowModal(false);
+      }}
+    >
       <View style={styles.modalBackGround}>
         <Animated.View
           style={[

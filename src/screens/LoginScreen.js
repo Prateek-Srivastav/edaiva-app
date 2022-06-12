@@ -26,6 +26,7 @@ import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
 import useApi from "../hooks/useApi";
 import CustomAlert from "../components/CustomAlert";
+import CustomHeader from "../components/CustomHeader";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -252,116 +253,121 @@ function LoginScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.screen}>
-      <ScrollView
-        // showsVerticalScrollIndicator={false}s
-        contentContainerStyle={styles.authContainer}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginVertical: 15,
-          }}
+    <>
+      {authContext.isAuthSkipped && (
+        <CustomHeader goBack navigation={navigation} isLoginScreen />
+      )}
+      <View style={styles.screen}>
+        <ScrollView
+          // showsVerticalScrollIndicator={false}s
+          contentContainerStyle={styles.authContainer}
         >
-          <Text style={styles.authText}>Sign in</Text>
-        </View>
-
-        <AppForm
-          initialValues={{ email: "", password: "" }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          <ErrorMessage error={errorMessage} visible={loginFailed} />
-          <AppFormField
-            name="email"
-            label="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <AppFormField
-            name="password"
-            label="Password"
-            icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
-            keyboardType="default"
-            secureTextEntry={!isPasswordShown}
-            autoCapitalize="none"
-            onIconPress={() => setIsPasswordShown(!isPasswordShown)}
-          />
-
-          <TouchableOpacity
+          <View
             style={{
-              marginTop: -5,
-              alignItems: "flex-start",
-              justifyContent: "flex-end",
               flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 15,
             }}
-            onPress={() => navigation.navigate("ForgotPasswordStack")}
           >
-            <Text style={styles.forgotPassText}>Forgot Password?</Text>
-          </TouchableOpacity>
-          <SubmitButton title={loading ? "Loading..." : "Login"} />
-        </AppForm>
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 30,
-          }}
-        >
-          <View style={styles.line} />
-          <View>
-            <Text
-              style={{
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "OpenSans-Regular",
-                color: "#817E7E",
-                marginHorizontal: 7,
-              }}
-            >
-              Continue with
-            </Text>
+            <Text style={styles.authText}>Sign in</Text>
           </View>
-          <View style={styles.line} />
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
-            onPress={() => promptAsync()}
-            disabled={!request}
+
+          <AppForm
+            initialValues={{ email: "", password: "" }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
           >
-            <Image
-              source={require("../assets/google.png")}
-              style={{ height: 22, width: 22 }}
-              resizeMode="contain"
+            <ErrorMessage error={errorMessage} visible={loginFailed} />
+            <AppFormField
+              name="email"
+              label="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
-            <Text style={styles.thirdPartyAuthText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={styles.thirdPartyAuthContainer}
-            onPress={() => modifyRedirectUrl(data)}
+            <AppFormField
+              name="password"
+              label="Password"
+              icon={isPasswordShown ? "ios-eye-off" : "ios-eye"}
+              keyboardType="default"
+              secureTextEntry={!isPasswordShown}
+              autoCapitalize="none"
+              onIconPress={() => setIsPasswordShown(!isPasswordShown)}
+            />
+
+            <TouchableOpacity
+              style={{
+                marginTop: -5,
+                alignItems: "flex-start",
+                justifyContent: "flex-end",
+                flexDirection: "row",
+              }}
+              onPress={() => navigation.navigate("ForgotPasswordStack")}
+            >
+              <Text style={styles.forgotPassText}>Forgot Password?</Text>
+            </TouchableOpacity>
+            <SubmitButton title={loading ? "Loading..." : "Login"} />
+          </AppForm>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
           >
-            <Image
-              source={require("../assets/linkedin.png")}
-              style={{ height: 22, width: 22 }}
-              resizeMode="contain"
-            />
-            <Text style={styles.thirdPartyAuthText}>LinkedIn</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-      <LinkedinAuth />
-    </View>
+            <View style={styles.line} />
+            <View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  textAlign: "center",
+                  fontFamily: "OpenSans-Regular",
+                  color: "#817E7E",
+                  marginHorizontal: 7,
+                }}
+              >
+                Continue with
+              </Text>
+            </View>
+            <View style={styles.line} />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={{ ...styles.thirdPartyAuthContainer, marginEnd: 20 }}
+              onPress={() => promptAsync()}
+              disabled={!request}
+            >
+              <Image
+                source={require("../assets/google.png")}
+                style={{ height: 22, width: 22 }}
+                resizeMode="contain"
+              />
+              <Text style={styles.thirdPartyAuthText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={styles.thirdPartyAuthContainer}
+              onPress={() => modifyRedirectUrl(data)}
+            >
+              <Image
+                source={require("../assets/linkedin.png")}
+                style={{ height: 22, width: 22 }}
+                resizeMode="contain"
+              />
+              <Text style={styles.thirdPartyAuthText}>LinkedIn</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+        <LinkedinAuth />
+      </View>
+    </>
   );
 }
 

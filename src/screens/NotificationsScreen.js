@@ -25,6 +25,7 @@ import cache from "../utilities/cache";
 import showToast from "../components/ShowToast";
 import NoData from "../components/NoData";
 import AuthContext from "../auth/context";
+import { LoginAlert } from "../components/LoginAlert";
 
 const NormalText = (props) => (
   <Text {...props} style={{ ...styles.normalText, ...props.style }}>
@@ -134,6 +135,7 @@ function NotificationsScreen({ navigation }) {
   const [notificLoading, setNotificLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+  const [loginAlertVisible, setLoginAlertVisible] = useState(false);
 
   const { request: markSeenNotifications } = useApi(
     notificationApi.markSeenNotifications
@@ -237,13 +239,25 @@ function NotificationsScreen({ navigation }) {
       ) : error && !loading ? (
         <Error onPress={() => loadApplications()} />
       ) : isFocused && isAuthSkipped ? (
-        <NoData
-          buttonTitle={"Login"}
-          onPress={() => {
-            navigation.navigate("AuthStack");
-          }}
-          text="Please login to check your notifications!"
-        />
+        <>
+          <NoData
+            buttonTitle={"Login"}
+            onPress={() => {
+              showToast({
+                type: "appWarning",
+                message: "You need to login to apply for the job.",
+              });
+              setLoginAlertVisible(true);
+              return;
+            }}
+            text="Please login to check your notifications!"
+          />
+          <LoginAlert
+            visible={loginAlertVisible}
+            setAlertVisible={setLoginAlertVisible}
+            navigation={navigation}
+          />
+        </>
       ) : (
         <View style={styles.container}>
           {!loading &&

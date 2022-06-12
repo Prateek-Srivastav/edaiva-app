@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from "react-native";
 import {
   AntDesign,
@@ -21,6 +22,8 @@ function CustomHeader({
   backScreen,
   isMenu,
   isShare,
+  isLoginScreen,
+  isRegisterScreen,
   navigation,
   onRightIconPress,
   children,
@@ -55,6 +58,16 @@ function CustomHeader({
               />
             </TouchableOpacity>
           )}
+          {(isLoginScreen || isRegisterScreen) && (
+            <Image
+              source={require("../assets/edaiva_logo_edit-03.png")}
+              style={{
+                height: 30,
+                width: 140,
+                top: 2,
+              }}
+            />
+          )}
           <Text style={styles.titleStyle}>{screenName}</Text>
         </View>
         <View
@@ -78,6 +91,32 @@ function CustomHeader({
           {isShare && (
             <TouchableOpacity onPress={onRightIconPress}>
               <AntDesign name="sharealt" size={23} color={Colors.primary} />
+            </TouchableOpacity>
+          )}
+          {isLoginScreen && (
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+              <Text
+                style={{
+                  fontFamily: "OpenSans-Medium",
+                  fontSize: 16,
+                  color: Colors.primary,
+                }}
+              >
+                Register
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isRegisterScreen && (
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text
+                style={{
+                  fontFamily: "OpenSans-Medium",
+                  fontSize: 16,
+                  color: Colors.primary,
+                }}
+              >
+                Login
+              </Text>
             </TouchableOpacity>
           )}
         </View>

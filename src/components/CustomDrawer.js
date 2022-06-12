@@ -32,6 +32,7 @@ import CustomButton from "./CustomButton";
 import campusCandidateApi from "../api/campusApis/candidate";
 import candidateApi from "../api/candidate";
 import useApi from "../hooks/useApi";
+import showToast from "./ShowToast";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -58,13 +59,20 @@ const OtherInfosComponent = ({ icon, detail, onPress }) => (
   </TouchableOpacity>
 );
 
-const NavigatorButton = ({ title, icon, ...otherProps }) => (
+const NavigatorButton = ({ title, icon, bgColor, ...otherProps }) => (
   <TouchableOpacity
     activeOpacity={0.7}
     {...otherProps}
     style={styles.navigatorButtonContainer}
   >
-    <View style={styles.iconContainer}>{icon}</View>
+    <View
+      style={[
+        styles.iconContainer,
+        { backgroundColor: bgColor ? bgColor : Colors.primary },
+      ]}
+    >
+      {icon}
+    </View>
     <Text style={styles.navigatorText}>{title}</Text>
   </TouchableOpacity>
 );
@@ -179,64 +187,102 @@ function CustomDrawer(props) {
       {...props}
       style={{ paddingHorizontal: 25, paddingTop: 25, marginBottom: 15 }}
     >
+      {isAuthSkipped && (
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: 10,
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => props.navigation.navigate("Login")}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.loginText}>Log in</Text>
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => props.navigation.navigate("Register")}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={styles.loginText}>Register</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       {!isAuthSkipped && (
         <>
           <LargeText>{fullName}</LargeText>
           <AppText style={{ fontSize: height < 160 ? 13 : 14 }}>
             {email}
           </AppText>
-          <HorizontalLine marginTop={10} />
         </>
       )}
-      <View
-        style={[
-          styles.navigatorsContainer,
-          { justifyContent: isAuthSkipped ? "flex-start" : "space-around" },
-        ]}
-      >
-        {!isAuthSkipped && (
-          <View>
-            <NavigatorButton
-              title="Profile"
-              icon={<Profile />}
-              onPress={() =>
-                !isProfileComplete
-                  ? props.navigation.navigate("CreateProfile", {
-                      screenName: "ProfileStack",
-                    })
-                  : props.navigation.navigate("ProfileStack")
-              }
-            />
-            <NavigatorButton
-              title="Preference"
-              icon={<Preference />}
-              error
-              onPress={() =>
-                !isProfileComplete
-                  ? props.navigation.navigate("CreateProfile", {
-                      screenName: "Preference",
-                    })
-                  : props.navigation.navigate("Preference")
-              }
-            />
-          </View>
-        )}
+      <HorizontalLine marginTop={10} />
+      <View style={styles.navigatorsContainer}>
         <View>
-          {!isAuthSkipped && (
-            <NavigatorButton
-              title={!isCampusStudent ? "Campus" : "Jobs"}
-              icon={!isCampusStudent ? <Campus /> : <JobsIcon />}
-              onPress={() =>
-                props.navigation.navigate(
-                  isCampusStudent
-                    ? "Home"
-                    : !isCampusStudent
-                    ? "CampusSelection"
-                    : "CampusStack"
-                )
-              }
-            />
-          )}
+          <NavigatorButton
+            title="Profile"
+            icon={<Profile />}
+            bgColor={isAuthSkipped ? Colors.grey : Colors.primary}
+            onPress={() =>
+              !isProfileComplete
+                ? props.navigation.navigate("CreateProfile", {
+                    screenName: "ProfileStack",
+                  })
+                : isAuthSkipped
+                ? showToast({
+                    type: "appWarning",
+                    message: "You need to login to access this!",
+                  })
+                : props.navigation.navigate("ProfileStack")
+            }
+          />
+          <NavigatorButton
+            title="Preference"
+            icon={<Preference />}
+            bgColor={isAuthSkipped ? Colors.grey : Colors.primary}
+            onPress={() =>
+              !isProfileComplete
+                ? props.navigation.navigate("CreateProfile", {
+                    screenName: "Preference",
+                  })
+                : isAuthSkipped
+                ? showToast({
+                    type: "appWarning",
+                    message: "You need to login to access this!",
+                  })
+                : props.navigation.navigate("Preference")
+            }
+          />
+        </View>
+        <View>
+          <NavigatorButton
+            title={!isCampusStudent ? "Campus" : "Jobs"}
+            icon={!isCampusStudent ? <Campus /> : <JobsIcon />}
+            bgColor={isAuthSkipped ? Colors.grey : Colors.primary}
+            onPress={() =>
+              isAuthSkipped
+                ? showToast({
+                    type: "appWarning",
+                    message: "You need to login to access this!",
+                  })
+                : props.navigation.navigate(
+                    isCampusStudent
+                      ? "Home"
+                      : !isCampusStudent
+                      ? "CampusSelection"
+                      : "CampusStack"
+                  )
+            }
+          />
           <NavigatorButton
             title="Wishlist"
             icon={<Wishlist />}
@@ -271,37 +317,25 @@ function CustomDrawer(props) {
         detail="Privacy Policy"
         icon={<Privacy />}
       />
-      <HorizontalLine marginVertical={25} marginTop={15} />
       {!isAuthSkipped && (
-        <TouchableOpacity
-          activeOpacity={0.5}
-          onPress={() => setVisible(true)}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 20,
-            marginBottom: 10,
-          }}
-        >
-          <SignOut color={Colors.grey} />
-          <Text style={styles.signOutText}>Sign out</Text>
-        </TouchableOpacity>
+        <>
+          <HorizontalLine marginVertical={25} marginTop={15} />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => setVisible(true)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 20,
+              marginBottom: 10,
+            }}
+          >
+            <SignOut color={Colors.grey} />
+            <Text style={styles.signOutText}>Sign out</Text>
+          </TouchableOpacity>
+        </>
       )}
-      {isAuthSkipped && (
-        <TouchableOpacity
-          activeOpacity={0.5}
-          onPress={() => props.navigation.navigate("AuthStack")}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 20,
-            marginBottom: 10,
-          }}
-        >
-          <SimpleLineIcons name="login" size={24} color={Colors.primary} />
-          <Text style={styles.loginText}>Log in</Text>
-        </TouchableOpacity>
-      )}
+
       <SignOutAlert />
     </DrawerContentScrollView>
   );
@@ -309,7 +343,6 @@ function CustomDrawer(props) {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    backgroundColor: Colors.primary,
     borderRadius: 3,
     width: 45,
     height: 45,
@@ -329,6 +362,7 @@ const styles = StyleSheet.create({
   navigatorsContainer: {
     flexDirection: "row",
     marginVertical: 25,
+    justifyContent: "space-around",
   },
   navigatorText: {
     fontFamily: "OpenSans-Regular",
@@ -345,16 +379,22 @@ const styles = StyleSheet.create({
   signOutText: {
     fontFamily: "OpenSans-Medium",
     fontSize: height < 160 ? 15 : 19,
-    // fontSize: 19,
     color: Colors.black,
     marginLeft: 20,
   },
   loginText: {
     fontFamily: "OpenSans-SemiBold",
     fontSize: height < 160 ? 15 : 19,
-    // fontSize: 19,
     color: Colors.primary,
-    marginLeft: 20,
+  },
+  separator: {
+    // top: 15,
+    // flex: 0.5,
+    // flexDirection: "column",
+    marginHorizontal: 15,
+    width: 1.2,
+    borderRadius: 10,
+    backgroundColor: "#D4D4D4",
   },
 });
 

@@ -10,7 +10,7 @@ import {
   Share,
   BackHandler,
 } from "react-native";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import RenderHtml, { defaultSystemFonts } from "react-native-render-html";
 
 import { BuildingIcon, Location } from "../assets/svg/icons";
@@ -38,6 +38,7 @@ import showToast from "../components/ShowToast";
 import { useFocusEffect } from "@react-navigation/native";
 import candidateApi from "../api/candidate";
 import AuthContext from "../auth/context";
+import { LoginAlert } from "../components/LoginAlert";
 
 const { width, height } = Dimensions.get("window");
 
@@ -74,6 +75,7 @@ function JobDetailScreen({ route, navigation }) {
   const [networkError, setNetworkError] = useState(false);
 
   const [visible, setVisible] = useState(false);
+  const [loginAlertVisible, setLoginAlertVisible] = useState(false);
   const [placementCriteria, setPlacementCriteria] = useState();
 
   const { isAuthSkipped } = useContext(AuthContext);
@@ -136,6 +138,9 @@ function JobDetailScreen({ route, navigation }) {
           setIsPressed(false);
           isVisible = false;
           setCloseModal(true);
+          return true;
+        } else if (loginAlertVisible) {
+          setLoginAlertVisible(false);
           return true;
         }
 
@@ -720,7 +725,8 @@ function JobDetailScreen({ route, navigation }) {
                     type: "appWarning",
                     message: "You need to login to apply for the job.",
                   });
-                  return navigation.navigate("AuthStack");
+                  setLoginAlertVisible(true);
+                  return;
                 }
                 if (profileData?.error === "Candidate Profile not found!!") {
                   showToast({
@@ -752,6 +758,11 @@ function JobDetailScreen({ route, navigation }) {
             jobId={jobId}
           />
           <RevokeApplication />
+          <LoginAlert
+            visible={loginAlertVisible}
+            setAlertVisible={setLoginAlertVisible}
+            navigation={navigation}
+          />
         </View>
       )}
     </>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FlatList, View, StyleSheet, BackHandler } from "react-native";
 
 import ApplicationItemCard from "../components/ApplicationsItemCard";
@@ -13,9 +13,13 @@ import Loading from "../components/Loading";
 import cache from "../utilities/cache";
 import NoData from "../components/NoData";
 import AuthContext from "../auth/context";
+import { LoginAlert } from "../components/LoginAlert";
+import showToast from "../components/ShowToast";
 
 function ApplicationsScreen({ navigation }) {
   const isFocused = useIsFocused();
+
+  const [loginAlertVisible, setLoginAlertVisible] = useState(false);
 
   const authContext = useContext(AuthContext);
 
@@ -80,13 +84,25 @@ function ApplicationsScreen({ navigation }) {
 
   if (isFocused && authContext.isAuthSkipped)
     return (
-      <NoData
-        buttonTitle={"Login"}
-        onPress={() => {
-          navigation.navigate("AuthStack");
-        }}
-        text="Please login to check your applications!"
-      />
+      <>
+        <NoData
+          buttonTitle={"Login"}
+          onPress={() => {
+            showToast({
+              type: "appWarning",
+              message: "You need to login to apply for the job.",
+            });
+            setLoginAlertVisible(true);
+            return;
+          }}
+          text="Please login to check your applications!"
+        />
+        <LoginAlert
+          visible={loginAlertVisible}
+          setAlertVisible={setLoginAlertVisible}
+          navigation={navigation}
+        />
+      </>
     );
 
   return (
@@ -128,23 +144,25 @@ function ApplicationsScreen({ navigation }) {
             const { job_title, company } = itemData.item.job;
 
             return (
-              <ApplicationItemCard
-                onPress={() =>
-                  navigation.navigate("ApplicationStatus", {
-                    jobId: itemData.item.job._id.$oid,
-                    location,
-                    applicationStatus: itemData.item.status,
-                    applicationId: itemData.item._id.$oid,
-                  })
-                }
-                applicationId={itemData.item._id.$oid}
-                heading={job_title}
-                companyName={company[0].name}
-                location={location}
-                appliedOn={formattedDate(itemData.item.date_applied.$date)}
-                applicationStatus={itemData.item.status}
-                isRevoked={getIsRevoked}
-              />
+              <>
+                <ApplicationItemCard
+                  onPress={() =>
+                    navigation.navigate("ApplicationStatus", {
+                      jobId: itemData.item.job._id.$oid,
+                      location,
+                      applicationStatus: itemData.item.status,
+                      applicationId: itemData.item._id.$oid,
+                    })
+                  }
+                  applicationId={itemData.item._id.$oid}
+                  heading={job_title}
+                  companyName={company[0].name}
+                  location={location}
+                  appliedOn={formattedDate(itemData.item.date_applied.$date)}
+                  applicationStatus={itemData.item.status}
+                  isRevoked={getIsRevoked}
+                />
+              </>
             );
           }}
         />

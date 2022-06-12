@@ -19,8 +19,13 @@ import navigation from "./rootNavigation";
 import PreferenceScreen from "../screens/PreferenceScreen";
 import AuthNavigator from "./AuthNavigator";
 import AuthContext from "../auth/context";
-import { Text, View } from "react-native";
-import { useIsFocused } from "@react-navigation/native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
+import VerificationCodeScreen from "../screens/VerificationCodeScreen";
+import ForgotPasswordNavigator from "./ForgotPasswordNavigator";
+import Colors from "../constants/Colors";
 
 const Drawer = createDrawerNavigator();
 
@@ -46,8 +51,6 @@ function AppNavigator() {
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
   );
-
-  console.log("IN APPNAVIGATOR");
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
@@ -135,8 +138,7 @@ function AppNavigator() {
     setIsCampusStudent(true);
   else setIsCampusStudent(false);
   console.log(campusProfileData);
-  // if (!campusProfileData && !isAuthSkipped) return <Loading />;
-  if (!campusProfileData && !isAuthSkipped) return <Text>IN APPNAVIGATOR</Text>;
+  if (!campusProfileData && !isAuthSkipped) return <Loading />;
   else if (
     campusProfileData?.detail !== "Your are not a part of any institution !" &&
     !isAuthSkipped
@@ -149,7 +151,6 @@ function AppNavigator() {
         <Drawer.Screen name="CampusStack" component={CampusNavigator} />
         <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
         <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
-        <Drawer.Screen name="AuthStack" component={AuthNavigator} />
         <Drawer.Screen name="Home" component={TabNavigator} />
         <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
         <Drawer.Screen name="Preference" component={PreferenceScreen} />
@@ -164,7 +165,16 @@ function AppNavigator() {
       <Drawer.Screen name="Home" component={TabNavigator} />
       <Drawer.Screen name="CreateProfile" component={CreateProfileScreen} />
       <Drawer.Screen name="ProfileStack" component={ProfileNavigator} />
-      <Drawer.Screen name="AuthStack" component={AuthNavigator} />
+      <Drawer.Screen name="Login" component={LoginScreen} />
+      <Drawer.Screen name="Register" component={RegisterScreen} />
+      <Drawer.Screen
+        name="CodeVerification"
+        component={VerificationCodeScreen}
+      />
+      <Drawer.Screen
+        name="ForgotPasswordStack"
+        component={ForgotPasswordNavigator}
+      />
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
       <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />

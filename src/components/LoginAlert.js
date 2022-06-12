@@ -1,37 +1,38 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
+  Text,
+  TouchableOpacity,
   View,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   Image,
   BackHandler,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
+
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { WebView } from "react-native-webview";
-import { Feather } from "@expo/vector-icons";
 
-import authApi from "../api/auth";
+import CustomAlert from "./CustomAlert";
+import Colors from "../constants/Colors";
 import AuthContext from "../auth/context";
+import authApi from "../api/auth";
 import authStorage from "../auth/storage";
 import cache from "../utilities/cache";
-import Carousel from "../components/carousels/Carousel";
-import Colors from "../constants/Colors";
-import { carouselData } from "../dummyData.js/carouselData";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import useApi from "../hooks/useApi";
-import CustomAlert from "../components/CustomAlert";
+import showToast from "./ShowToast";
+import { useFocusEffect } from "@react-navigation/native";
 
-function WelcomeScreen({ navigation }) {
+export const LoginAlert = ({ visible, setAlertVisible, navigation }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState();
   const [linkedinToken, setLinkedInToken] = useState();
   const [ldAuthStart, setLdAuthStarted] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [linkedinAuthVisible, setLinkedinAuthVisible] = useState(false);
   const [isLinkedinAuthLoading, setIsLinkedinAuthLoading] = useState();
 
   WebBrowser.maybeCompleteAuthSession();
@@ -96,7 +97,7 @@ function WelcomeScreen({ navigation }) {
     redirectUrl.push(`redirect_uri=${appRedirectUri}`);
     redirectUrl = redirectUrl.join("&");
     setRedirectUrl(redirectUrl);
-    setVisible(true);
+    setLinkedinAuthVisible(true);
     setLdAuthStarted(true);
     // const result = await WebBrowser.openAuthSessionAsync(redirectUrl);
     // // console.log(result);
@@ -119,7 +120,7 @@ function WelcomeScreen({ navigation }) {
 
       const handleLinkedinAuth = async (token) => {
         setLoading(true);
-        setVisible(false);
+        setLinkedinAuthVisible(false);
         const result = await authApi.linkedinLogin(token);
         // console.log(result + "h");
         if (!result.ok) {
@@ -167,7 +168,7 @@ function WelcomeScreen({ navigation }) {
 
   const LinkedinAuth = () => (
     <CustomAlert
-      visible={ldAuthStart && visible}
+      visible={ldAuthStart && linkedinAuthVisible}
       modalStyle={{
         flex: 1,
         paddingHorizontal: 4,
@@ -178,7 +179,7 @@ function WelcomeScreen({ navigation }) {
       <TouchableOpacity
         onPress={() => {
           setLdAuthStarted(false);
-          setVisible(false);
+          setLinkedinAuthVisible(false);
         }}
         style={{
           borderWidth: 1,
@@ -223,21 +224,80 @@ function WelcomeScreen({ navigation }) {
   }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flex: 1,
-        // justifyContent: "center",
-        alignItems: "center",
-      }}
-      style={styles.container}
+    <CustomAlert
+      visible={visible}
+      setAlertVisible={setAlertVisible}
+      modalStyle={{ paddingVertical: 10, paddingHorizontal: 10 }}
+      modalWidth="85%"
     >
-      {/* {!linkedinToken && ldAuthStart ? (
-        <View style={styles.wvContainer}></View>
-      ) : ( */}
+      <TouchableOpacity
+        onPress={() => {
+          setAlertVisible(false);
+        }}
+        style={{
+          borderWidth: 1,
+          margin: 3,
+          borderColor: "#0AB4F14D",
+          borderRadius: 3,
+          alignSelf: "flex-end",
+        }}
+      >
+        <Feather name="x" size={18} color={Colors.primary} />
+      </TouchableOpacity>
       <>
-        <Carousel data={carouselData} />
+        <Image
+          source={require("../assets/Edaiva_logo_edit-04.png")}
+          style={{ height: 150, width: 150, alignSelf: "center" }}
+          resizeMode="contain"
+        />
         <TouchableOpacity
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => {
+            setAlertVisible(false);
+            navigation.navigate("Register");
+          }}
+          activeOpacity={0.4}
+          style={styles.button}
+        >
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              fontSize: 16,
+              color: Colors.primary,
+              textAlign: "center",
+            }}
+          >
+            Register
+          </Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            // marginBottom: 30,
+            paddingHorizontal: 20,
+          }}
+        >
+          <View style={styles.line} />
+          <View>
+            <Text
+              style={{
+                fontSize: 14,
+                textAlign: "center",
+                fontFamily: "OpenSans-Regular",
+                color: "#817E7E",
+                marginHorizontal: 7,
+              }}
+            >
+              Or
+            </Text>
+          </View>
+          <View style={styles.line} />
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            setAlertVisible(false);
+            navigation.navigate("Login");
+          }}
           activeOpacity={0.4}
           style={{
             ...styles.button,
@@ -345,10 +405,9 @@ function WelcomeScreen({ navigation }) {
         )}
       </>
       <LinkedinAuth />
-      {/* )} */}
-    </ScrollView>
+    </CustomAlert>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -386,11 +445,11 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    // padding: 15,
-    marginVertical: 30,
+    marginVertical: 10,
     marginHorizontal: 20,
-    marginTop: 50,
     borderRadius: 4,
+    borderWidth: 1,
+    borderColor: Colors.primary,
     alignSelf: "center",
   },
   wvContainer: {
@@ -401,5 +460,3 @@ const styles = StyleSheet.create({
   },
   wv: {},
 });
-
-export default WelcomeScreen;
