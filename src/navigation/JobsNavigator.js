@@ -1,7 +1,10 @@
 import React from "react";
 import { View, Image, Share, TouchableOpacity } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { TransitionPresets } from "@react-navigation/stack";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationOptions,
+} from "@react-navigation/native-stack";
+import { CardStyleInterpolators } from "@react-navigation/stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 
@@ -15,44 +18,12 @@ import ApplicationStatusScreen from "../screens/ApplicationStatusScreen";
 
 const Stack = createNativeStackNavigator();
 
-// const rightShareHeader = () => {
-//   const navigation = useNavigation();
-//   const route = useRoute();
-
-//   // const jobId = navigation.getState().routes[1].state.routes[1].params.jobId;
-//   console.log("navigation");
-
-//   // const onShare = async () => {
-//   //   try {
-//   //     const result = await Share.share({
-//   //       message: `${jobClient.getBaseURL()}/jobs/${jobId}`,
-//   //     });
-//   //     if (result.action === Share.sharedAction) {
-//   //       if (result.activityType) {
-//   //         // shared with activity type of result.activityType
-//   //       } else {
-//   //         // shared
-//   //       }
-//   //     } else if (result.action === Share.dismissedAction) {
-//   //       // dismissed
-//   //     }
-//   //   } catch (error) {
-//   //     alert(error.message);
-//   //   }
-//   // };
-
-//   return (
-//     <TouchableOpacity style={{ marginRight: 5 }} onPress={onShare}>
-//       <AntDesign name="sharealt" size={23} color={Colors.primary} />
-//     </TouchableOpacity>
-//   );
-// };
-
 const JobsNavigator = () => (
   <Stack.Navigator
     screenOptions={{
       headerShown: false,
-      ...TransitionPresets.SlideFromRightIOS,
+      // animation: "slide_from_right",
+      // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     }}
   >
     <Stack.Screen

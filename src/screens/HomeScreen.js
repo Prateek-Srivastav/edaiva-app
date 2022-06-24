@@ -31,6 +31,7 @@ import InterviewReminder from "../components/interview/InterviewReminder";
 import NoData from "../components/NoData";
 import CustomButton from "../components/CustomButton";
 import AuthContext from "../auth/context";
+import HomeScreenSkeleton from "../components/skeletons/HomeScreenSkeleton";
 
 const { width } = Dimensions.get("window");
 
@@ -80,7 +81,7 @@ function HomeScreen({ navigation }) {
   const { data: profileData, request: loadProfile } = useApi(
     candidateApi.getProfile
   );
-  console.log("IN HOMESCREEN");
+  // console.log("IN HOMESCREEN");
 
   useEffect(() => {
     loadJobTypes();
@@ -93,7 +94,7 @@ function HomeScreen({ navigation }) {
 
   const ExitApp = () => {
     return (
-      <CustomAlert visible={visible}>
+      <CustomAlert visible={visible} setAlertVisible={setVisible}>
         <View style={{ alignItems: "center" }}>
           <Text
             style={{
@@ -155,11 +156,12 @@ function HomeScreen({ navigation }) {
           setCloseFilter(true);
           setIsPressed(false);
           return true;
-        } else if (!isCampusStudent) {
-          setVisible(true);
+        } else if (isCampusStudent) {
+          // console.log(isCampusStudent);
+          navigation.navigate("CampusStack");
           return true;
         }
-        navigation.navigate("CampusStack");
+        setVisible(true);
         return true;
       };
 
@@ -181,7 +183,11 @@ function HomeScreen({ navigation }) {
 
   const SortModal = () => {
     return (
-      <CustomAlert modalWidth="90%" visible={showOptions}>
+      <CustomAlert
+        modalWidth="90%"
+        visible={showOptions}
+        setAlertVisible={setShowOptions}
+      >
         <TouchableOpacity
           style={styles.button}
           onPress={() => setShowOptions(false)}
@@ -221,7 +227,6 @@ function HomeScreen({ navigation }) {
   if (networkError && !loading) return <NetworkError onPress={loadJobs} />;
 
   if (error) return <Error onPress={loadJobs} />;
-  6;
 
   return (
     <>
@@ -271,7 +276,8 @@ function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           {loading || interviewLoading || jobTypesLoading || !data?.docs ? (
-            <Loading />
+            // <Loading />
+            <HomeScreenSkeleton />
           ) : (
             <>
               {interviewData &&
@@ -525,76 +531,77 @@ function HomeScreen({ navigation }) {
                             postedDate={daysLeft}
                             isApplied={item.applied}
                           />
-                          {index === data.docs.length - 1 && (
-                            <>
-                              <FlatList
-                                // ref={flatListRef}
-                                keyExtractor={(item) => item}
-                                style={{
-                                  width: "60%",
-                                  marginTop: 20,
-                                  borderWidth: 1,
-                                  borderColor: Colors.cardBlue,
-                                  borderRadius: 4,
-                                  alignSelf: "center",
-                                  elevation: 2,
-                                  backgroundColor: "white",
-                                }}
-                                horizontal
-                                data={pageArray}
-                                renderItem={({ item, index }) => {
-                                  return (
-                                    <View
-                                      style={{
-                                        // borderWidth: 1,
-                                        flexDirection: "row",
-                                        // borderRightWidth: 1,
-                                        // borderRadius: 4,
-                                        // paddingStart: 14,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      {index !== 0 && (
-                                        <View style={styles.separator} />
-                                      )}
-                                      <TouchableOpacity
-                                        onPress={() =>
-                                          loadJobs({
-                                            page: item,
-                                            sort: sortBy,
-                                            ...filters,
-                                          })
-                                        }
+                          {index === data.docs.length - 1 &&
+                            pageArray.length !== 1 && (
+                              <>
+                                <FlatList
+                                  // ref={flatListRef}
+                                  keyExtractor={(item) => item}
+                                  style={{
+                                    width: "60%",
+                                    marginTop: 20,
+                                    borderWidth: 1,
+                                    borderColor: Colors.cardBlue,
+                                    borderRadius: 4,
+                                    alignSelf: "center",
+                                    elevation: 2,
+                                    backgroundColor: "white",
+                                  }}
+                                  horizontal
+                                  data={pageArray}
+                                  renderItem={({ item, index }) => {
+                                    return (
+                                      <View
                                         style={{
-                                          paddingHorizontal: 13,
-                                          paddingVertical: 8,
-                                          margin: 5,
-                                          borderRadius: 4,
-                                          backgroundColor:
-                                            data?.pageInfo.page === item
-                                              ? Colors.primary
-                                              : Colors.white,
+                                          // borderWidth: 1,
+                                          flexDirection: "row",
+                                          // borderRightWidth: 1,
+                                          // borderRadius: 4,
+                                          // paddingStart: 14,
+                                          justifyContent: "center",
+                                          alignItems: "center",
                                         }}
                                       >
-                                        <AppText
+                                        {index !== 0 && (
+                                          <View style={styles.separator} />
+                                        )}
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            loadJobs({
+                                              page: item,
+                                              sort: sortBy,
+                                              ...filters,
+                                            })
+                                          }
                                           style={{
-                                            color:
+                                            paddingHorizontal: 13,
+                                            paddingVertical: 8,
+                                            margin: 5,
+                                            borderRadius: 4,
+                                            backgroundColor:
                                               data?.pageInfo.page === item
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontSize: 18,
+                                                ? Colors.primary
+                                                : Colors.white,
                                           }}
                                         >
-                                          {item}
-                                        </AppText>
-                                      </TouchableOpacity>
-                                    </View>
-                                  );
-                                }}
-                              />
-                            </>
-                          )}
+                                          <AppText
+                                            style={{
+                                              color:
+                                                data?.pageInfo.page === item
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 18,
+                                            }}
+                                          >
+                                            {item}
+                                          </AppText>
+                                        </TouchableOpacity>
+                                      </View>
+                                    );
+                                  }}
+                                />
+                              </>
+                            )}
                         </>
                       );
                     }}

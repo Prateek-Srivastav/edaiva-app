@@ -131,13 +131,14 @@ function AppNavigator() {
     }
   };
 
-  if (
-    campusProfileData?.detail !== "Your are not a part of any institution !" &&
-    !isAuthSkipped
-  )
-    setIsCampusStudent(true);
-  else setIsCampusStudent(false);
-  console.log(campusProfileData);
+  // if (
+  //   campusProfileData?.detail !== "Your are not a part of any institution !" &&
+  //   !isAuthSkipped
+  // )
+  //   setIsCampusStudent(true);
+  // else
+  setIsCampusStudent(true);
+  // console.log(campusProfileData);
   if (!campusProfileData && !isAuthSkipped) return <Loading />;
   else if (
     campusProfileData?.detail !== "Your are not a part of any institution !" &&

@@ -45,38 +45,45 @@ const CustomAlert = ({
   };
 
   return (
-    <Modal
-      transparent
-      visible={showModal}
-      onRequestClose={() => {
-        setAlertVisible(false);
-        setShowModal(false);
-      }}
-    >
-      <TouchableOpacity
-        style={{
-          height: "100%",
-          // backgroundColor: "white",
-        }}
-        onPress={() => {
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <Modal
+        transparent
+        visible={showModal}
+        onRequestClose={() => {
           setAlertVisible(false);
           setShowModal(false);
         }}
       >
-        <View style={styles.modalBackGround}>
-          <Animated.View
-            style={[
-              styles.modalContainer,
-              { width: modalWidth ? modalWidth : "80%" },
-              { transform: [{ scale: scaleValue }] },
-              modalStyle,
-            ]}
-          >
-            {children}
-          </Animated.View>
-        </View>
-      </TouchableOpacity>
-    </Modal>
+        <TouchableOpacity
+          style={{
+            height: "100%",
+          }}
+          onPress={() => {
+            setAlertVisible(false);
+            setShowModal(false);
+          }}
+          activeOpacity={1}
+        >
+          <View style={styles.modalBackGround}>
+            <Animated.View
+              style={[
+                styles.modalContainer,
+                { width: modalWidth ? modalWidth : "80%" },
+                { transform: [{ scale: scaleValue }] },
+                modalStyle,
+              ]}
+            >
+              <TouchableOpacity
+                // onPress={() => console.log("ignore me")}
+                activeOpacity={1}
+              >
+                {children}
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </View>
   );
 };
 
@@ -88,7 +95,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    // width: "80%",
     backgroundColor: "white",
     paddingHorizontal: 20,
     paddingVertical: 30,

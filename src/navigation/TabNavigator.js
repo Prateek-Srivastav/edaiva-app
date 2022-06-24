@@ -30,8 +30,6 @@ function MainNavigator({ route }) {
   const isFocused = useIsFocused();
   const [accessToken, setAccessToken] = useState();
 
-  console.log("IN TABNAVIGATOR");
-
   const { isTabBarShown, isAuthSkipped } = useContext(AuthContext);
 
   const {

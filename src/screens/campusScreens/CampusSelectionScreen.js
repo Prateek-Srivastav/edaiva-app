@@ -81,7 +81,7 @@ function CampusSelectionScreen({ navigation, route }) {
 
   const BatchCodeModal = () => {
     return (
-      <CustomAlert visible={visible}>
+      <CustomAlert visible={visible} setAlertVisible={setVisible}>
         <Text
           style={{
             fontSize: 20,

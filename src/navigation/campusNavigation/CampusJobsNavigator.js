@@ -20,7 +20,7 @@ const rightShareHeader = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const jobId = navigation.getState().routes[1].state.routes[1].params.jobId;
+  const jobId = navigation.getState().routes[1].params.jobId;
 
   const onShare = async () => {
     try {

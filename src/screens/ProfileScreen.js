@@ -31,6 +31,7 @@ import AppText from "../components/AppText";
 import { Share } from "../assets/svg/icons";
 import applicationApi from "../api/application";
 import CreateProfileScreen from "./CreateProfileScreen";
+import ProfileScreenSkeleton from "../components/skeletons/ProfileScreenSkeleton";
 
 function ProfileScreen({ navigation }) {
   const ICON_SIZE = 18;
@@ -146,15 +147,37 @@ function ProfileScreen({ navigation }) {
 
   const { firstname, lastname, email } = user;
 
-  if (networkError && !loading) return <NetworkError onPress={loadProfile} />;
+  if (networkError && !loading)
+    return (
+      <CustomHeader
+        navigation={navigation}
+        backScreen={!isCampusStudent ? "Home" : "CampusStack"}
+        screenName="Profile"
+        isMenu
+        onRightIconPress={() => setShowMenu(!showMenu)}
+      >
+        <NetworkError onPress={loadProfile} />
+      </CustomHeader>
+    );
 
-  if (error) return <Error onPress={loadProfile} />;
+  if (error)
+    return (
+      <CustomHeader
+        navigation={navigation}
+        backScreen={!isCampusStudent ? "Home" : "CampusStack"}
+        screenName="Profile"
+        isMenu
+        onRightIconPress={() => setShowMenu(!showMenu)}
+      >
+        <Error onPress={loadProfile} />
+      </CustomHeader>
+    );
 
   return (
     <>
       <CustomHeader
         navigation={navigation}
-        backScreen={!isCampusStudent ? "Jobs" : "CampusJobs"}
+        backScreen={!isCampusStudent ? "Home" : "CampusStack"}
         screenName="Profile"
         isMenu
         onRightIconPress={() => setShowMenu(!showMenu)}
@@ -176,7 +199,7 @@ function ProfileScreen({ navigation }) {
         )}
       </CustomHeader>
       {loading || !data || !campusProfileData || !applicationData ? (
-        <Loading />
+        <ProfileScreenSkeleton />
       ) : (
         <>
           <View style={styles.container}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ import Loading from "../components/Loading";
 import showToast from "../components/ShowToast";
 import CustomButton from "../components/CustomButton";
 import CreateProfileScreen from "./CreateProfileScreen";
+import AuthContext from "../auth/context";
 
 const selectedInputs = ({ array, updateArray }) => {
   return array.map((item) => (
@@ -68,6 +69,8 @@ function PreferenceScreen() {
   const [prefJobRoleText, setPrefJobRoleText] = useState();
   const [prefJobRoleArray, setPrefJobRoleArray] = useState([]);
 
+  const { isCampusStudent } = useContext(AuthContext);
+
   const { request: updateProfile, res } = useApi(candidateApi.updateProfile);
 
   const {
@@ -96,7 +99,7 @@ function PreferenceScreen() {
     setJobTypesLoading(true);
     setLoading(true);
     const response = await candidateApi.getProfile();
-    console.log(response);
+    // console.log(response);
     const jobTypesResponse = await jobsApi.getJobTypes();
 
     if (!response.ok) {
@@ -154,7 +157,7 @@ function PreferenceScreen() {
     <>
       <CustomHeader
         navigation={navigation}
-        backScreen="Home"
+        backScreen={isCampusStudent ? "CampusStack" : "Home"}
         screenName={"Job Preferences"}
       />
       {loading || jobTypesLoading ? (

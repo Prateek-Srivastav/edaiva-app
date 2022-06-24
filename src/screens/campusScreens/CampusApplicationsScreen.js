@@ -76,26 +76,35 @@ function CampusApplicationsScreen({ navigation }) {
                 paddingHorizontal: 15,
                 paddingBottom: 20,
               }}
-              data={applications}
+              data={data}
               keyExtractor={(item) => item._id}
               renderItem={(itemData) => {
                 let location;
+                console.log(itemData);
 
-                //  location = `${
-                //   itemData.item.campus_job_details.details.job_location[0]?.city
-                //     ? itemData.item.job_location[0]?.city + ","
-                //     : null
-                // } ${
-                //   itemData.item.campus_job_details.details.job_location[0]
-                //     ?.state
-                //     ? itemData.item.job_location[0]?.state + ","
-                //     : null
-                // }${
-                //   itemData.item.campus_job_details.details.job_location[0]
-                //     ?.country
-                //     ? itemData.item.job_location[0]?.country + ","
-                //     : null
-                // }`;
+                if (
+                  itemData.item.campus_job_details.details?.job_location
+                    ?.length !== 0
+                )
+                  location = `${
+                    itemData.item.campus_job_details.details?.job_location[0]
+                      ?.city
+                      ? itemData.item.campus_job_details.details
+                          ?.job_location[0]?.city + ","
+                      : null
+                  } ${
+                    itemData.item.campus_job_details.details?.job_location[0]
+                      ?.state
+                      ? itemData.item.campus_job_details.details
+                          ?.job_location[0]?.state + ","
+                      : null
+                  }${
+                    itemData.item.campus_job_details.details?.job_location[0]
+                      ?.country
+                      ? itemData.item.campus_job_details.details
+                          ?.job_location[0]?.country + ","
+                      : null
+                  }`;
 
                 const { job_title, _id } =
                   itemData.item.campus_job_details.details;

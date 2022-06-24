@@ -34,7 +34,7 @@ function MainScreen({ navigation }) {
   const submitHandler = async ({ email }) => {
     setEmail(email);
     await sendOtp(email);
-    console.log(error);
+    // console.log(error);
 
     if (error) return showToast({ type: "appError", message: data.detail });
 

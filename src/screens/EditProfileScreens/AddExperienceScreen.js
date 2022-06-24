@@ -166,7 +166,6 @@ function AddExperienceScreen({ data, index }) {
                 setEndDate(null);
                 setStartDate(timestamp);
               }
-              console.log(utc);
               setStartDateTimeStamp(utc);
               setStartDate(timestamp);
             }}

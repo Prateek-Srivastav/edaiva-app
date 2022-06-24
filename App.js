@@ -19,6 +19,9 @@ import candidateApi from "./src/api/candidate";
 import campusCandidateApi from "./src/api/campusApis/candidate";
 import useApi from "./src/hooks/useApi";
 import cache from "./src/utilities/cache";
+import HomeScreenSkeleton from "./src/components/skeletons/HomeScreenSkeleton";
+import JobDetailScreenSkeleton from "./src/components/skeletons/JobDetailScreenSkeleton";
+import ProfileScreenSkeleton from "./src/components/skeletons/ProfileScreenSkeleton";
 
 enableScreens();
 
@@ -56,16 +59,19 @@ export default function App() {
     candidateApi.getProfile
   );
 
+  // console.log(campusProfileData?.detail + "in app.js");
+
   useEffect(() => {
     if (profileData?.error === "Candidate Profile not found!!") {
       setIsProfileComplete(false);
     } else setIsProfileComplete(true);
 
-    if (
-      campusProfileData?.detail === "Your are not a part of any institution !"
-    )
-      setIsCampusStudent(false);
-    else setIsCampusStudent(true);
+    // if (
+    //   campusProfileData?.detail === "Your are not a part of any institution !"
+    // )
+    //   setIsCampusStudent(false);
+    // else
+    setIsCampusStudent(true);
   }, [profileData, campusProfileData]);
 
   const restoreToken = async () => {
@@ -103,7 +109,7 @@ export default function App() {
     setIsReady(true);
   };
 
-  if (!isReady) {
+  if (!isReady || !campusProfileData || !profileData) {
     return (
       <AppLoading
         startAsync={myStartup}
@@ -145,4 +151,6 @@ export default function App() {
       <StatusBar style="dark" />
     </AuthContext.Provider>
   );
+
+  // return <ProfileScreenSkeleton />;
 }

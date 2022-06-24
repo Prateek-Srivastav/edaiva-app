@@ -91,7 +91,7 @@ function CustomDrawer(props) {
     setIsCampusStudent,
   } = useContext(AuthContext);
 
-  console.log(isAuthSkipped);
+  // console.log(isAuthSkipped);
 
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
@@ -110,15 +110,16 @@ function CustomDrawer(props) {
 
   useEffect(() => {
     if (profileData?.error === "Candidate Profile not found!!") {
-      console.log(profileData);
+      // console.log(profileData);
       setIsProfileComplete(false);
     } else setIsProfileComplete(true);
 
-    if (
-      campusProfileData?.detail === "Your are not a part of any institution !"
-    )
-      setIsCampusStudent(false);
-    else setIsCampusStudent(true);
+    // if (
+    //   campusProfileData?.detail === "Your are not a part of any institution !"
+    // )
+    //   setIsCampusStudent(false);
+    // else
+    setIsCampusStudent(true);
   }, [profileData, campusProfileData]);
 
   const signOutHandler = async () => {

@@ -115,7 +115,7 @@ function RescheduleModal(props) {
 
   const handleSubmit = async () => {
     const user = await cache.get("user");
-    console.log(props);
+    // console.log(props);
     if (!reason)
       return Toast.show({
         type: "appError",
@@ -128,7 +128,7 @@ function RescheduleModal(props) {
       reason,
       time_slots: inputs,
     };
-    console.log(requestReschedule);
+    // console.log(requestReschedule);
     await reschedule(requestReschedule);
     if (error)
       return Toast.show({

@@ -43,7 +43,6 @@ function AddSkillsScreen({ data, index }) {
     _inputs[index].skill_name = skill_name;
     _inputs[index].level = level;
     setInputs(_inputs);
-    // console.log(_inputs);
   };
 
   const handleAddSubmit = async () => {
@@ -56,8 +55,6 @@ function AddSkillsScreen({ data, index }) {
     if (Array.isArray(data.skills)) skills = [...data.skills, ...inputs];
     else skills = [...inputs];
 
-    console.log(inputs);
-
     await updateProfile({ skills });
     navigation.goBack();
   };
@@ -67,8 +64,6 @@ function AddSkillsScreen({ data, index }) {
     //   ...values,
     //   level,
     // };
-
-    console.log(inputs[0]);
 
     const skills = data.skills;
     skills.splice(index, 1, inputs[0]);

@@ -1,18 +1,22 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState, useCallback } from "react";
 import { FlatList, Image, View, StyleSheet, Text } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { Swipeable, TouchableOpacity } from "react-native-gesture-handler";
+import { Feather } from "@expo/vector-icons";
 
 import AppText from "../../components/AppText";
 import Colors from "../../constants/Colors";
 import useApi from "../../hooks/useApi";
-import { useIsFocused } from "@react-navigation/native";
 import NetworkError from "../../components/NetworkError";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomHeader from "../../components/CustomHeader";
 import campusApi from "../../api/campusApis/application";
 import notificationApi from "../../api/notifications";
+import NoData from "../../components/NoData";
+import cache from "../../utilities/cache";
+import showToast from "../../components/ShowToast";
 
 const NormalText = (props) => (
   <Text {...props} style={{ ...styles.normalText, ...props.style }}>
@@ -27,31 +31,32 @@ const NotificationItem = ({
   title,
   body,
   onDelete,
+  image,
 }) => {
-  let image;
+  // let image;
   let heading;
   let details;
 
-  let status = body.split(" ");
-  status = status[status.length - 1];
+  // let status = body.split(" ");
+  // status = status[status.length - 1];
 
-  if (status === "Hired") {
-    image = require("../../assets/selected.png");
-    heading = "Congratulations!!.. You did it.";
-    details = `You are selected for the role of ${job} in ${companyName}.`;
-  } else if (status === "Finalist") {
-    image = require("../../assets/shortlisted.png");
-    heading = "Woah!. You are the finalist!!..";
-    details = `You are the finalist for the ${job} in ${companyName}`;
-  } else if (status === "Review") {
-    image = require("../../assets/shortlisted.png");
-    heading = "Woah!. You have been shortlisted!!..";
-    details = `You have been shortlisted for the ${job} in ${companyName}`;
-  } else if (status === "Interviewing") {
-    image = require("../../assets/bell.png");
-    heading = "Interviewing";
-    details = `Your job status for the ${job} in ${companyName} is set to interviewing.`;
-  } else return null;
+  // if (status === "Hired") {
+  //   image = require("../../assets/selected.png");
+  //   heading = "Congratulations!!.. You did it.";
+  //   details = `You are selected for the role of ${job} in ${companyName}.`;
+  // } else if (status === "Finalist") {
+  //   image = require("../../assets/shortlisted.png");
+  //   heading = "Woah!. You are the finalist!!..";
+  //   details = `You are the finalist for the ${job} in ${companyName}`;
+  // } else if (status === "Review") {
+  //   image = require("../../assets/shortlisted.png");
+  //   heading = "Woah!. You have been shortlisted!!..";
+  //   details = `You have been shortlisted for the ${job} in ${companyName}`;
+  // } else if (status === "Interviewing") {
+  //   image = require("../../assets/bell.png");
+  //   heading = "Interviewing";
+  //   details = `Your job status for the ${job} in ${companyName} is set to interviewing.`;
+  // } else return null;
 
   const renderRightActions = () => (
     <View
@@ -81,11 +86,11 @@ const NotificationItem = ({
       >
         <View style={styles.imgContainer}>
           <Image
-            source={image}
-            resizeMode="contain"
+            source={{ uri: image }}
+            // resizeMode="contain"
             style={{
-              height: 25,
-              width: 25,
+              height: 35,
+              width: 35,
             }}
           />
         </View>
@@ -98,14 +103,14 @@ const NotificationItem = ({
             }}
           >
             <NormalText>{title}</NormalText>
-            {status === "interviewing" && (
+            {/* {status === "interviewing" && (
               <>
                 <View style={styles.separator} />
                 <NormalText style={{ flex: 1 }} numberOfLines={1}>
                   {job}
                 </NormalText>
               </>
-            )}
+            )} */}
           </View>
           <AppText numberOfLines={2}>{body}</AppText>
         </View>
@@ -205,7 +210,7 @@ function CampusNotificationsScreen({ navigation }) {
   return (
     <>
       <CustomHeader backDisabled screenName="Notifications" />
-      {loading || notificLoading ? (
+      {loading || notificLoading || !notifications ? (
         <Loading />
       ) : networkError && !loading ? (
         <NetworkError onPress={() => loadApplications()} />
@@ -231,41 +236,55 @@ function CampusNotificationsScreen({ navigation }) {
               renderItem={(itemData) => {
                 let location;
 
-                if (itemData.item.job_location?.length !== 0)
-                  location = `${
-                    itemData.item.job_location[0]?.city
-                      ? itemData.item.job_location[0]?.city + ","
-                      : null
-                  } ${
-                    itemData.item.job_location[0]?.state
-                      ? itemData.item.job_location[0]?.state + ","
-                      : null
-                  } ${
-                    itemData.item.job_location[0]?.country
-                      ? itemData.item.job_location[0]?.country
-                      : null
-                  }`;
+                // console.log(notifications);
+
+                // if (
+                //   itemData.item.campus_job_details.details?.job_location
+                //     ?.length !== 0
+                // )
+                //   location = `${
+                //     itemData.item.campus_job_details.details?.job_location[0]
+                //       ?.city
+                //       ? itemData.item.campus_job_details.details
+                //           ?.job_location[0]?.city + ","
+                //       : null
+                //   } ${
+                //     itemData.item.campus_job_details.details?.job_location[0]
+                //       ?.state
+                //       ? itemData.item.campus_job_details.details
+                //           ?.job_location[0]?.state + ","
+                //       : null
+                //   }${
+                //     itemData.item.campus_job_details.details?.job_location[0]
+                //       ?.country
+                //       ? itemData.item.campus_job_details.details
+                //           ?.job_location[0]?.country + ","
+                //       : null
+                //   }`;
 
                 const notificId = itemData.item.notification_id;
 
                 return (
                   <>
                     <NotificationItem
-                      onPress={() =>
-                        navigation.navigate("CampusApplicationStatus", {
-                          location,
-                          applicationStatus: itemData.item.status,
-                          applicationId: itemData.item._id.$oid,
-                        })
-                      }
-                      job={itemData.item.job.job_title}
-                      status={itemData.item.status}
-                      companyName={itemData.item.job.company[0].name}
+                      // onPress={() =>
+                      //   navigation.navigate("CampusApplicationStatus", {
+                      //     location,
+                      //     applicationStatus: itemData.item.status,
+                      //     applicationId: itemData.item._id.$oid,
+                      //   })
+                      // }
+                      // job={itemData.item.job.job_title}
+                      // status={itemData.item.status}
+                      // companyName={itemData.item.job.company[0].name}
                       title={
                         itemData.item.notification.notification_details.title
                       }
                       body={
                         itemData.item.notification.notification_details.body
+                      }
+                      image={
+                        itemData.item.notification.notification_details.image
                       }
                       onDelete={() => {
                         setNotifications(
@@ -302,7 +321,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 5,
+    padding: 3,
     borderRadius: 3,
   },
   largeText: {

@@ -55,7 +55,7 @@ function ApplicationStatusScreen({ route }) {
     request: loadInterviews,
   } = useApi(interviewApi.getApplicationInterviews);
 
-  console.log(interviewData);
+  // console.log(interviewData);
 
   const {
     data: applicationData,

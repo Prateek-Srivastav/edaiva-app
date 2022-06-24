@@ -44,7 +44,7 @@ function DatePicker({
 
     if ((!isValid && dobLimit) || error) {
       setShow(false);
-      console.log("abcdddddd");
+      // console.log("abcdddddd");
       onDateChange(indFormat, usFormat, date);
       setError(false);
       return setSelectedDate("Date");

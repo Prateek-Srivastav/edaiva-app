@@ -25,49 +25,49 @@ import cache from "../utilities/cache";
 
 // export const frontEndClient = "http://143.110.241.27:6204";
 
-// export const frontEndClient = "https://devjobs.edaiva.com";
-
-// export const placementClient = create({
-//   baseURL: "https://godevgw.edaiva.com/api/gateway/placement-service",
-// });
-
-// export const jobClient = create({
-//   baseURL: "https://devjobs.edaiva.com/node/api",
-// });
-
-// export const authClient = create({
-//   baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
-// });
-
-// const apiClient = create({
-//   baseURL: "https://godevgw.edaiva.com/api/gateway",
-// });
-
-// export const notificationClient = create({
-//   baseURL: "https://godevgw.edaiva.com:8007",
-// });
-
-export const frontEndClient = "https://jobs.edaiva.com";
+export const frontEndClient = "https://devjobs.edaiva.com";
 
 export const placementClient = create({
-  baseURL: "https://apigw-routing.edaiva.com/api/gateway/placement-service",
+  baseURL: "https://godevgw.edaiva.com/api/gateway/placement-service",
 });
 
 export const jobClient = create({
-  baseURL: "https://jobs.edaiva.com/api",
+  baseURL: "https://devjobs.edaiva.com/node/api",
 });
 
 export const authClient = create({
-  baseURL: "https://apigw-routing.edaiva.com/api/gateway/core-service",
+  baseURL: "https://godevgw.edaiva.com/api/gateway/core-service",
 });
 
 const apiClient = create({
-  baseURL: "https://apigw-routing.edaiva.com/api/gateway",
+  baseURL: "https://godevgw.edaiva.com/api/gateway",
 });
 
 export const notificationClient = create({
-  baseURL: "https://notifs.edaiva.com",
+  baseURL: "https://godevgw.edaiva.com:8007",
 });
+
+// export const frontEndClient = "https://jobs.edaiva.com";
+
+// export const placementClient = create({
+//   baseURL: "https://apigw-routing.edaiva.com/api/gateway/placement-service",
+// });
+
+// export const jobClient = create({
+//   baseURL: "https://jobs.edaiva.com/api",
+// });
+
+// export const authClient = create({
+//   baseURL: "https://apigw-routing.edaiva.com/api/gateway/core-service",
+// });
+
+// const apiClient = create({
+//   baseURL: "https://apigw-routing.edaiva.com/api/gateway",
+// });
+
+// export const notificationClient = create({
+//   baseURL: "https://notifs.edaiva.com",
+// });
 
 apiClient.addAsyncRequestTransform(async (request) => {
   const authToken = await authStorage.getToken();

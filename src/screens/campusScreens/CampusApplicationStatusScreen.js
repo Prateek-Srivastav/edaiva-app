@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
+  Image,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
@@ -24,18 +25,30 @@ import formattedTime from "../../utilities/time";
 import campusApplicationApi from "../../api/campusApis/application";
 import Error from "../../components/Error";
 import NetworkError from "../../components/NetworkError";
+import CustomAlert from "../../components/CustomAlert";
+import CardInput from "../../components/CardInput";
+import CustomButton from "../../components/CustomButton";
+import showToast from "../../components/ShowToast";
+import { ErrorMessage } from "../../components/forms";
 
 const { width, height } = Dimensions.get("screen");
 
 function CampusApplicationStatusScreen({ route }) {
   const [showDetail, setShowDetail] = useState(1);
   const [isPressed, setIsPressed] = useState(false);
+  const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
+  const [isViewSubmissionModalVisible, setIsViewSubmissionModalVisible] =
+    useState(false);
 
   const [position] = useState(new Animated.ValueXY());
 
   const { jobId, applicationId } = route.params;
 
   const applicationStatus = route.params.applicationStatus;
+
+  var solution_link,
+    description = "",
+    solutionLinkError;
 
   const {
     data,
@@ -44,6 +57,12 @@ function CampusApplicationStatusScreen({ route }) {
     loading,
     request: loadCampusApplicationDetails,
   } = useApi(campusApplicationApi.getCampusApplications);
+
+  const {
+    error: submitAssignmentError,
+    networkError: submitAssignmentNetworkError,
+    request: submitAssignment,
+  } = useApi(campusApplicationApi.assignmentSubmission);
 
   useEffect(() => {
     loadCampusApplicationDetails(applicationId);
@@ -84,7 +103,7 @@ function CampusApplicationStatusScreen({ route }) {
   const RoundDetail = () => {
     if (
       (applicationStatus === "interviewing" &&
-        data.application_rounds?.length === 0) ||
+        data?.application_rounds?.length === 0) ||
       applicationStatus === "finalist"
     ) {
       return (
@@ -128,49 +147,138 @@ function CampusApplicationStatusScreen({ route }) {
                   Round {data.current_round.round_no}
                 </AppText>
                 <AppText>Your assignment is scheduled virtually on </AppText>
-                <View style={{ flexDirection: "row" }}>
+                <View>
                   <AppText
                     style={{
                       fontSize: 15,
                       color: Colors.primary,
-                      fontFamily: "OpenSans-Medium",
+                      fontFamily: "OpenSans-SemiBold",
                       marginBottom: 5,
                     }}
                   >
-                    {formattedDate(data.current_round.start_time)} from{" "}
-                    {formattedTime(data.current_round.start_time)} to{" "}
-                    {formattedTime(data.current_round.end_time)}
+                    {formattedDate(data.current_round.start_time)}
                   </AppText>
+                  <View style={{ flexDirection: "row" }}>
+                    <AppText
+                      style={{
+                        fontSize: 15,
+                        color: Colors.primary,
+                        fontFamily: "OpenSans-SemiBold",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {formattedTime(data.current_round.start_time)}
+                    </AppText>
+                    <AppText
+                      style={{
+                        fontSize: 14,
+                        color: Colors.primary,
+                        fontFamily: "OpenSans-Regular",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {" "}
+                      to{" "}
+                    </AppText>
+                    <AppText
+                      style={{
+                        fontSize: 15,
+                        color: Colors.primary,
+                        fontFamily: "OpenSans-SemiBold",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {formattedTime(data.current_round.end_time)}
+                    </AppText>
+                  </View>
                 </View>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() =>
-                  WebBrowser.openBrowserAsync(data.current_round.round_link)
-                }
+              <View
                 style={{
-                  backgroundColor: Colors.primary,
+                  flex: 1,
                   width: "25%",
-                  borderRadius: 4,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <Share color="white" />
-                <AppText
-                  textAlign="center"
-                  style={{ color: "white", marginTop: 8 }}
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    WebBrowser.openBrowserAsync(data.current_round.round_link)
+                  }
+                  style={{
+                    backgroundColor: Colors.primary,
+                    flex: 1,
+                    width: "100%",
+                    borderRadius: 4,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  View
-                </AppText>
-                <AppText textAlign="center" style={{ color: "white" }}>
-                  Assignment
-                </AppText>
-              </TouchableOpacity>
+                  <Share color="white" />
+                  <AppText
+                    textAlign="center"
+                    style={{ color: "white", marginTop: 8 }}
+                  >
+                    View
+                  </AppText>
+                  <AppText textAlign="center" style={{ color: "white" }}>
+                    Assignment
+                  </AppText>
+                </TouchableOpacity>
+                {data?.application_rounds[0].assignment_submission.length >
+                0 ? (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => setIsViewSubmissionModalVisible(true)}
+                    style={{
+                      backgroundColor: Colors.primary,
+                      flex: 1,
+                      width: "100%",
+                      marginTop: 2,
+                      borderRadius: 4,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <AppText textAlign="center" style={{ color: "white" }}>
+                      View
+                    </AppText>
+                    <AppText textAlign="center" style={{ color: "white" }}>
+                      Submission
+                    </AppText>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      setIsSubmitModalVisible(true);
+                    }}
+                    style={{
+                      width: "100%",
+                      flex: 1,
+                      backgroundColor: Colors.primary,
+                      marginTop: 1,
+                      flexDirection: "row",
+                      borderRadius: 4,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      style={{ height: 16, width: 16, marginRight: 7 }}
+                      source={require("../../assets/send.png")}
+                    />
+                    <AppText textAlign="center" style={{ color: "white" }}>
+                      Submit
+                    </AppText>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
         )}
-        {data.application_rounds?.map((interview) => {
+        {data?.application_rounds?.map((interview) => {
           if (interview.round.status === "Ongoing") return null;
           return (
             <View style={{ flex: 1, paddingHorizontal: 15, width }}>
@@ -178,11 +286,7 @@ function CampusApplicationStatusScreen({ route }) {
               <View
                 style={{
                   flexDirection: "row",
-                  // width,
-
                   justifyContent: "center",
-                  // borderWidth: 1,
-                  // flex: 1,
                 }}
               >
                 <View
@@ -192,18 +296,12 @@ function CampusApplicationStatusScreen({ route }) {
                     borderRadius: 4,
                     borderColor: "#33A000",
                     width: "15%",
-                    // overflow: "hidden",
                     backgroundColor: "rgba(51, 160, 0, 0.15)",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Feather
-                    name="check"
-                    size={20}
-                    color="#33A000"
-                    // style={{ marginRight: 5 }}
-                  />
+                  <Feather name="check" size={20} color="#33A000" />
                 </View>
                 <View
                   style={{
@@ -211,7 +309,6 @@ function CampusApplicationStatusScreen({ route }) {
                     borderWidth: 1,
                     borderColor: Colors.primary,
                     borderRadius: 4,
-                    // overflow: "hidden",
                     backgroundColor: "#FFFFFF",
                     padding: 15,
                     width: "87%",
@@ -228,19 +325,50 @@ function CampusApplicationStatusScreen({ route }) {
                     Round {interview.round.round_no}
                   </AppText>
                   <AppText>Your assignment was scheduled virtually on</AppText>
-                  <View style={{ flexDirection: "row" }}>
+                  <View>
                     <AppText
                       style={{
                         fontSize: 15,
                         color: Colors.primary,
-                        fontFamily: "OpenSans-Medium",
+                        fontFamily: "OpenSans-SemiBold",
                         marginBottom: 5,
                       }}
                     >
-                      {formattedDate(interview.round.start_time)} from{" "}
-                      {formattedTime(interview.round.start_time)} to{" "}
-                      {formattedTime(interview.round.end_time)}
+                      {formattedDate(data.current_round.start_time)}
                     </AppText>
+                    <View style={{ flexDirection: "row" }}>
+                      <AppText
+                        style={{
+                          fontSize: 15,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-SemiBold",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {formattedTime(data.current_round.start_time)}
+                      </AppText>
+                      <AppText
+                        style={{
+                          fontSize: 14,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-Regular",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {" "}
+                        to{" "}
+                      </AppText>
+                      <AppText
+                        style={{
+                          fontSize: 15,
+                          color: Colors.primary,
+                          fontFamily: "OpenSans-SemiBold",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {formattedTime(data.current_round.end_time)}
+                      </AppText>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -274,11 +402,8 @@ function CampusApplicationStatusScreen({ route }) {
     return (
       <ScrollView
         style={{
-          // paddingHorizontal: 20,
           paddingBottom: 20,
           width: "100%",
-          // marginTop: 10,
-          // marginBottom: 10,
         }}
       >
         {show === 1 && (
@@ -295,6 +420,230 @@ function CampusApplicationStatusScreen({ route }) {
       </ScrollView>
     );
   };
+
+  const submitAssignmentHandler = async () => {
+    const detail = {
+      description,
+      submission_link: solution_link,
+      student_application: data?.application_rounds[0].student_application,
+      student_application_round: data?.application_rounds[0]._id,
+    };
+
+    if (!solution_link) return (solutionLinkError = "true");
+
+    await submitAssignment(detail);
+
+    if (submitAssignmentError)
+      return showToast({ type: "appError", message: "Something went wrong!" });
+
+    if (submitAssignmentNetworkError)
+      return showToast({
+        type: "appError",
+        message: "Internet connection lost!",
+      });
+
+    console.log(detail);
+
+    return showToast({
+      type: "appSuccess",
+      message: "Assignment submit successfully!",
+    });
+  };
+
+  const ViewSubmissionModal = () => (
+    <CustomAlert
+      visible={isViewSubmissionModalVisible}
+      setAlertVisible={setIsViewSubmissionModalVisible}
+      modalWidth="90%"
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontFamily: "OpenSans-SemiBold", fontSize: 16 }}>
+          Submit assignment
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setIsViewSubmissionModalVisible(false);
+          }}
+          style={{
+            borderWidth: 1,
+            borderColor: "#0AB4F14D",
+            borderRadius: 3,
+            alignSelf: "flex-end",
+          }}
+        >
+          <Feather name="x" size={20} color={Colors.primary} />
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          ...styles.line,
+          width: "100%",
+          elevation: 0,
+          marginVertical: 5,
+        }}
+      />
+      <Text
+        style={{
+          fontSize: 15,
+          fontFamily: "OpenSans-Medium",
+          marginBottom: 5,
+          marginTop: 10,
+        }}
+      >
+        Submitted on
+      </Text>
+      <AppText>
+        {formattedDate(
+          data?.application_rounds[0].assignment_submission[0].createdAt
+        )}
+      </AppText>
+      <View
+        style={{
+          ...styles.line,
+          width: "100%",
+          elevation: 0,
+          marginVertical: 5,
+        }}
+      />
+      <Text
+        style={{
+          fontSize: 15,
+          fontFamily: "OpenSans-Medium",
+          marginBottom: 5,
+          marginTop: 10,
+        }}
+      >
+        Solution Link
+      </Text>
+      <TouchableOpacity
+        onPress={() =>
+          WebBrowser.openBrowserAsync(
+            data?.application_rounds[0].assignment_submission[0].submission_link
+          )
+        }
+      >
+        <AppText style={{ color: Colors.primary }}>
+          {data?.application_rounds[0].assignment_submission[0].submission_link}
+        </AppText>
+      </TouchableOpacity>
+      {data?.application_rounds[0].assignment_submission[0].description.length >
+        0 && (
+        <>
+          <View
+            style={{
+              ...styles.line,
+              width: "100%",
+              elevation: 0,
+              marginVertical: 5,
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: "OpenSans-Medium",
+              marginBottom: 5,
+              marginTop: 10,
+            }}
+          >
+            Description
+          </Text>
+          <AppText>
+            {data?.application_rounds[0].assignment_submission[0].description}
+          </AppText>
+        </>
+      )}
+    </CustomAlert>
+  );
+
+  const SubmitModal = () => (
+    <CustomAlert
+      visible={isSubmitModalVisible}
+      setAlertVisible={setIsSubmitModalVisible}
+      modalWidth="90%"
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontFamily: "OpenSans-SemiBold", fontSize: 16 }}>
+          Submit assignment
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setIsSubmitModalVisible(false);
+          }}
+          style={{
+            borderWidth: 1,
+            borderColor: "#0AB4F14D",
+            borderRadius: 3,
+            alignSelf: "flex-end",
+          }}
+        >
+          <Feather name="x" size={20} color={Colors.primary} />
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          ...styles.line,
+          width: "100%",
+          elevation: 0,
+          marginVertical: 5,
+        }}
+      />
+      <CardInput
+        label="Solution Link*"
+        onChangeText={(text) => {
+          solutionLinkError = "false";
+          solution_link = text;
+        }}
+        placeholder="Paste URL here"
+      />
+      <ErrorMessage
+        error="Please enter solution link."
+        visible={solutionLinkError === "true"}
+      />
+      <CardInput
+        label="Description (Optional)"
+        onChangeText={(text) => {
+          description = text;
+        }}
+        placeholder="Enter solution details / explanation"
+        multiline
+        numberOfLines={6}
+      />
+      <View style={{ width: "100%", flexDirection: "row" }}>
+        <CustomButton
+          onPress={() => setIsSubmitModalVisible(false)}
+          title="Cancel"
+          titleStyle={{ color: Colors.primary }}
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#C1EFFF",
+            borderWidth: 1,
+            marginRight: 10,
+          }}
+        />
+        <CustomButton
+          onPress={submitAssignmentHandler}
+          title="Submit"
+          titleStyle={{ color: Colors.white }}
+          style={{
+            backgroundColor: Colors.primary,
+            elevation: 3,
+          }}
+        />
+      </View>
+    </CustomAlert>
+  );
 
   return (
     <>
@@ -370,9 +719,7 @@ function CampusApplicationStatusScreen({ route }) {
               </View>
               <View
                 style={{
-                  // borderWidth: 1,
                   width: "100%",
-                  // marginHorizontal: 20,
                   marginTop: 3,
                   marginBottom: -10,
                 }}
@@ -386,6 +733,8 @@ function CampusApplicationStatusScreen({ route }) {
           <RescheduleModal isPressed={isPressed} sendData={getData} />
         </View>
       )}
+      <SubmitModal />
+      <ViewSubmissionModal />
     </>
   );
 }

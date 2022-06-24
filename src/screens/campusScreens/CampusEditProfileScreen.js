@@ -101,7 +101,7 @@ function CampusEditProfileScreen() {
 
     const userDetail = await cache.get("user");
     setUser(userDetail);
-    setAbout(data.description);
+    setAbout(data?.description);
     async () => {
       const { granted } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();

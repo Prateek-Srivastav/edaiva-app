@@ -36,6 +36,7 @@ import Card from "../../components/Card";
 import formattedTime from "../../utilities/time";
 import InterviewReminder from "../../components/interview/InterviewReminder";
 import campusJobsApi from "../../api/campusApis/jobs";
+import HomeScreenSkeleton from "../../components/skeletons/HomeScreenSkeleton";
 
 const { width, height } = Dimensions.get("window");
 
@@ -72,6 +73,8 @@ function CampusJobsScreen({ navigation }) {
   if (data) {
     jobs = data;
   }
+
+  // console.log(jobs);
 
   useEffect(() => {
     loadJobs();
@@ -164,6 +167,7 @@ function CampusJobsScreen({ navigation }) {
               style={{ marginLeft: 5, flex: 1 }}
               onChangeText={(text) => setKeyword(text)}
               onSubmitEditing={searchHandler}
+              placeholder="Search"
             />
           </View>
         </View>
@@ -175,7 +179,7 @@ function CampusJobsScreen({ navigation }) {
           />
         </View>
         {loading || interviewLoading ? (
-          <Loading />
+          <HomeScreenSkeleton />
         ) : networkError && !loading ? (
           <NetworkError onPress={() => loadJobs()} />
         ) : error && !loading ? (
@@ -260,6 +264,12 @@ function CampusJobsScreen({ navigation }) {
                 renderItem={(itemData) => {
                   const location = `${itemData.item.campus_job_id.job_location[0]?.city}, ${itemData.item.campus_job_id.job_location[0]?.state}, ${itemData.item.campus_job_id.job_location[0]?.country}`;
 
+                  let deadline = new Date(itemData.item.job_deadline);
+
+                  let daysLeft = Math.round((deadline - new Date()) / 86400000);
+
+                  if (!itemData.item.job_deadline) daysLeft = "";
+
                   return (
                     <JobCard
                       onPress={() =>
@@ -278,7 +288,7 @@ function CampusJobsScreen({ navigation }) {
                       jobType={itemData.item.campus_job_id.job_type[0].name}
                       location={location}
                       description={itemData.item.campus_job_id.job_description}
-                      postedDate={formattedDate(itemData.item.createdAt)}
+                      postedDate={daysLeft}
                       isApplied={itemData.item.application_status}
                     />
                   );

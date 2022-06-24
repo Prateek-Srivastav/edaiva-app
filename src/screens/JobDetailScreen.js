@@ -20,7 +20,6 @@ import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
 import jobsApi from "../api/jobs";
 import { formattedDate } from "../utilities/date";
-import dummyJobDetails from "../dummyData.js/dummyJobDetails";
 import cache from "../utilities/cache";
 import ApplicationModal from "../components/appmodals/ApplicationModal";
 import { frontEndClient } from "../api/client";
@@ -39,6 +38,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import candidateApi from "../api/candidate";
 import AuthContext from "../auth/context";
 import { LoginAlert } from "../components/LoginAlert";
+import JobDetailScreenSkeleton from "../components/skeletons/JobDetailScreenSkeleton";
 
 const { width, height } = Dimensions.get("window");
 
@@ -69,11 +69,10 @@ function JobDetailScreen({ route, navigation }) {
 
   const jobId = route.params.jobId;
 
-  const [jobDetails, setJobDetails] = useState(dummyJobDetails);
+  const [jobDetails, setJobDetails] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
-
   const [visible, setVisible] = useState(false);
   const [loginAlertVisible, setLoginAlertVisible] = useState(false);
   const [placementCriteria, setPlacementCriteria] = useState();
@@ -103,7 +102,6 @@ function JobDetailScreen({ route, navigation }) {
     const response = await applicationApi.deleteApplication(applicationId);
 
     setVisible(false);
-    // console.log(response);
     if (!response.ok) {
       if (response.problem === "NETWORK_ERROR") {
         return Toast.show({
@@ -438,7 +436,7 @@ function JobDetailScreen({ route, navigation }) {
     try {
       await Share.share({
         message: `${frontEndClient}/jobs/${convertToSlug(
-          jobDetails.job_title
+          jobDetails?.job_title
         )}/${jobId}`,
       });
     } catch (error) {
@@ -454,8 +452,8 @@ function JobDetailScreen({ route, navigation }) {
         backScreen={navigation.getState().routeNames[0]}
         onRightIconPress={onShare}
       />
-      {loading || (!campusProfileData && !isAuthSkipped) ? (
-        <Loading />
+      {loading || (!campusProfileData && !isAuthSkipped) || !jobDetails ? (
+        <JobDetailScreenSkeleton />
       ) : networkError && !loading ? (
         <NetworkError onPress={() => loadJobDetails(jobId)} />
       ) : error ? (
@@ -483,7 +481,7 @@ function JobDetailScreen({ route, navigation }) {
               }}
             >
               <Card style={styles.card}>
-                <Text style={styles.heading}>{jobDetails.job_title}</Text>
+                <Text style={styles.heading}>{jobDetails?.job_title}</Text>
 
                 <View
                   style={{
@@ -493,7 +491,7 @@ function JobDetailScreen({ route, navigation }) {
                   }}
                 >
                   <BuildingIcon color="#BDEEFF" />
-                  <Text style={styles.text}>{jobDetails.company.name}</Text>
+                  <Text style={styles.text}>{jobDetails?.company.name}</Text>
                 </View>
                 {route.params.location && (
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -512,11 +510,11 @@ function JobDetailScreen({ route, navigation }) {
                 >
                   <View style={styles.cardBlue}>
                     <AppText style={{ color: Colors.primary }}>
-                      {jobDetails.job_type.name}
+                      {jobDetails?.job_type.name}
                     </AppText>
                   </View>
 
-                  {!route.params.isApplied && jobDetails.job_deadline && (
+                  {!route.params.isApplied && jobDetails?.job_deadline && (
                     <View
                       style={{
                         justifyContent: "center",
@@ -537,7 +535,7 @@ function JobDetailScreen({ route, navigation }) {
                           color: Colors.primary,
                         }}
                       >
-                        {formattedDate(jobDetails.job_deadline)}
+                        {formattedDate(jobDetails?.job_deadline)}
                       </AppText>
                     </View>
                   )}
@@ -553,7 +551,7 @@ function JobDetailScreen({ route, navigation }) {
                     // backgroundColor: "blue",
                   }}
                 >
-                  {jobDetails.qualification && (
+                  {jobDetails?.qualification && (
                     <View
                       style={{
                         flexDirection: "row",
@@ -564,7 +562,7 @@ function JobDetailScreen({ route, navigation }) {
                     >
                       <View style={{ marginBottom: 20 }}>
                         <AppText style={{ marginBottom: 6 }}>Degree</AppText>
-                        {jobDetails.qualification.map((qual) => (
+                        {jobDetails?.qualification.map((qual) => (
                           <AppText
                             style={styles.requirementText}
                             key={qual._id}
@@ -578,13 +576,13 @@ function JobDetailScreen({ route, navigation }) {
                           Work Experience
                         </AppText>
                         <AppText style={styles.requirementText}>
-                          {jobDetails.job_exp_from}-{jobDetails.job_exp_to}{" "}
+                          {jobDetails?.job_exp_from}-{jobDetails?.job_exp_to}{" "}
                           Years
                         </AppText>
                       </View>
                     </View>
                   )}
-                  {jobDetails.skills.length !== 0 && (
+                  {jobDetails?.skills.length !== 0 && (
                     <View>
                       <AppText style={{ marginBottom: 6 }}>
                         Required skills
@@ -597,7 +595,7 @@ function JobDetailScreen({ route, navigation }) {
                           marginStart: 5,
                         }}
                       >
-                        {jobDetails.skills.map((skill, index) => (
+                        {jobDetails?.skills.map((skill, index) => (
                           <View
                             style={{
                               flexDirection: "row",

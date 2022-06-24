@@ -188,14 +188,12 @@ function FilterModal(props) {
       !isAllIndiaOn &&
       (!salary || salary === "0k - 0k")
     ) {
-      console.log("abcd");
       setIsTabBarShown(true);
       return sendFilters({});
     }
     setIsTabBarShown(true);
 
     sendFilters(filters);
-    console.log(filters);
   };
 
   const FilterItem = (props) => {
