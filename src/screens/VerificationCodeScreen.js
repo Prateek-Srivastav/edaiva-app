@@ -16,6 +16,7 @@ import cache from "../utilities/cache";
 import CustomButton from "../components/CustomButton";
 import Colors from "../constants/Colors";
 import authApi from "../api/auth";
+import CustomHeader from "../components/CustomHeader";
 
 const CustomInput = React.forwardRef((props, ref) => {
   const [borderColor, setBorderColor] = useState("#E1E1E1");
@@ -125,7 +126,10 @@ function VerificationCodeScreen({ navigation, route }) {
       text1: result.data.message,
     });
 
-    if (navigation.getState().routes[0].name === "Welcome") {
+    if (
+      navigation.getState().routes[0].name === "Welcome" ||
+      authContext.isAuthSkipped
+    ) {
       navigation.navigate("Login", {
         email: route.params.email,
         password: route.params.password,
@@ -161,78 +165,87 @@ function VerificationCodeScreen({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.boldText}>VERIFICATION{"\n"}CODE</Text>
-      <AppText style={{ color: Colors.black, marginTop: 15 }}>
-        The One time Password is sent.
-      </AppText>
-      <TouchableOpacity onPress={resendOtpHandler}>
-        <AppText
-          style={{
-            color: Colors.primary,
-            fontFamily: "OpenSans-Italic",
-            textDecorationLine: "underline",
-            fontSize: 15,
-          }}
-        >
-          Resend
+    <>
+      <CustomHeader navigation={navigation} goBack />
+      <View style={styles.container}>
+        <Text style={styles.boldText}>VERIFICATION{"\n"}CODE</Text>
+        <AppText style={{ color: Colors.black, marginTop: 15 }}>
+          The One time Password is sent.
         </AppText>
-      </TouchableOpacity>
-      <Formik
-        initialValues={{ dig1: "", dig2: "", dig3: "", dig4: "", dig5: "" }}
-        onSubmit={verificationHandler}
-      >
-        {({ setFieldTouched, handleChange, errors, touched, handleSubmit }) => (
-          <>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                marginTop: 50,
-                marginBottom: 10,
-              }}
-            >
-              <CustomInput
-                onChange={() => dig2_input.current.focus()}
-                onChangeText={handleChange("dig1")}
-                ref={dig1_input}
-              />
-              <CustomInput
-                onChange={() => dig3_input.current.focus()}
-                onChangeText={handleChange("dig2")}
-                ref={dig2_input}
-              />
-              <CustomInput
-                onChange={() => dig4_input.current.focus()}
-                onChangeText={handleChange("dig3")}
-                ref={dig3_input}
-              />
-              <CustomInput
-                onChange={() => dig5_input.current.focus()}
-                onChangeText={handleChange("dig4")}
-                ref={dig4_input}
-              />
-              <CustomInput
-                onChange={() => dig6_input.current.focus()}
-                onChangeText={handleChange("dig5")}
-                ref={dig5_input}
-              />
-              <CustomInput
-                // onChange={() => dig2_input.current.focus()}
-                onChangeText={handleChange("dig6")}
-                ref={dig6_input}
-              />
-            </View>
+        <TouchableOpacity onPress={resendOtpHandler}>
+          <AppText
+            style={{
+              color: Colors.primary,
+              fontFamily: "OpenSans-Italic",
+              textDecorationLine: "underline",
+              fontSize: 15,
+            }}
+          >
+            Resend
+          </AppText>
+        </TouchableOpacity>
+        <Formik
+          initialValues={{ dig1: "", dig2: "", dig3: "", dig4: "", dig5: "" }}
+          onSubmit={verificationHandler}
+        >
+          {({
+            setFieldTouched,
+            handleChange,
+            errors,
+            touched,
+            handleSubmit,
+          }) => (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  marginTop: 50,
+                  marginBottom: 10,
+                }}
+              >
+                <CustomInput
+                  onChange={() => dig2_input.current.focus()}
+                  onChangeText={handleChange("dig1")}
+                  ref={dig1_input}
+                />
+                <CustomInput
+                  onChange={() => dig3_input.current.focus()}
+                  onChangeText={handleChange("dig2")}
+                  ref={dig2_input}
+                />
+                <CustomInput
+                  onChange={() => dig4_input.current.focus()}
+                  onChangeText={handleChange("dig3")}
+                  ref={dig3_input}
+                />
+                <CustomInput
+                  onChange={() => dig5_input.current.focus()}
+                  onChangeText={handleChange("dig4")}
+                  ref={dig4_input}
+                />
+                <CustomInput
+                  onChange={() => dig6_input.current.focus()}
+                  onChangeText={handleChange("dig5")}
+                  ref={dig5_input}
+                />
+                <CustomInput
+                  // onChange={() => dig2_input.current.focus()}
+                  onChangeText={handleChange("dig6")}
+                  ref={dig6_input}
+                />
+              </View>
 
-            <CustomButton
-              title="Verify"
-              onPress={handleSubmit}
-              style={{ flex: 0 }}
-            />
-          </>
-        )}
-      </Formik>
-    </View>
+              <CustomButton
+                title="Verify"
+                onPress={handleSubmit}
+                style={{ flex: 0 }}
+              />
+            </>
+          )}
+        </Formik>
+      </View>
+    </>
   );
 }
 

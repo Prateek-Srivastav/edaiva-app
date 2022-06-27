@@ -96,7 +96,6 @@ const AuthNavigator = () => (
     screenOptions={{
       headerLeft: () => leftHeader(),
       headerTitle: () => null,
-      ...TransitionPresets.SlideFromRightIOS,
     }}
   >
     <Stack.Screen

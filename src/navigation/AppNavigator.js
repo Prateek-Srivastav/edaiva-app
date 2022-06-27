@@ -131,13 +131,11 @@ function AppNavigator() {
     }
   };
 
-  // if (
-  //   campusProfileData?.detail !== "Your are not a part of any institution !" &&
-  //   !isAuthSkipped
-  // )
-  //   setIsCampusStudent(true);
-  // else
-  setIsCampusStudent(true);
+  console.log("IN APPNAVIGATOR");
+
+  if (campusProfileData && campusProfileData[0]?.batch_id)
+    setIsCampusStudent(true);
+  else setIsCampusStudent(false);
   // console.log(campusProfileData);
   if (!campusProfileData && !isAuthSkipped) return <Loading />;
   else if (
@@ -176,6 +174,7 @@ function AppNavigator() {
         name="ForgotPasswordStack"
         component={ForgotPasswordNavigator}
       />
+
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
       <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />

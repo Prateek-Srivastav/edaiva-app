@@ -114,12 +114,9 @@ function CustomDrawer(props) {
       setIsProfileComplete(false);
     } else setIsProfileComplete(true);
 
-    // if (
-    //   campusProfileData?.detail === "Your are not a part of any institution !"
-    // )
-    //   setIsCampusStudent(false);
-    // else
-    setIsCampusStudent(true);
+    if (campusProfileData && campusProfileData[0]?.batch_id)
+      setIsCampusStudent(true);
+    else setIsCampusStudent(false);
   }, [profileData, campusProfileData]);
 
   const signOutHandler = async () => {
@@ -131,7 +128,7 @@ function CustomDrawer(props) {
 
   const SignOutAlert = () => {
     return (
-      <CustomAlert visible={visible}>
+      <CustomAlert visible={visible} setAlertVisible={setVisible}>
         <View style={{ alignItems: "center" }}>
           <Text
             style={{

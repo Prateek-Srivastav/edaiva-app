@@ -14,7 +14,7 @@ function useApi(apiFunc) {
     const response = await apiFunc(...args);
 
     if (!response.ok) {
-      // console.log(response, "res !ok");
+      console.log(response, "res !ok");
       if (response.problem === "NETWORK_ERROR") {
         setLoading(false);
         setNetworkError(true);
@@ -24,6 +24,7 @@ function useApi(apiFunc) {
         });
       } else if (response.data.code === "token_not_valid") {
         setLoading(false);
+        setData(response.data);
         // console.log("token not valid");
         return setTokenValid(false);
       } else {
@@ -38,7 +39,7 @@ function useApi(apiFunc) {
     setNetworkError(false);
     setError(false);
     setLoading(false);
-    // console.log(response, "rees OK");
+    console.log(response, "rees OK");
   };
 
   return { res, data, error, networkError, loading, request, tokenValid };

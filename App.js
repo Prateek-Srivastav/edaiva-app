@@ -59,19 +59,16 @@ export default function App() {
     candidateApi.getProfile
   );
 
-  // console.log(campusProfileData?.detail + "in app.js");
+  console.log(tokens);
 
   useEffect(() => {
     if (profileData?.error === "Candidate Profile not found!!") {
       setIsProfileComplete(false);
     } else setIsProfileComplete(true);
 
-    // if (
-    //   campusProfileData?.detail === "Your are not a part of any institution !"
-    // )
-    //   setIsCampusStudent(false);
-    // else
-    setIsCampusStudent(true);
+    if (campusProfileData && campusProfileData[0]?.batch_id)
+      setIsCampusStudent(true);
+    else setIsCampusStudent(false);
   }, [profileData, campusProfileData]);
 
   const restoreToken = async () => {
