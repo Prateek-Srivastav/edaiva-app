@@ -39,7 +39,7 @@ function useApi(apiFunc) {
     setNetworkError(false);
     setError(false);
     setLoading(false);
-    console.log(response, "rees OK");
+    // console.log(response, "rees OK");
   };
 
   return { res, data, error, networkError, loading, request, tokenValid };

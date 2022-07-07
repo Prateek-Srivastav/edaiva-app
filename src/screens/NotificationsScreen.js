@@ -42,8 +42,6 @@ const NotificationItem = ({
   onDelete,
 }) => {
   let image;
-  let heading;
-  let details;
 
   let status = body.split(" ");
   status = status[status.length - 1];
@@ -136,6 +134,7 @@ function NotificationsScreen({ navigation }) {
   const [error, setError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
   const [loginAlertVisible, setLoginAlertVisible] = useState(false);
+  const [notificationsCount, setNotificationsCount] = useState(0);
 
   const { request: markSeenNotifications } = useApi(
     notificationApi.markSeenNotifications
@@ -175,8 +174,16 @@ function NotificationsScreen({ navigation }) {
     }
 
     notificResponse.data?.records.forEach((notific, index) => {
+      if (
+        notific.notification.notification_details.url.split("/")[2] === "campus"
+      ) {
+        setNotificationsCount(notificationsCount + 1);
+        return;
+      }
+
       const applicationId =
         notific.notification.notification_details.url.split("/")[2];
+
       const application = applicationResponse.data.filter(
         (application) => application._id.$oid === applicationId
       )[0];
@@ -201,7 +208,6 @@ function NotificationsScreen({ navigation }) {
     useCallback(() => {
       const showNotificDeleteInfo = async () => {
         const isFirstTime = await cache.get("notificOpened");
-        // console.log(isFirstTime);
         if (!isFirstTime) {
           showToast({
             type: "appInfo",
@@ -260,10 +266,11 @@ function NotificationsScreen({ navigation }) {
         </>
       ) : (
         <View style={styles.container}>
-          {!loading &&
-          !error &&
-          !networkError &&
-          notifications?.length === 0 ? (
+          {(!loading &&
+            !error &&
+            !networkError &&
+            notifications?.length === 0) ||
+          notifications?.length === notificationsCount ? (
             <NoData
               onPress={() => {
                 loadScreen();
@@ -276,6 +283,13 @@ function NotificationsScreen({ navigation }) {
               data={notifications}
               keyExtractor={(index) => index + Math.random()}
               renderItem={(itemData) => {
+                if (
+                  itemData.item.notification.notification_details.url.split(
+                    "/"
+                  )[2] === "campus"
+                )
+                  return;
+
                 let location;
 
                 if (itemData.item.job_location?.length !== 0)

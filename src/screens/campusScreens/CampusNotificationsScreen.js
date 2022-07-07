@@ -24,47 +24,15 @@ const NormalText = (props) => (
   </Text>
 );
 
-const NotificationItem = ({
-  job,
-  onPress,
-  companyName,
-  title,
-  body,
-  onDelete,
-  image,
-}) => {
-  // let image;
-  let heading;
-  let details;
-
-  // let status = body.split(" ");
-  // status = status[status.length - 1];
-
-  // if (status === "Hired") {
-  //   image = require("../../assets/selected.png");
-  //   heading = "Congratulations!!.. You did it.";
-  //   details = `You are selected for the role of ${job} in ${companyName}.`;
-  // } else if (status === "Finalist") {
-  //   image = require("../../assets/shortlisted.png");
-  //   heading = "Woah!. You are the finalist!!..";
-  //   details = `You are the finalist for the ${job} in ${companyName}`;
-  // } else if (status === "Review") {
-  //   image = require("../../assets/shortlisted.png");
-  //   heading = "Woah!. You have been shortlisted!!..";
-  //   details = `You have been shortlisted for the ${job} in ${companyName}`;
-  // } else if (status === "Interviewing") {
-  //   image = require("../../assets/bell.png");
-  //   heading = "Interviewing";
-  //   details = `Your job status for the ${job} in ${companyName} is set to interviewing.`;
-  // } else return null;
-
+const NotificationItem = ({ onPress, title, body, onDelete, image }) => {
   const renderRightActions = () => (
     <View
       style={{
         justifyContent: "center",
         alignItems: "flex-end",
         width: 50,
-        marginHorizontal: 7,
+        marginHorizontal: 10,
+        marginRight: 20,
       }}
     >
       <TouchableOpacity
@@ -103,14 +71,6 @@ const NotificationItem = ({
             }}
           >
             <NormalText>{title}</NormalText>
-            {/* {status === "interviewing" && (
-              <>
-                <View style={styles.separator} />
-                <NormalText style={{ flex: 1 }} numberOfLines={1}>
-                  {job}
-                </NormalText>
-              </>
-            )} */}
           </View>
           <AppText numberOfLines={2}>{body}</AppText>
         </View>
@@ -163,22 +123,7 @@ function CampusNotificationsScreen({ navigation }) {
         return setError(true);
       }
     }
-
-    notificResponse.data?.records.forEach((notific, index) => {
-      const applicationId =
-        notific.notification.notification_details.url.split("/")[2];
-      const application = applicationResponse.data.filter(
-        (application) => application._id.$oid === applicationId
-      )[0];
-
-      notificResponse.data.records[index] = {
-        ...notific,
-        ...application,
-        notification_id: notific._id,
-      };
-    });
-
-    // // console.log(notificResponse);
+    // console.log(notificResponse);
 
     setNotifications(notificResponse.data.records);
     setNotificLoading(false);
@@ -234,49 +179,12 @@ function CampusNotificationsScreen({ navigation }) {
               data={notifications}
               keyExtractor={(index) => index + Math.random()}
               renderItem={(itemData) => {
-                let location;
-
-                // console.log(notifications);
-
-                // if (
-                //   itemData.item.campus_job_details.details?.job_location
-                //     ?.length !== 0
-                // )
-                //   location = `${
-                //     itemData.item.campus_job_details.details?.job_location[0]
-                //       ?.city
-                //       ? itemData.item.campus_job_details.details
-                //           ?.job_location[0]?.city + ","
-                //       : null
-                //   } ${
-                //     itemData.item.campus_job_details.details?.job_location[0]
-                //       ?.state
-                //       ? itemData.item.campus_job_details.details
-                //           ?.job_location[0]?.state + ","
-                //       : null
-                //   }${
-                //     itemData.item.campus_job_details.details?.job_location[0]
-                //       ?.country
-                //       ? itemData.item.campus_job_details.details
-                //           ?.job_location[0]?.country + ","
-                //       : null
-                //   }`;
-
                 const notificId = itemData.item.notification_id;
 
                 return (
                   <>
                     <NotificationItem
-                      // onPress={() =>
-                      //   navigation.navigate("CampusApplicationStatus", {
-                      //     location,
-                      //     applicationStatus: itemData.item.status,
-                      //     applicationId: itemData.item._id.$oid,
-                      //   })
-                      // }
-                      // job={itemData.item.job.job_title}
-                      // status={itemData.item.status}
-                      // companyName={itemData.item.job.company[0].name}
+                      onPress={() => navigation.navigate("CampusApplications")}
                       title={
                         itemData.item.notification.notification_details.title
                       }
@@ -289,8 +197,6 @@ function CampusNotificationsScreen({ navigation }) {
                       onDelete={() => {
                         setNotifications(
                           notifications.filter((notific) => {
-                            // console.log(notific.notification_id);
-                            // console.log(notificId + "id");
                             return notific.notification_id !== notificId;
                           })
                         );
