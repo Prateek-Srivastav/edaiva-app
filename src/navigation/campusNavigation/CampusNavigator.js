@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Animated, Dimensions, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
@@ -22,11 +22,12 @@ import CampusNotificationsNavigator from "./CampusNotificationsNavigator";
 import useApi from "../../hooks/useApi";
 import { useIsFocused } from "@react-navigation/native";
 import campusApplicationApi from "../../api/campusApis/application";
+import AuthContext from "../../auth/context";
 
 const Tab = createBottomTabNavigator();
 
 function CampusNavigator({ route, navigation }) {
-  const [isTabBarVisible, setIsTabBarVisible] = useState(true);
+  const { isTabBarShown } = useContext(AuthContext);
 
   const isFocused = useIsFocused();
 
@@ -88,7 +89,11 @@ function CampusNavigator({ route, navigation }) {
   const getTabBarVisibility = (route) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
 
-    if (routeName === "JobDetail" || routeName === "CampusApplicationStatus")
+    if (
+      routeName === "JobDetail" ||
+      routeName === "CampusApplicationStatus" ||
+      !isTabBarShown
+    )
       return "none";
 
     return "flex";
@@ -137,6 +142,7 @@ function CampusNavigator({ route, navigation }) {
           },
           // tabBarActiveTintColor: Colors.black,
           // tabBarInactiveTintColor: Colors.primary,
+          tabBarHideOnKeyboard: true,
           tabBarShowLabel: false,
           lazy: false,
         })}

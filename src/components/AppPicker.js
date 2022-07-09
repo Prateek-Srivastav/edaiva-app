@@ -95,7 +95,11 @@ function AppPicker(props) {
         )}
       </TouchableOpacity>
       {dateTimePicker ? null : (
-        <CustomAlert modalWidth="90%" visible={visible}>
+        <CustomAlert
+          modalWidth="90%"
+          visible={visible}
+          setAlertVisible={setVisible}
+        >
           <TouchableOpacity
             style={styles.button}
             onPress={() => setVisible(false)}

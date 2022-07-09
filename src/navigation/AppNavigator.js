@@ -46,7 +46,8 @@ function AppNavigator() {
 
   const isFocused = useIsFocused();
 
-  const { isAuthSkipped, setIsCampusStudent } = useContext(AuthContext);
+  const { isAuthSkipped, isCampusStudent, setIsCampusStudent } =
+    useContext(AuthContext);
 
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
@@ -63,6 +64,10 @@ function AppNavigator() {
       setExpoPushToken(token)
     );
     if (!isAuthSkipped) loadCampusProfile();
+
+    // if (campusProfileData && campusProfileData[0]?.batch_id)
+    //   setIsCampusStudent(true);
+    // else setIsCampusStudent(false);
 
     restoreToken();
     if (tokens) {
@@ -131,17 +136,9 @@ function AppNavigator() {
     }
   };
 
-  console.log("IN APPNAVIGATOR");
-
-  if (campusProfileData && campusProfileData[0]?.batch_id)
-    setIsCampusStudent(true);
-  else setIsCampusStudent(false);
   // console.log(campusProfileData);
   if (!campusProfileData && !isAuthSkipped) return <Loading />;
-  else if (
-    campusProfileData?.detail !== "Your are not a part of any institution !" &&
-    !isAuthSkipped
-  ) {
+  else if (isCampusStudent && !isAuthSkipped) {
     return (
       <Drawer.Navigator
         screenOptions={{ headerShown: false }}
@@ -174,7 +171,6 @@ function AppNavigator() {
         name="ForgotPasswordStack"
         component={ForgotPasswordNavigator}
       />
-
       <Drawer.Screen name="WishlistStack" component={WishlistNavigator} />
       <Drawer.Screen name="CampusStack" component={CampusNavigator} />
       <Drawer.Screen name="CampusSelection" component={CampusSelectionScreen} />

@@ -19,13 +19,6 @@ const Stack = createNativeStackNavigator();
 const leftHeader = () => {
   const navigation = useNavigation();
 
-  let isBackShown = true;
-
-  if (
-    navigation?.getRootState === undefined ||
-    navigation?.getRootState().routes.length === 1
-  )
-    isBackShown = false;
   return (
     <View
       style={{
@@ -34,7 +27,7 @@ const leftHeader = () => {
         alignItems: "center",
       }}
     >
-      {isBackShown && (
+      {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
             name="arrow-back-outline"
@@ -42,7 +35,7 @@ const leftHeader = () => {
             color={Colors.primary}
           />
         </TouchableOpacity>
-      )}
+      }
       <Image
         source={require("../assets/edaiva_logo_edit-03.png")}
         style={{
@@ -54,6 +47,17 @@ const leftHeader = () => {
     </View>
   );
 };
+
+const leftWelcomeHeader = () => (
+  <Image
+    source={require("../assets/edaiva_logo_edit-03.png")}
+    style={{
+      height: 30,
+      width: 140,
+      top: 2,
+    }}
+  />
+);
 
 const rightLoginHeader = () => {
   const navigation = useNavigation();
@@ -105,6 +109,7 @@ const AuthNavigator = () => (
         headerShadowVisible: false,
         headerStyle: { backgroundColor: "#FDFDFD" },
         headerRight: () => rightLoginHeader(),
+        headerLeft: () => leftWelcomeHeader(),
       }}
     />
     <Stack.Screen

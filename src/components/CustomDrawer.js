@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import * as WebBrowser from "expo-web-browser";
-import { SimpleLineIcons } from "@expo/vector-icons";
 
 import AppText from "./AppText";
 import Colors from "../constants/Colors";
@@ -78,20 +77,20 @@ const NavigatorButton = ({ title, icon, bgColor, ...otherProps }) => (
 );
 
 function CustomDrawer(props) {
-  const { setTokens, isAuthSkipped } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
 
   const {
+    isAuthSkipped,
     fullName,
     email,
-    setFullName,
     isProfileComplete,
     isCampusStudent,
+    setTokens,
+    setFullName,
+    setEmail,
     setIsProfileComplete,
     setIsCampusStudent,
   } = useContext(AuthContext);
-
-  // console.log(isAuthSkipped);
 
   const { data: campusProfileData, request: loadCampusProfile } = useApi(
     campusCandidateApi.getProfile
@@ -123,7 +122,10 @@ function CustomDrawer(props) {
     await cache.clear();
     authStorage.removeToken();
     setFullName("fname lname");
+    setEmail(null);
     setTokens(null);
+    setIsCampusStudent(false);
+    setIsProfileComplete(false);
   };
 
   const SignOutAlert = () => {

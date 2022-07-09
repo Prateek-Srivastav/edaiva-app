@@ -77,7 +77,7 @@ function JobDetailScreen({ route, navigation }) {
   const [loginAlertVisible, setLoginAlertVisible] = useState(false);
   const [placementCriteria, setPlacementCriteria] = useState();
 
-  const { isAuthSkipped } = useContext(AuthContext);
+  const { isAuthSkipped, isProfileComplete } = useContext(AuthContext);
 
   const {
     data: campusProfileData,
@@ -726,7 +726,7 @@ function JobDetailScreen({ route, navigation }) {
                   setLoginAlertVisible(true);
                   return;
                 }
-                if (profileData?.error === "Candidate Profile not found!!") {
+                if (!isProfileComplete) {
                   showToast({
                     type: "appError",
                     message: "Please complete your profile to apply for a job.",

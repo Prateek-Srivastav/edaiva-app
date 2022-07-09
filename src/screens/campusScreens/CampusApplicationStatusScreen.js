@@ -442,8 +442,6 @@ function CampusApplicationStatusScreen({ route }) {
         message: "Internet connection lost!",
       });
 
-    console.log(detail);
-
     return showToast({
       type: "appSuccess",
       message: "Assignment submit successfully!",

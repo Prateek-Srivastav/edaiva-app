@@ -47,7 +47,8 @@ function CreateProfileScreen({ route }) {
   const [phoneError, setPhoneError] = useState();
   const [user, setUser] = useState();
 
-  const { setIsProfileComplete, setFullName } = useContext(AuthContext);
+  const { setIsProfileComplete, setFullName, setIsTabBarShown } =
+    useContext(AuthContext);
 
   const {
     data: countries,
@@ -75,6 +76,7 @@ function CreateProfileScreen({ route }) {
   } = useApi(candidateApi.createProfile);
 
   useEffect(() => {
+    setIsTabBarShown(false);
     loadCountries();
     getUser();
     if (route.params.screenName === "Preference")
@@ -166,6 +168,8 @@ function CreateProfileScreen({ route }) {
     if (values.firstname !== "")
       setFullName(values.firstname + " " + values.lastname);
 
+    setIsTabBarShown(true);
+
     if (route?.params.screenName === "JobDetails") return navigation.goBack();
     else if (route.params.screenName === "Preference")
       return navigation.navigate("Preference");
@@ -178,8 +182,8 @@ function CreateProfileScreen({ route }) {
     <>
       <CustomHeader
         navigation={navigation}
-        // backScreen="Home"
-        goBack
+        backScreen={route.params.screenName === "ProfileStack" ? "Home" : null}
+        goBack={route.params.screenName === "ProfileStack" ? false : true}
         screenName="Create Profile"
       />
 

@@ -15,6 +15,7 @@ import Colors from "../constants/Colors";
 import { jobClient } from "../api/client";
 import ApplicationStatusIndicator from "../components/application/ApplicationStatusIndicator";
 import ApplicationStatusScreen from "../screens/ApplicationStatusScreen";
+import CreateProfileScreen from "../screens/CreateProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ const JobsNavigator = () => (
         }
       }
     />
+    <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
     <Stack.Screen
       name="ApplicationStatus"
       component={ApplicationStatusScreen}

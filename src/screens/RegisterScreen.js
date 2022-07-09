@@ -315,7 +315,13 @@ function RegisterScreen({ navigation }) {
               <Text style={styles.forgotPassText}>
                 By clicking Sign Up, you agree to our{" "}
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  WebBrowser.openBrowserAsync(
+                    "https://jobs.edaiva.com/legal/terms-of-service/f3efcde4-5606-44ef-8e74-c9145dfe9b8d"
+                  )
+                }
+              >
                 <Text
                   style={{
                     flex: 1,
@@ -328,7 +334,13 @@ function RegisterScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
               <Text style={styles.forgotPassText}> and our </Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  WebBrowser.openBrowserAsync(
+                    "https://jobs.edaiva.com/legal/privacy-policy/da0304c3-2554-48fd-b6a8-e41b5ec8ad5e"
+                  )
+                }
+              >
                 <Text
                   style={{
                     flex: 1,

@@ -84,6 +84,7 @@ function HomeScreen({ navigation }) {
   // console.log("IN HOMESCREEN");
 
   useEffect(() => {
+    setIsTabBarShown(true);
     loadJobTypes();
     loadJobs({ sort: sortBy, ...filters });
     if (!isAuthSkipped) {

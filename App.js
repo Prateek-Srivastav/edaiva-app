@@ -59,8 +59,6 @@ export default function App() {
     candidateApi.getProfile
   );
 
-  console.log(tokens);
-
   useEffect(() => {
     if (profileData?.error === "Candidate Profile not found!!") {
       setIsProfileComplete(false);

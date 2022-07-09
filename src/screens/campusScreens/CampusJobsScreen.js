@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -37,6 +37,7 @@ import formattedTime from "../../utilities/time";
 import InterviewReminder from "../../components/interview/InterviewReminder";
 import campusJobsApi from "../../api/campusApis/jobs";
 import HomeScreenSkeleton from "../../components/skeletons/HomeScreenSkeleton";
+import AuthContext from "../../auth/context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -49,6 +50,8 @@ function CampusJobsScreen({ navigation }) {
   const [sortBy, setSortBy] = useState("latest");
 
   const isFocused = useIsFocused();
+
+  const { setIsTabBarShown } = useContext(AuthContext);
 
   const {
     data,
@@ -74,9 +77,8 @@ function CampusJobsScreen({ navigation }) {
     jobs = data;
   }
 
-  // console.log(jobs);
-
   useEffect(() => {
+    setIsTabBarShown(true);
     loadJobs();
     loadInterviews();
     loadProfile();

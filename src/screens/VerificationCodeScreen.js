@@ -89,7 +89,7 @@ function VerificationCodeScreen({ navigation, route }) {
     setLoading(true);
     const result = await authApi.resendOtp(route.params.email);
     if (!result.ok) {
-      // console.log(result.data);
+      console.log(result.data);
       return setResendOtpFailed(true);
     }
     setResendOtpFailed(false);
@@ -149,7 +149,6 @@ function VerificationCodeScreen({ navigation, route }) {
       setLoginFailed(false);
       const { access, refresh, email_verified, user } = loginResult.data;
 
-      console.log(loginResult.data);
       if (!email_verified)
         return navigation.navigate("CodeVerification", email);
 
@@ -164,9 +163,14 @@ function VerificationCodeScreen({ navigation, route }) {
     } else navigation.navigate("NewPassword");
   };
 
+  console.log(navigation.getState().routes[0].name);
+
   return (
     <>
-      <CustomHeader navigation={navigation} goBack />
+      {navigation.getState().routes[0].name === "Home" &&
+        authContext.isAuthSkipped && (
+          <CustomHeader navigation={navigation} goBack />
+        )}
       <View style={styles.container}>
         <Text style={styles.boldText}>VERIFICATION{"\n"}CODE</Text>
         <AppText style={{ color: Colors.black, marginTop: 15 }}>

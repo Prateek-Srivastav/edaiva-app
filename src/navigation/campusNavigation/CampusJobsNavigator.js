@@ -13,6 +13,7 @@ import { jobClient } from "../../api/client";
 import ApplicationStatusIndicator from "../../components/application/ApplicationStatusIndicator";
 import ApplicationStatusScreen from "../../screens/ApplicationStatusScreen";
 import CampusJobsScreen from "../../screens/campusScreens/CampusJobsScreen";
+import CreateProfileScreen from "../../screens/CreateProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -72,6 +73,7 @@ const CampusJobsNavigator = () => (
         headerRight: () => rightShareHeader(),
       }}
     />
+    <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
     <Stack.Screen
       name="ApplicationStatus"
       component={ApplicationStatusScreen}

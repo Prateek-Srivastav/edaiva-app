@@ -67,15 +67,10 @@ function CampusSelectionScreen({ navigation, route }) {
       });
 
       if (navigation.getState().routeNames[0] === "Home") {
+        authContext.setIsCampusStudent(true);
+        await cache.store("isCampusStudent", true);
         return navigation.navigate("CampusStack");
       }
-
-      authContext.setTokens({
-        access: route.params.access,
-        refresh: route.params.refresh,
-      });
-      authStorage.storeToken(route.params.access, route.params.refresh);
-      await cache.store("isCampusStudent", true);
     }
   };
 

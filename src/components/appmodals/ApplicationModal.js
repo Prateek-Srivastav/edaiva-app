@@ -137,7 +137,7 @@ function ApplicationModal(props) {
     else response = await applicationApi.postApplication(application);
 
     setLoading(true);
-    // // console.log(response);
+    console.log(response);
     if (!response.ok) {
       setLoading(false);
       if (response.problem === "NETWORK_ERROR") {
@@ -150,7 +150,7 @@ function ApplicationModal(props) {
         Toast.show({
           type: "appError",
           text1: response.data.detail
-            ? response.data.detail[0]?.msg
+            ? response.data.detail[0]?.msg || response.data.detail
             : "Something went wrong",
         });
         return setError(true);
