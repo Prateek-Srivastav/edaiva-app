@@ -232,6 +232,8 @@ function LoginScreen({ navigation }) {
     // console.log(result.data);
     if (!email_verified) return navigation.navigate("CodeVerification", email);
 
+    console.log(user);
+
     authContext.setTokens({ access, refresh });
     authStorage.storeToken(access, refresh);
     authContext.setIsAuthSkipped(false);

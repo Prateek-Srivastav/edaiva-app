@@ -49,9 +49,11 @@ function AppNavigator() {
   const { isAuthSkipped, isCampusStudent, setIsCampusStudent } =
     useContext(AuthContext);
 
-  const { data: campusProfileData, request: loadCampusProfile } = useApi(
-    campusCandidateApi.getProfile
-  );
+  const {
+    data: campusProfileData,
+    loading: campusProfileLoading,
+    request: loadCampusProfile,
+  } = useApi(campusCandidateApi.getProfile);
 
   const restoreToken = async () => {
     const storedTokens = await authStorage.getToken();
@@ -63,7 +65,6 @@ function AppNavigator() {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
     );
-    if (!isAuthSkipped) loadCampusProfile();
 
     // if (campusProfileData && campusProfileData[0]?.batch_id)
     //   setIsCampusStudent(true);
@@ -93,6 +94,16 @@ function AppNavigator() {
   }, [isFocused, isAuthSkipped]);
 
   // Notifications.addPushTokenListener;
+
+  useEffect(() => {
+    if (!isAuthSkipped) loadCampusProfile();
+  }, []);
+
+  useEffect(() => {
+    if (campusProfileData && campusProfileData[0]?.batch_id)
+      setIsCampusStudent(true);
+    console.log(campusProfileData);
+  }, [campusProfileData]);
 
   const {
     data,
@@ -132,13 +143,15 @@ function AppNavigator() {
 
       return token;
     } catch (error) {
-      // console.log("Error getting a push token", error);
+      console.log("Error getting a push token", error);
     }
   };
 
-  // console.log(campusProfileData);
-  if (!campusProfileData && !isAuthSkipped) return <Loading />;
-  else if (isCampusStudent && !isAuthSkipped) {
+  console.log("IN APPNAVIGATOR");
+  if ((!campusProfileData && !isAuthSkipped) || campusProfileLoading)
+    return <Loading />;
+
+  if (isCampusStudent && !isAuthSkipped) {
     return (
       <Drawer.Navigator
         screenOptions={{ headerShown: false }}
